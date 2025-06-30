@@ -43,15 +43,15 @@ export const HomeEditor: React.FC = () => {
   const loadContent = async () => {
     try {
       const { data, error } = await supabase
-        .from('content_blocks')
+        .from('simple_content')
         .select('*')
-        .eq('page', 'home')
+        .eq('page_type', 'home')
+        .eq('page_id', 'main')
         .single();
 
       if (data && !error) {
-        const loadedContent = JSON.parse(data.content);
-        setContent(loadedContent);
-        setOriginalContent(loadedContent);
+        setContent(data.content as HomeContent);
+        setOriginalContent(data.content as HomeContent);
       }
     } catch (error) {
       console.error('Error loading content:', error);
@@ -70,15 +70,13 @@ export const HomeEditor: React.FC = () => {
     setSaving(true);
     try {
       const { error } = await supabase
-        .from('content_blocks')
-        .upsert({
-          page: 'home',
-          block_key: 'main',
-          content: JSON.stringify(content),
+        .from('simple_content')
+        .update({
+          content: content,
           updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'page,block_key'
-        });
+        })
+        .eq('page_type', 'home')
+        .eq('page_id', 'main');
 
       if (error) throw error;
 
@@ -92,7 +90,7 @@ export const HomeEditor: React.FC = () => {
       console.error('Error saving content:', error);
       toast({
         title: "Error",
-        description: "Failed to save content. Please try again.",
+        description: error.message || "Failed to save content. Please try again.",
         variant: "destructive",
       });
     } finally {

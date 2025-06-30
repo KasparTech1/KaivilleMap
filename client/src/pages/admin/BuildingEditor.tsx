@@ -60,16 +60,15 @@ export const BuildingEditor: React.FC = () => {
     try {
       // First try to load from CMS content
       const { data: cmsData, error: cmsError } = await supabase
-        .from('content_blocks')
+        .from('simple_content')
         .select('*')
-        .eq('page', 'building')
-        .eq('block_key', id)
+        .eq('page_type', 'building')
+        .eq('page_id', id)
         .single();
 
       if (cmsData && !cmsError) {
-        const loadedContent = JSON.parse(cmsData.content);
-        setContent(loadedContent);
-        setOriginalContent(loadedContent);
+        setContent(cmsData.content as BuildingContent);
+        setOriginalContent(cmsData.content as BuildingContent);
       } else {
         // Fallback to original building data
         const response = await getBuildingDetails(id) as { building: BuildingContent };
@@ -110,18 +109,37 @@ export const BuildingEditor: React.FC = () => {
     
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from('content_blocks')
-        .upsert({
-          page: 'building',
-          block_key: id,
-          content: JSON.stringify(content),
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'page,block_key'
-        });
+      // First check if the record exists
+      const { data: existing } = await supabase
+        .from('simple_content')
+        .select('id')
+        .eq('page_type', 'building')
+        .eq('page_id', id)
+        .single();
 
-      if (error) throw error;
+      let result;
+      if (existing && !existing.error) {
+        // Update existing record
+        result = await supabase
+          .from('simple_content')
+          .update({
+            content: content,
+            updated_at: new Date().toISOString()
+          })
+          .eq('page_type', 'building')
+          .eq('page_id', id);
+      } else {
+        // Insert new record
+        result = await supabase
+          .from('simple_content')
+          .insert({
+            page_type: 'building',
+            page_id: id,
+            content: content
+          });
+      }
+
+      if (result.error) throw result.error;
 
       setOriginalContent(content);
       setHasChanges(false);
@@ -133,7 +151,7 @@ export const BuildingEditor: React.FC = () => {
       console.error('Error saving content:', error);
       toast({
         title: "Error",
-        description: "Failed to save content. Please try again.",
+        description: error.message || "Failed to save content. Please try again.",
         variant: "destructive",
       });
     } finally {
