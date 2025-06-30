@@ -1,0 +1,134 @@
+// Production-ready server configuration
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoStore = require('connect-mongo');
+const basicRoutes = require("./routes/index");
+const { connectDB } = require("./config/database");
+
+// Environment checks
+if (!process.env.DATABASE_URL) {
+  console.error("Error: DATABASE_URL variable in .env missing.");
+  process.exit(-1);
+}
+
+const app = express();
+const port = process.env.PORT || 3001;
+const isProduction = process.env.NODE_ENV === 'production';
+
+// CORS configuration
+const corsOptions = {
+  origin: isProduction 
+    ? [
+        'https://kaiville-railway-01.up.railway.app',
+        process.env.RAILWAY_PUBLIC_DOMAIN && `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+      ].filter(Boolean)
+    : ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+
+// Body parsing middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Pretty-print JSON responses
+app.enable('json spaces');
+// We want to be consistent with URL paths, so we enable strict routing
+app.enable('strict routing');
+
+// Trust proxy in production (Railway runs behind a proxy)
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
+// Database connection
+connectDB();
+
+// Health check endpoint for Railway
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
+});
+
+// API Routes (before static files)
+app.use('/api', basicRoutes);
+
+// Serve static files in production
+if (isProduction) {
+  // Serve React build files
+  app.use(express.static(path.join(__dirname, 'public')));
+  
+  // Serve uploaded files if you have any
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+  
+  // Catch all handler - send React app for any route not handled by API
+  app.get('*', (req, res) => {
+    // Don't serve index.html for API routes
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    } else {
+      res.status(404).json({ error: 'API endpoint not found' });
+    }
+  });
+} else {
+  // Development mode - just handle API routes
+  app.get('/', (req, res) => {
+    res.json({ 
+      message: 'KaivilleMap API Server',
+      environment: 'development',
+      note: 'React dev server should be running on port 3000'
+    });
+  });
+}
+
+// 404 handler for unmatched routes
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({ error: 'API endpoint not found' });
+  } else if (isProduction) {
+    // In production, serve React app for any unmatched route
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  } else {
+    res.status(404).send('Page not found.');
+  }
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(`Unhandled application error: ${err.message}`);
+  console.error(err.stack);
+  
+  // Don't leak error details in production
+  const message = isProduction 
+    ? 'There was an error serving your request.' 
+    : err.message;
+    
+  res.status(500).json({ 
+    error: message,
+    ...(isProduction ? {} : { stack: err.stack })
+  });
+});
+
+app.on("error", (error) => {
+  console.error(`Server error: ${error.message}`);
+  console.error(error.stack);
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server running at ${isProduction ? 'port' : 'http://localhost:'}${port}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  if (isProduction) {
+    console.log('Serving React build from /public directory');
+  }
+});

@@ -1,0 +1,18 @@
+{
+  "name": "kaiville",
+  "mcp": {
+    "servers": {
+      "@supabase/mcp": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@supabase/mcp@latest"
+        ],
+        "env": {
+          "SUPABASE_URL": "${SUPABASE_URL}",
+          "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_KEY}"
+        }
+      }
+    }
+  }
+}

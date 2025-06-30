@@ -1,0 +1,26 @@
+# Railway Environment Variables
+# Copy and paste this into Railway Settings → Variables → RAW Editor
+
+# Server Configuration
+NODE_ENV=production
+
+# MongoDB (if you're using MongoDB)
+DATABASE_URL=your_mongodb_connection_string_here
+
+# Supabase Configuration
+SUPABASE_URL=https://yvbtqcmiuymyvtvaqgcf.supabase.co
+SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2YnRxY21pdXlteXZ0dmFxZ2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyOTA3ODcsImV4cCI6MjA2Njg2Njc4N30.Rv05YRSTAOcv1rDpaB13uyno8RgHDU_XIldZP1-d7cc
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2YnRxY21pdXlteXZ0dmFxZ2NmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTI5MDc4NywiZXhwIjoyMDY2ODY2Nzg3fQ.3Cc-57O3kQgWhttrxjmgCWn5RUZXTSiQrSfCZzMbBX8
+SUPABASE_PROJECT_ID=yvbtqcmiuymyvtvaqgcf
+SUPABASE_DB_PASSWORD=Duke-neepo-oliver-ttq5
+SUPABASE_ACCESS_TOKEN=sbp_978f7d660bf2b07919bc6b0c09e832212fa42da3
+
+# React App Variables (must be prefixed with REACT_APP_)
+# Note: Railway URL will be: https://kaiville-railway-01.up.railway.app
+REACT_APP_API_URL=https://kaiville-railway-01.up.railway.app
+REACT_APP_SUPABASE_URL=https://yvbtqcmiuymyvtvaqgcf.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2YnRxY21pdXlteXZ0dmFxZ2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyOTA3ODcsImV4cCI6MjA2Njg2Njc4N30.Rv05YRSTAOcv1rDpaB13uyno8RgHDU_XIldZP1-d7cc
+
+# Optional: Add any API keys for other services
+# OPENAI_API_KEY=your_openai_key_if_used
+# ANTHROPIC_API_KEY=your_anthropic_key_if_used

@@ -1,0 +1,144 @@
+/* EditableText Component Styles */
+
+.editable-text {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  min-height: 1.2em;
+}
+
+.editable-text:hover {
+  background-color: rgba(59, 130, 246, 0.05);
+  outline: 2px dashed rgba(59, 130, 246, 0.3);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.editable-text-placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.editable-text-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.editable-text-wrapper.editing {
+  z-index: 1000;
+}
+
+.editable-text-input {
+  width: 100%;
+  padding: 8px 50px 8px 12px;
+  border: 2px solid #3b82f6;
+  border-radius: 6px;
+  font: inherit;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.editable-text-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Maintain font sizes for different tags */
+.editable-text-h1,
+.editable-text-input.editable-text-h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.editable-text-h2,
+.editable-text-input.editable-text-h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+.editable-text-h3,
+.editable-text-input.editable-text-h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.editable-text-p,
+.editable-text-input.editable-text-p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.editable-text-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Action buttons */
+.editable-text-actions {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 4px;
+}
+
+.editable-text-save,
+.editable-text-cancel {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s;
+  color: white;
+}
+
+.editable-text-save {
+  background-color: #10b981;
+}
+
+.editable-text-save:hover {
+  background-color: #059669;
+}
+
+.editable-text-cancel {
+  background-color: #ef4444;
+}
+
+.editable-text-cancel:hover {
+  background-color: #dc2626;
+}
+
+/* Admin mode indicator */
+.admin-mode-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-mode-indicator::before {
+  content: '🔒';
+  font-size: 16px;
+}
