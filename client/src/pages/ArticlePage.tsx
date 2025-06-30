@@ -3,17 +3,20 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Share2, Loader2 } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
 import { EditButton } from '../components/cms/EditButton';
+import { supabase } from '../config/supabase';
 
 interface Article {
   id: string;
   headline: string;
   subheadline: string;
   content: string;
+  content_blocks?: any[];
   author_name: string;
   published_at: string;
   reading_time: number;
   featured_image_id: string | null;
   category_name?: string;
+  news_type?: 'local' | 'world';
 }
 
 export const ArticlePage: React.FC = () => {
@@ -31,7 +34,76 @@ export const ArticlePage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // Mock data for now
+      // Fetch article from Supabase
+      const { data: pageData, error: pageError } = await supabase
+        .from('pages')
+        .select(`
+          *,
+          articles!inner (
+            *
+          ),
+          content_blocks (
+            *
+          )
+        `)
+        .eq('slug', slug)
+        .eq('page_type', 'article')
+        .single();
+
+      if (pageError) {
+        console.error('Error fetching article:', pageError);
+        throw pageError;
+      }
+
+      if (pageData && pageData.articles) {
+        // Transform the data
+        const article = pageData.articles[0] || pageData.articles;
+        
+        // Convert content blocks to HTML if available
+        let htmlContent = '';
+        if (pageData.content_blocks && pageData.content_blocks.length > 0) {
+          htmlContent = pageData.content_blocks
+            .sort((a: any, b: any) => a.order_index - b.order_index)
+            .map((block: any) => {
+              switch (block.block_type) {
+                case 'text':
+                  return block.content?.text ? `<div>${block.content.text}</div>` : '';
+                case 'image':
+                  return block.content?.image_id ? 
+                    `<img src="/api/assets/${block.content.image_id}" alt="${block.content.alt || ''}" class="my-6 rounded-lg" />` : '';
+                case 'video':
+                  return block.content?.video_url ? 
+                    `<div class="my-6"><iframe src="${block.content.video_url}" class="w-full aspect-video rounded-lg" frameborder="0" allowfullscreen></iframe></div>` : '';
+                case 'hero':
+                  return block.content?.title ? 
+                    `<h2 class="text-2xl font-bold my-4">${block.content.title}</h2>` : '';
+                default:
+                  return '';
+              }
+            })
+            .join('\n');
+        }
+
+        const transformedArticle: Article = {
+          id: article.id,
+          headline: article.headline || pageData.title,
+          subheadline: article.subheadline || pageData.subtitle,
+          content: htmlContent || article.content || pageData.description,
+          content_blocks: pageData.content_blocks,
+          author_name: article.author_name || 'Kaiville Team',
+          published_at: pageData.published_at || pageData.created_at,
+          reading_time: article.reading_time || 5,
+          featured_image_id: article.featured_image_id,
+          category_name: 'News',
+          news_type: article.tags?.includes('world') || 
+                     article.author_name === 'KNN Analysis' ? 'world' : 'local'
+        };
+
+        setArticle(transformedArticle);
+        return;
+      }
+
+      // If no article found, use mock data as fallback
       const mockArticle: Article = {
         id: '1',
         headline: 'Grand Opening of the New Community Center',
@@ -156,9 +228,20 @@ export const ArticlePage: React.FC = () => {
 
         {/* Article Header */}
         <div className="px-4 py-6 space-y-3">
-          {article.category_name && (
-            <span className="text-sm font-medium text-blue-600">{article.category_name}</span>
-          )}
+          <div className="flex items-center gap-3">
+            {article.news_type && (
+              <span className={`text-sm font-medium px-3 py-1 rounded-full ${
+                article.news_type === 'local' 
+                  ? 'bg-[#879651]/10 text-[#879651]' 
+                  : 'bg-[#1a464f]/10 text-[#1a464f]'
+              }`}>
+                {article.news_type === 'local' ? 'Local News' : 'World News'}
+              </span>
+            )}
+            {article.category_name && (
+              <span className="text-sm font-medium text-gray-600">{article.category_name}</span>
+            )}
+          </div>
           
           <h1 className="text-3xl font-bold text-gray-900 leading-tight">
             {article.headline}
