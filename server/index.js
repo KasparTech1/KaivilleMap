@@ -11,8 +11,7 @@ const { connectDB } = require("./config/database");
 
 // Environment checks
 if (!process.env.DATABASE_URL) {
-  console.error("Error: DATABASE_URL variable in .env missing.");
-  process.exit(-1);
+  console.warn("Warning: DATABASE_URL variable in .env missing. Database features will be disabled.");
 }
 
 const app = express();
@@ -47,8 +46,12 @@ if (isProduction) {
   app.set('trust proxy', 1);
 }
 
-// Database connection
-connectDB();
+// Database connection - only if DATABASE_URL exists
+if (process.env.DATABASE_URL) {
+  connectDB();
+} else {
+  console.log('Skipping database connection - DATABASE_URL not provided');
+}
 
 // Health check endpoint for Railway
 app.get('/api/health', (req, res) => {
@@ -56,7 +59,10 @@ app.get('/api/health', (req, res) => {
     status: 'ok', 
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    database: process.env.DATABASE_URL ? 
+      (mongoose.connection.readyState === 1 ? 'connected' : 'disconnected') : 
+      'not configured',
+    port: port
   });
 });
 
@@ -124,11 +130,24 @@ app.on("error", (error) => {
   console.error(error.stack);
 });
 
-// Start server
-app.listen(port, () => {
-  console.log(`Server running at ${isProduction ? 'port' : 'http://localhost:'}${port}`);
+// Start server - bind to all interfaces in production
+const server = app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on port ${port}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   if (isProduction) {
     console.log('Serving React build from /public directory');
+    console.log('Health check available at /api/health');
   }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+    mongoose.connection.close(false, () => {
+      console.log('MongoDB connection closed');
+      process.exit(0);
+    });
+  });
 });
