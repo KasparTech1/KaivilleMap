@@ -16,7 +16,7 @@ RUN npm install --legacy-peer-deps --no-audit --progress=false
 COPY client/ ./
 
 # Build React app
-RUN npm run build
+RUN npm run build && ls -la
 
 # Stage 2: Setup Node.js server
 FROM node:18-alpine
@@ -38,8 +38,8 @@ RUN npm install --production --legacy-peer-deps --no-audit --progress=false
 # Copy server source code
 COPY server/ ./
 
-# Copy built React app from previous stage
-COPY --from=client-build /app/client/build ./public
+# Copy built React app from previous stage (Vite outputs to dist)
+COPY --from=client-build /app/client/dist ./public
 
 # Create uploads directory if needed
 RUN mkdir -p ./uploads
