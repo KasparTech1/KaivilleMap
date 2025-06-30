@@ -1,0 +1,76 @@
+{
+  "buildings": [
+    {
+      "id": "heritage_center",
+      "title": "Heritage Center",
+      "row": 1,
+      "column": 1,
+      "span": 1,
+      "illustration": "/assets/heritage_center_animated.svg",
+      "connections": ["learning_lodge", "craft_works"]
+    },
+    {
+      "id": "learning_lodge",
+      "title": "Learning Lodge",
+      "row": 1,
+      "column": 2,
+      "span": 1,
+      "illustration": "/assets/learning_lodge.svg",
+      "connections": ["heritage_center", "craft_works", "community-center"]
+    },
+    {
+      "id": "craft_works",
+      "title": "Craft Works",
+      "row": 1,
+      "column": 3,
+      "span": 1,
+      "illustration": "/assets/craft_works.svg",
+      "connections": ["learning_lodge", "community-center"]
+    },
+    {
+      "id": "community-center",
+      "title": "Community Center",
+      "row": 2,
+      "column": 2,
+      "span": 1,
+      "illustration": "/assets/community-center.svg",
+      "connections": ["learning_lodge", "craft_works", "knn_tower", "celebration_station"]
+    },
+    {
+      "id": "knn_tower",
+      "title": "KNN Tower",
+      "row": 2,
+      "column": 1,
+      "span": 1,
+      "illustration": "/assets/knn-tower.svg",
+      "connections": ["community-center", "celebration_station"]
+    },
+    {
+      "id": "celebration_station",
+      "title": "Celebration Station",
+      "row": 2,
+      "column": 3,
+      "span": 1,
+      "illustration": "/assets/celebration-station.svg",
+      "connections": ["community-center", "knn_tower", "kasp_tower"]
+    },
+    {
+      "id": "kasp_tower",
+      "title": "KASP Tower",
+      "row": 3,
+      "column": 2,
+      "span": 1,
+      "illustration": "/assets/kasp-tower.svg",
+      "connections": ["celebration_station", "safety_station"]
+    },
+    {
+      "id": "safety_station",
+      "title": "Safety Station",
+      "row": 3,
+      "column": 1,
+      "span": 1,
+      "illustration": "/assets/safety-station.svg",
+      "connections": ["kasp_tower"]
+    }
+  ]
+}

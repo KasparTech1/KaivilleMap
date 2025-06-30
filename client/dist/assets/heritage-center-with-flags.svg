@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0.00 0.00 1024.00 1024.00">
+
+<defs>
+    <!-- Simple flag wave animation -->
+    <animateTransform 
+      id="leftFlagWave"
+      attributeName="transform" 
+      type="skewX"
+      values="0;-2;0;2;0"
+      dur="3s"
+      repeatCount="indefinite"
+    />
+    
+    <animateTransform 
+      id="rightFlagWave"
+      attributeName="transform" 
+      type="skewX"
+      values="0;2;0;-2;0"
+      dur="3.2s"
+      repeatCount="indefinite"
+    />
+    
+    <!-- Gentle flutter effect -->
+    <filter id="flutter">
+      <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="1" result="turbulence">
+        <animate attributeName="baseFrequency" 
+          values="0.01;0.02;0.01" 
+          dur="4s" 
+          repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+</defs>
+
+<!-- Import the existing heritage center SVG content -->
+<!-- For demo purposes, using a simplified version -->
+<g id="building-base">
+  <!-- Main building structure -->
+  <rect x="200" y="400" width="600" height="400" fill="#D2691E" stroke="#8B4513" stroke-width="4"/>
+  
+  <!-- Roof -->
+  <path d="M 150 400 L 500 200 L 850 400 Z" fill="#8B4513" stroke="#654321" stroke-width="4"/>
+  
+  <!-- Front entrance -->
+  <rect x="400" y="600" width="200" height="200" fill="#654321" stroke="#4A2C17" stroke-width="3"/>
+  <rect x="450" y="650" width="100" height="150" fill="#87CEEB" stroke="#4A2C17" stroke-width="2"/>
+  
+  <!-- Windows -->
+  <rect x="250" y="500" width="80" height="80" fill="#87CEEB" stroke="#4A2C17" stroke-width="2"/>
+  <rect x="670" y="500" width="80" height="80" fill="#87CEEB" stroke="#4A2C17" stroke-width="2"/>
+  
+  <!-- Flag poles -->
+  <rect x="295" y="100" width="10" height="350" fill="#696969"/>
+  <rect x="695" y="100" width="10" height="350" fill="#696969"/>
+</g>
+
+<!-- Animated flags -->
+<g id="animated-flags">
+  <!-- Left flag with wave animation -->
+  <g transform="translate(305, 120)">
+    <path d="M 0 0 L 60 10 L 60 40 L 0 30 Z" 
+          fill="#FF0000" 
+          stroke="#8B0000" 
+          stroke-width="2"
+          style="transform-origin: 0% 50%;"
+          filter="url(#flutter)">
+      <animateTransform 
+        attributeName="transform" 
+        type="skewX"
+        values="0;-3;0;3;0"
+        dur="3s"
+        repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- Right flag with wave animation -->
+  <g transform="translate(695, 120)">
+    <path d="M 0 0 L -60 10 L -60 40 L 0 30 Z" 
+          fill="#0000FF" 
+          stroke="#000080" 
+          stroke-width="2"
+          style="transform-origin: 0% 50%;"
+          filter="url(#flutter)">
+      <animateTransform 
+        attributeName="transform" 
+        type="skewX"
+        values="0;3;0;-3;0"
+        dur="3.2s"
+        repeatCount="indefinite"/>
+    </path>
+  </g>
+</g>
+
+<!-- Title -->
+<text x="500" y="900" text-anchor="middle" font-family="Georgia, serif" font-size="36" fill="#4A2C17">
+  HERITAGE CENTER
+</text>
+
+</svg>

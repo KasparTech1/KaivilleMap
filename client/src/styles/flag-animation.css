@@ -1,0 +1,51 @@
+/* Flag waving animation for heritage center */
+@keyframes wave-flag {
+  0% {
+    transform: skewY(0deg) scaleX(1);
+  }
+  25% {
+    transform: skewY(-2deg) scaleX(0.98);
+  }
+  50% {
+    transform: skewY(0deg) scaleX(1);
+  }
+  75% {
+    transform: skewY(2deg) scaleX(0.98);
+  }
+  100% {
+    transform: skewY(0deg) scaleX(1);
+  }
+}
+
+@keyframes flutter {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-1deg);
+  }
+  75% {
+    transform: rotate(1deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Apply to flag elements if they can be identified */
+.heritage-center-flag {
+  transform-origin: left center;
+  animation: wave-flag 3s ease-in-out infinite;
+}
+
+.heritage-center-flag-pole {
+  transform-origin: bottom center;
+  animation: flutter 4s ease-in-out infinite;
+}
+
+/* For SVG path-based flags */
+.flag-path {
+  transform-box: fill-box;
+  transform-origin: 10% 50%;
+  animation: wave-flag 3s ease-in-out infinite;
+}
