@@ -1,7 +1,14 @@
-/* Floating Edit Button */
+/* Edit Button Container */
+.edit-button-container {
+  position: relative;
+  height: 80px;
+  margin-top: 40px;
+}
+
+/* Edit Button - positioned at bottom of page */
 .edit-button {
-  position: fixed;
-  bottom: 24px;
+  position: absolute;
+  bottom: 0;
   left: 24px;
   background-color: #d1d5db; /* Light grey */
   color: #6b7280; /* Grey text */
@@ -12,7 +19,7 @@
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  z-index: 9999; /* Very high z-index */
+  z-index: 50;
   display: flex !important; /* Force display */
   align-items: center;
   justify-content: center;

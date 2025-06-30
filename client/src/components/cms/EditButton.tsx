@@ -39,13 +39,15 @@ export const EditButton: React.FC<EditButtonProps> = ({ editPath, label = 'Edit 
 
   return (
     <>
-      <button
-        onClick={handleClick}
-        className="edit-button"
-        title={isAuthenticated ? label : 'Login to edit'}
-      >
-        <Wrench className="w-4 h-4" />
-      </button>
+      <div className="edit-button-container">
+        <button
+          onClick={handleClick}
+          className="edit-button"
+          title={isAuthenticated ? label : 'Login to edit'}
+        >
+          <Wrench className="w-4 h-4" />
+        </button>
+      </div>
 
       {showAuth && (
         <SimpleAdminAuth 
