@@ -54,5 +54,5 @@ EXPOSE 3000
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-# Start the server
+# Start the server (already in /app/server directory)
 CMD ["node", "index.js"]
