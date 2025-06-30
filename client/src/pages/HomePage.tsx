@@ -4,7 +4,6 @@ import { WelcomeSign } from '../components/WelcomeSign';
 import { BuildingCard } from '../components/BuildingCard';
 import { RoadConnector } from '../components/RoadConnector';
 import { EditButton } from '../components/cms/EditButton';
-import { SimpleEditButton } from '../components/cms/SimpleEditButton';
 import { getBuildings } from '../api/buildings';
 import { useToast } from '../hooks/useToast';
 import { useCMSContent } from '../hooks/useCMSContent';
@@ -238,9 +237,6 @@ export const HomePage: React.FC = () => {
       
       {/* Floating Edit Button */}
       <EditButton editPath="/admin/home" label="Edit Home" />
-      
-      {/* Simple Edit Button as backup */}
-      <SimpleEditButton />
     </div>
   );
 };

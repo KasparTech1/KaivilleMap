@@ -44,7 +44,7 @@ export const EditButton: React.FC<EditButtonProps> = ({ editPath, label = 'Edit 
         className="edit-button"
         title={isAuthenticated ? label : 'Login to edit'}
       >
-        <Wrench className="w-5 h-5" />
+        <Wrench className="w-4 h-4" />
       </button>
 
       {showAuth && (

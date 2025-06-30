@@ -6,8 +6,8 @@
   background-color: #d1d5db; /* Light grey */
   color: #6b7280; /* Grey text */
   border: none;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -30,7 +30,7 @@
 /* Responsive - slightly larger on desktop */
 @media (min-width: 768px) {
   .edit-button {
-    width: 56px;
-    height: 56px;
+    width: 44px;
+    height: 44px;
   }
 }
