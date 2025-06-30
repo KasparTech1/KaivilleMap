@@ -1,4 +1,4 @@
-# Multi-stage Dockerfile for KaivilleMap
+# Multi-stage Dockerfile for KaivilleMap - Optimized for Railway
 
 # Stage 1: Build React frontend
 FROM node:18-alpine AS client-build
@@ -8,13 +8,16 @@ WORKDIR /app/client
 # Copy package files
 COPY client/package*.json ./
 
-# Install dependencies
-RUN npm install --production
+# Install all dependencies (including dev) for build
+# Using npm install with cache mount to reduce memory
+RUN --mount=type=cache,target=/root/.npm \
+    npm install --prefer-offline --no-audit --progress=false
 
 # Copy client source
 COPY client/ ./
 
-# Build React app
+# Build React app with memory limit
+ENV NODE_OPTIONS="--max_old_space_size=512"
 RUN npm run build
 
 # Stage 2: Setup Node.js server
@@ -26,12 +29,15 @@ RUN apk add --no-cache dumb-init
 # Create app directory
 WORKDIR /app
 
-# Copy server package files
-COPY server/package*.json ./server/
+# Copy server package files first
+COPY server/package.json ./server/
+COPY server/package-lock.json* ./server/
 
-# Install server dependencies
+# Install server dependencies with reduced memory
 WORKDIR /app/server
-RUN npm ci --only=production
+ENV NODE_OPTIONS="--max_old_space_size=256"
+RUN npm install --production --prefer-offline --no-audit --progress=false || \
+    (npm cache clean --force && npm install --production --no-audit --progress=false)
 
 # Copy server source code
 COPY server/ ./
@@ -42,7 +48,8 @@ COPY --from=client-build /app/client/build ./public
 # Create uploads directory if needed
 RUN mkdir -p ./uploads
 
-# Set environment to production
+# Reset NODE_OPTIONS for runtime
+ENV NODE_OPTIONS=""
 ENV NODE_ENV=production
 
 # Expose port (Railway will set PORT env var)

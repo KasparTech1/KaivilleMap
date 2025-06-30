@@ -1,0 +1,37 @@
+# Simple single-stage Dockerfile for Railway (lower memory usage)
+FROM node:18-alpine
+
+# Install dumb-init
+RUN apk add --no-cache dumb-init
+
+# Set working directory
+WORKDIR /app
+
+# Copy all files
+COPY . .
+
+# Install client dependencies and build
+WORKDIR /app/client
+RUN npm install --legacy-peer-deps --no-audit --progress=false
+ENV NODE_OPTIONS="--max_old_space_size=512"
+RUN npm run build
+
+# Move to server directory
+WORKDIR /app/server
+
+# Copy client build
+RUN cp -r /app/client/build ./public
+
+# Install production dependencies only
+RUN npm install --production --legacy-peer-deps --no-audit --progress=false
+
+# Reset for runtime
+ENV NODE_OPTIONS=""
+ENV NODE_ENV=production
+
+# Expose port
+EXPOSE 3000
+
+# Start with dumb-init
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "index.js"]
