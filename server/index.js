@@ -6,7 +6,10 @@ const path = require("path");
 const basicRoutes = require("./routes/index");
 
 // Environment info
-console.log('Starting server with environment:', process.env.NODE_ENV || 'development');
+console.log('Starting server...');
+console.log('Environment:', process.env.NODE_ENV || 'development');
+console.log('Port:', process.env.PORT || 3001);
+console.log('Railway domain:', process.env.RAILWAY_PUBLIC_DOMAIN || 'not set');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -41,6 +44,15 @@ if (isProduction) {
 }
 
 // No database connection needed - using Supabase
+
+// Test endpoint
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'KaivilleMap Server is running',
+    environment: process.env.NODE_ENV,
+    port: port
+  });
+});
 
 // Health check endpoint for Railway
 app.get('/api/health', (req, res) => {
@@ -118,13 +130,26 @@ app.on("error", (error) => {
 });
 
 // Start server - bind to all interfaces in production
-const server = app.listen(port, '0.0.0.0', () => {
+const server = app.listen(port, '0.0.0.0', (err) => {
+  if (err) {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  }
   console.log(`Server running on port ${port}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   if (isProduction) {
     console.log('Serving React build from /public directory');
     console.log('Health check available at /api/health');
   }
+});
+
+// Handle server errors
+server.on('error', (error) => {
+  console.error('Server error:', error);
+  if (error.code === 'EADDRINUSE') {
+    console.error(`Port ${port} is already in use`);
+  }
+  process.exit(1);
 });
 
 // Graceful shutdown
