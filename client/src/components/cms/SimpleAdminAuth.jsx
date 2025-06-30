@@ -41,9 +41,6 @@ export const SimpleAdminAuth = ({ onAuthenticated, onCancel }) => {
         
         <h2>Admin Access</h2>
         <p>Enter the admin password to enable editing mode</p>
-        <p style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
-          Password: kaiville25
-        </p>
         
         <form onSubmit={handleSubmit}>
           <input

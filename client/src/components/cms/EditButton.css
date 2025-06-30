@@ -2,51 +2,35 @@
 .edit-button {
   position: fixed;
   bottom: 24px;
-  right: 24px;
-  background-color: #dc2626; /* Red to make it very visible */
-  color: white;
+  left: 24px;
+  background-color: #d1d5db; /* Light grey */
+  color: #6b7280; /* Grey text */
   border: none;
-  padding: 12px 20px;
-  border-radius: 50px;
-  font-size: 14px;
-  font-weight: 500;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   z-index: 9999; /* Very high z-index */
   display: flex !important; /* Force display */
   align-items: center;
-  gap: 8px;
-  opacity: 1; /* Full opacity */
+  justify-content: center;
+  opacity: 0.7;
 }
 
 .edit-button:hover {
-  background-color: #111827;
+  background-color: #9ca3af;
+  color: #374151;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   opacity: 1;
 }
 
-.edit-button-text {
-  display: inline !important; /* Always show text */
-}
-
-/* Responsive - show text on larger screens */
+/* Responsive - slightly larger on desktop */
 @media (min-width: 768px) {
   .edit-button {
-    opacity: 0.6;
+    width: 56px;
+    height: 56px;
   }
-  
-  .edit-button:hover {
-    opacity: 1;
-  }
-}
-
-/* When authenticated, use blue color */
-.edit-button-authenticated {
-  background-color: #3b82f6;
-}
-
-.edit-button-authenticated:hover {
-  background-color: #2563eb;
 }

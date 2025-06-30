@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Edit3, Lock } from 'lucide-react';
+import { Wrench } from 'lucide-react';
 import { SimpleAdminAuth } from './SimpleAdminAuth';
 import './EditButton.css';
 
@@ -44,17 +44,7 @@ export const EditButton: React.FC<EditButtonProps> = ({ editPath, label = 'Edit 
         className="edit-button"
         title={isAuthenticated ? label : 'Login to edit'}
       >
-        {isAuthenticated ? (
-          <>
-            <Edit3 className="w-4 h-4" />
-            <span className="edit-button-text">{label}</span>
-          </>
-        ) : (
-          <>
-            <Lock className="w-4 h-4" />
-            <span className="edit-button-text">Admin</span>
-          </>
-        )}
+        <Wrench className="w-5 h-5" />
       </button>
 
       {showAuth && (
