@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { AdminAuth } from '../components/cms/AdminAuth';
+import { SimpleAdminAuth } from '../components/cms/SimpleAdminAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { ArrowLeft, FileText, Home, Map, Settings, LogOut } from 'lucide-react';
@@ -48,7 +48,7 @@ export const AdminPage: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    return <AdminAuth onAuthenticated={() => setIsAuthenticated(true)} />;
+    return <SimpleAdminAuth onAuthenticated={() => setIsAuthenticated(true)} />;
   }
 
   return (

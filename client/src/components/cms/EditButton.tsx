@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Edit3, Lock } from 'lucide-react';
-import { AdminAuth } from './AdminAuth';
+import { SimpleAdminAuth } from './SimpleAdminAuth';
 import './EditButton.css';
 
 interface EditButtonProps {
@@ -58,7 +58,7 @@ export const EditButton: React.FC<EditButtonProps> = ({ editPath, label = 'Edit 
       </button>
 
       {showAuth && (
-        <AdminAuth 
+        <SimpleAdminAuth 
           onAuthenticated={handleAuthenticated}
           onCancel={() => setShowAuth(false)}
         />
