@@ -215,9 +215,9 @@ export const KNNFeedPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100/50 to-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
         <div className="px-4 py-3 flex items-center justify-between">
           <Link to="/" className="text-gray-600 hover:text-gray-900">
             <ArrowLeft className="w-6 h-6" />
@@ -235,35 +235,35 @@ export const KNNFeedPage: React.FC = () => {
       </header>
 
       {/* Filter Buttons */}
-      <div className="sticky top-[57px] z-30 bg-white border-b border-gray-100">
+      <div className="sticky top-[57px] z-30 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
         <div className="px-4 py-3">
           <div className="flex gap-2 max-w-md mx-auto">
             <button
               onClick={() => setActiveFilter('all')}
-              className={`px-4 py-2 rounded-full font-medium text-sm transition-colors ${
+              className={`px-4 py-2 rounded-full font-medium text-sm transition-all ${
                 activeFilter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                  : 'bg-white/70 backdrop-blur text-gray-600 hover:bg-white hover:shadow-md border border-gray-200/50'
               }`}
             >
               All
             </button>
             <button
               onClick={() => setActiveFilter('local')}
-              className={`flex-1 py-2 px-4 rounded-full font-medium transition-colors ${
+              className={`flex-1 py-2 px-4 rounded-full font-medium transition-all ${
                 activeFilter === 'local'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-green-600 text-white shadow-lg shadow-green-600/30'
+                  : 'bg-white/70 backdrop-blur text-gray-700 hover:bg-white hover:shadow-md border border-gray-200/50'
               }`}
             >
               Local News
             </button>
             <button
               onClick={() => setActiveFilter('world')}
-              className={`flex-1 py-2 px-4 rounded-full font-medium transition-colors ${
+              className={`flex-1 py-2 px-4 rounded-full font-medium transition-all ${
                 activeFilter === 'world'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                  : 'bg-white/70 backdrop-blur text-gray-700 hover:bg-white hover:shadow-md border border-gray-200/50'
               }`}
             >
               World News
@@ -273,7 +273,7 @@ export const KNNFeedPage: React.FC = () => {
       </div>
 
       {/* News Feed */}
-      <main className="pb-20">
+      <main className="pb-20 bg-gray-50">
         {/* Desktop Grid */}
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto">
           {filteredArticles.map((article) => (
@@ -282,7 +282,7 @@ export const KNNFeedPage: React.FC = () => {
               to={`/news/${article.slug}`}
               className="block group"
             >
-              <article className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+              <article className="bg-white/70 backdrop-blur-xl border border-gray-200/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col transform hover:-translate-y-1">
                 {/* Image */}
                 <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
                   {article.card_image_id ? (
@@ -303,9 +303,9 @@ export const KNNFeedPage: React.FC = () => {
                 </div>
 
                 {/* Content */}
-                <div className="p-4 flex-1 flex flex-col">
+                <div className="p-5 flex-1 flex flex-col">
                   {/* Metadata */}
-                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                  <div className="flex items-center gap-2 text-xs text-gray-600 mb-3">
                     <span className={`font-medium ${
                       article.news_type === 'local' ? 'text-green-600' : 'text-purple-600'
                     }`}>
@@ -332,7 +332,7 @@ export const KNNFeedPage: React.FC = () => {
                   </p>
 
                   {/* Footer */}
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200/50">
                     <span className="text-xs text-gray-500 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {article.reading_time} min
@@ -348,14 +348,14 @@ export const KNNFeedPage: React.FC = () => {
         </div>
 
         {/* Mobile Feed */}
-        <div className="md:hidden">
+        <div className="md:hidden px-4 py-4 space-y-4">
           {filteredArticles.map((article) => (
             <Link 
               key={article.id} 
               to={`/news/${article.slug}`}
               className="block"
             >
-              <article className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <article className="bg-white/80 backdrop-blur-lg border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                 <div className="p-4">
                 {/* Large Image */}
                 <div className="aspect-[16/9] bg-gray-200 rounded-lg mb-3 overflow-hidden">
@@ -423,18 +423,20 @@ export const KNNFeedPage: React.FC = () => {
 
         {/* Empty State */}
         {filteredArticles.length === 0 && (
-          <div className="text-center py-20">
-            <img 
-              src={getAssetUrl('knn-tower.svg')} 
-              alt="KNN"
-              className="w-24 h-24 mx-auto opacity-20 mb-4"
-            />
-            <p className="text-gray-500">
-              {activeFilter === 'local' ? 'No local news articles yet.' : 
-               activeFilter === 'world' ? 'No world news articles yet.' : 
-               'No news articles yet.'}
-            </p>
-            <p className="text-gray-400 text-sm mt-2">Check back soon!</p>
+          <div className="flex items-center justify-center py-20 px-4">
+            <div className="bg-white/70 backdrop-blur-xl border border-gray-200/50 rounded-2xl shadow-lg p-12 max-w-md mx-auto text-center">
+              <img 
+                src={getAssetUrl('knn-tower.svg')} 
+                alt="KNN"
+                className="w-24 h-24 mx-auto opacity-30 mb-6"
+              />
+              <p className="text-gray-600 font-medium text-lg mb-2">
+                {activeFilter === 'local' ? 'No local news articles yet.' : 
+                 activeFilter === 'world' ? 'No world news articles yet.' : 
+                 'No news articles yet.'}
+              </p>
+              <p className="text-gray-500 text-sm">Check back soon for the latest updates!</p>
+            </div>
           </div>
         )}
       </main>
