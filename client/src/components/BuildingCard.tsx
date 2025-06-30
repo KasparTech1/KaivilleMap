@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from './ui/card';
+import { getAssetUrl } from '../config/assetUrls';
 
 interface Building {
   id: string;
@@ -18,14 +19,8 @@ interface BuildingCardProps {
 }
 
 export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building, style }) => {
-  // Use the illustration property from the building data if available, otherwise construct the SVG path
-  const svgPath = building.illustration || (
-    building.id === 'knn_tower' ? '/assets/knn-tower.svg' : 
-    building.id === 'celebration_station' ? '/assets/celebration-station.svg' :
-    building.id === 'safety_station' ? '/assets/safety-station.svg' :
-    building.id === 'kasp_tower' ? '/assets/kasp-tower.svg' :
-    `/assets/${building.id}.svg`
-  );
+  // Use the illustration property from the building data if available
+  const svgPath = building.illustration || '';
 
   // Special rendering for heritage_center, learning_lodge, craft_works, knn_tower, community-center, celebration_station, safety_station, and kasp_tower - SVG becomes the card
   if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'kasp_tower') {

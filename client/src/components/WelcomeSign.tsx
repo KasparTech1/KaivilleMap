@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Sparkles } from 'lucide-react';
+import { getAssetUrl } from '../config/assetUrls';
 
 export const WelcomeSign: React.FC = React.memo(() => {
 
@@ -13,7 +14,7 @@ export const WelcomeSign: React.FC = React.memo(() => {
         {/* Main Sign with SVG */}
         <div className="relative transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-3xl">
           <img
-            src="/assets/kai-welocme.svg"
+            src={getAssetUrl('kai-welocme.svg')}
             alt="Welcome to Kaiville"
             className="w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto drop-shadow-2xl"
             onLoad={() => {

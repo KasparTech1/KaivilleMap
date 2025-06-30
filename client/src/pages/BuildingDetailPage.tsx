@@ -5,6 +5,7 @@ import { useToast } from '../hooks/useToast';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { ArrowLeft, Building2, MapPin, Loader2 } from 'lucide-react';
+import { getAssetUrl } from '../config/assetUrls';
 
 interface BuildingDetail {
   id: string;
@@ -14,15 +15,15 @@ interface BuildingDetail {
 }
 
 const buildingSvgMap: Record<string, string> = {
-  heritage_center: '/assets/heritage_center-notext.svg',
-  learning_lodge: '/assets/learning_lodge-notext.svg',
-  craft_works: '/assets/craft_works.svg',
-  'community-center': '/assets/community-center.svg',
-  knn_tower: '/assets/knn-tower.svg',
-  celebration_station: '/assets/celebration-station-notext.svg',
-  kasp_tower: '/assets/kasp-tower.svg',
-  safety_station: '/assets/safety-station.svg',
-  town_hall: '/assets/town-hall.svg'
+  heritage_center: getAssetUrl('heritage_center-notext.svg'),
+  learning_lodge: getAssetUrl('learning_lodge-notext.svg'),
+  craft_works: getAssetUrl('craft_works.svg'),
+  'community-center': getAssetUrl('community-center.svg'),
+  knn_tower: getAssetUrl('knn-tower.svg'),
+  celebration_station: getAssetUrl('celebration-station-notext.svg'),
+  kasp_tower: getAssetUrl('kasp-tower.svg'),
+  safety_station: getAssetUrl('safety-station.svg'),
+  town_hall: getAssetUrl('town-hall.svg')
 };
 
 export const BuildingDetailPage: React.FC = () => {
@@ -111,7 +112,7 @@ export const BuildingDetailPage: React.FC = () => {
 
             {/* Right: Building SVG */}
             <img 
-              src={buildingSvgMap[building.id] || '/assets/town-hall.svg'}
+              src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
               alt={building.title}
               className="h-16 w-auto"
             />
@@ -126,7 +127,7 @@ export const BuildingDetailPage: React.FC = () => {
           <div className="text-center space-y-4">
             <div className="mx-auto">
               <img 
-                src={buildingSvgMap[building.id] || '/assets/town-hall.svg'}
+                src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
                 alt={building.title}
                 className="h-32 w-auto mx-auto"
               />
@@ -163,7 +164,7 @@ export const BuildingDetailPage: React.FC = () => {
                 <div className="space-y-4">
                   <div className="mx-auto">
                     <img 
-                      src={buildingSvgMap[building.id] || '/assets/town-hall.svg'}
+                      src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
                       alt={building.title}
                       className="h-16 w-auto mx-auto opacity-50"
                     />

@@ -1,4 +1,5 @@
 import api from './api';
+import { getAssetUrl } from '../config/assetUrls';
 
 // Description: Get all buildings data for the interactive map
 // Endpoint: GET /api/buildings
@@ -16,7 +17,7 @@ export const getBuildings = () => {
             row: 1,
             column: 1,
             span: 1,
-            illustration: "/assets/heritage_center_animated.svg",
+            illustration: getAssetUrl('heritage_center_animated.svg'),
             connections: ["learning_lodge", "craft_works"]
           },
           {
@@ -25,7 +26,7 @@ export const getBuildings = () => {
             row: 1,
             column: 2,
             span: 1,
-            illustration: "/assets/learning_lodge.svg",
+            illustration: getAssetUrl('learning_lodge.svg'),
             connections: ["heritage_center", "craft_works", "community-center"]
           },
           {
@@ -34,7 +35,7 @@ export const getBuildings = () => {
             row: 1,
             column: 3,
             span: 1,
-            illustration: "/assets/craft_works.svg",
+            illustration: getAssetUrl('craft_works.svg'),
             connections: ["learning_lodge", "community-center"]
           },
           {
@@ -43,7 +44,7 @@ export const getBuildings = () => {
             row: 2,
             column: 2,
             span: 1,
-            illustration: "/assets/community-center.svg",
+            illustration: getAssetUrl('community-center.svg'),
             connections: ["learning_lodge", "craft_works", "knn_tower", "celebration_station"]
           },
           {
@@ -52,7 +53,7 @@ export const getBuildings = () => {
             row: 2,
             column: 1,
             span: 1,
-            illustration: "/assets/knn-tower.svg",
+            illustration: getAssetUrl('knn-tower.svg'),
             connections: ["community-center", "celebration_station"]
           },
           {
@@ -61,7 +62,7 @@ export const getBuildings = () => {
             row: 2,
             column: 3,
             span: 1,
-            illustration: "/assets/celebration-station.svg",
+            illustration: getAssetUrl('celebration-station.svg'),
             connections: ["community-center", "knn_tower", "kasp_tower"]
           },
           {
@@ -70,7 +71,7 @@ export const getBuildings = () => {
             row: 3,
             column: 2,
             span: 1,
-            illustration: "/assets/kasp-tower.svg",
+            illustration: getAssetUrl('kasp-tower.svg'),
             connections: ["celebration_station", "safety_station"]
           },
           {
@@ -79,7 +80,7 @@ export const getBuildings = () => {
             row: 3,
             column: 1,
             span: 1,
-            illustration: "/assets/safety-station.svg",
+            illustration: getAssetUrl('safety-station.svg'),
             connections: ["kasp_tower"]
           }
         ]

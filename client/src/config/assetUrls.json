@@ -1,0 +1,128 @@
+{
+  "celebration-station-notext.svg": {
+    "originalPath": "/assets/celebration-station-notext.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/celebration-station-notext.svg",
+    "storagePath": "maps/svg/full/celebration-station-notext.svg",
+    "category": "maps/svg/full"
+  },
+  "celebration-station.svg": {
+    "originalPath": "/assets/celebration-station.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/celebration-station.svg",
+    "storagePath": "maps/svg/full/celebration-station.svg",
+    "category": "maps/svg/full"
+  },
+  "community-center.svg": {
+    "originalPath": "/assets/community-center.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/community-center.svg",
+    "storagePath": "maps/svg/full/community-center.svg",
+    "category": "maps/svg/full"
+  },
+  "craft_works.svg": {
+    "originalPath": "/assets/craft_works.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/craft_works.svg",
+    "storagePath": "maps/svg/full/craft_works.svg",
+    "category": "maps/svg/full"
+  },
+  "heritage-center-animated-fixed.svg": {
+    "originalPath": "/assets/heritage-center-animated-fixed.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/heritage-center-animated-fixed.svg",
+    "storagePath": "maps/svg/full/heritage-center-animated-fixed.svg",
+    "category": "maps/svg/full"
+  },
+  "heritage-center-with-flags.svg": {
+    "originalPath": "/assets/heritage-center-with-flags.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage-center-with-flags.svg",
+    "storagePath": "site-assets/icons/heritage-center-with-flags.svg",
+    "category": "site-assets/icons"
+  },
+  "heritage_center-notext.svg": {
+    "originalPath": "/assets/heritage_center-notext.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/heritage_center-notext.svg",
+    "storagePath": "maps/svg/full/heritage_center-notext.svg",
+    "category": "maps/svg/full"
+  },
+  "heritage_center_animated.svg": {
+    "originalPath": "/assets/heritage_center_animated.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/heritage_center_animated.svg",
+    "storagePath": "maps/svg/full/heritage_center_animated.svg",
+    "category": "maps/svg/full"
+  },
+  "kai-sign-small.svg": {
+    "originalPath": "/assets/kai-sign-small.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/illustrations/kai-sign-small.svg",
+    "storagePath": "site-assets/illustrations/kai-sign-small.svg",
+    "category": "site-assets/illustrations"
+  },
+  "kai-welocme.svg": {
+    "originalPath": "/assets/kai-welocme.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/kai-welocme.svg",
+    "storagePath": "site-assets/icons/kai-welocme.svg",
+    "category": "site-assets/icons"
+  },
+  "kasp-tower.svg": {
+    "originalPath": "/assets/kasp-tower.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/kasp-tower.svg",
+    "storagePath": "maps/svg/full/kasp-tower.svg",
+    "category": "maps/svg/full"
+  },
+  "knn-tower-old.svg": {
+    "originalPath": "/assets/knn-tower-old.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/knn-tower-old.svg",
+    "storagePath": "maps/svg/full/knn-tower-old.svg",
+    "category": "maps/svg/full"
+  },
+  "knn-tower.svg": {
+    "originalPath": "/assets/knn-tower.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/knn-tower.svg",
+    "storagePath": "maps/svg/full/knn-tower.svg",
+    "category": "maps/svg/full"
+  },
+  "lamp.svg": {
+    "originalPath": "/assets/lamp.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/lamp.svg",
+    "storagePath": "site-assets/icons/lamp.svg",
+    "category": "site-assets/icons"
+  },
+  "learning_lodge-notext.svg": {
+    "originalPath": "/assets/learning_lodge-notext.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/learning_lodge-notext.svg",
+    "storagePath": "maps/svg/full/learning_lodge-notext.svg",
+    "category": "maps/svg/full"
+  },
+  "learning_lodge.svg": {
+    "originalPath": "/assets/learning_lodge.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/learning_lodge.svg",
+    "storagePath": "maps/svg/full/learning_lodge.svg",
+    "category": "maps/svg/full"
+  },
+  "safety-station.svg": {
+    "originalPath": "/assets/safety-station.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/safety-station.svg",
+    "storagePath": "maps/svg/full/safety-station.svg",
+    "category": "maps/svg/full"
+  },
+  "town-hall.svg": {
+    "originalPath": "/assets/town-hall.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/town-hall.svg",
+    "storagePath": "maps/svg/full/town-hall.svg",
+    "category": "maps/svg/full"
+  },
+  "tx-flag.svg": {
+    "originalPath": "/assets/tx-flag.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/tx-flag.svg",
+    "storagePath": "site-assets/icons/tx-flag.svg",
+    "category": "site-assets/icons"
+  },
+  "us-flag.svg": {
+    "originalPath": "/assets/us-flag.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/us-flag.svg",
+    "storagePath": "site-assets/icons/us-flag.svg",
+    "category": "site-assets/icons"
+  },
+  "wire-basket.svg": {
+    "originalPath": "/assets/wire-basket.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/wire-basket.svg",
+    "storagePath": "site-assets/icons/wire-basket.svg",
+    "category": "site-assets/icons"
+  }
+}
