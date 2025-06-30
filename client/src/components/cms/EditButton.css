@@ -3,7 +3,7 @@
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background-color: #1f2937;
+  background-color: #dc2626; /* Red to make it very visible */
   color: white;
   border: none;
   padding: 12px 20px;
@@ -11,13 +11,13 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
-  z-index: 1000;
-  display: flex;
+  z-index: 9999; /* Very high z-index */
+  display: flex !important; /* Force display */
   align-items: center;
   gap: 8px;
-  opacity: 0.8;
+  opacity: 1; /* Full opacity */
 }
 
 .edit-button:hover {
@@ -28,11 +28,7 @@
 }
 
 .edit-button-text {
-  display: none;
-}
-
-.edit-button:hover .edit-button-text {
-  display: inline;
+  display: inline !important; /* Always show text */
 }
 
 /* Responsive - show text on larger screens */

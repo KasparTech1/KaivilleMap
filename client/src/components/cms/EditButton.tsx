@@ -15,6 +15,7 @@ export const EditButton: React.FC<EditButtonProps> = ({ editPath, label = 'Edit 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    console.log('EditButton mounted with editPath:', editPath);
     // Check if already authenticated
     const token = localStorage.getItem('adminToken');
     if (token) {
