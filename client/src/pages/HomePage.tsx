@@ -7,6 +7,7 @@ import { EditButton } from '../components/cms/EditButton';
 import { SimpleEditButton } from '../components/cms/SimpleEditButton';
 import { getBuildings } from '../api/buildings';
 import { useToast } from '../hooks/useToast';
+import { useCMSContent } from '../hooks/useCMSContent';
 import { Loader2 } from 'lucide-react';
 
 interface Building {
@@ -24,6 +25,15 @@ export const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [horizonHeight, setHorizonHeight] = useState(256); // Default 256px (h-64)
   const { toast } = useToast();
+  
+  // Get CMS content with defaults
+  const { content: cmsContent } = useCMSContent('home', 'main', {
+    welcomeTitle: 'Welcome to Kaiville',
+    welcomeSubtitle: 'Explore Our Interactive Town Map',
+    heroText: 'Discover the heart of our community through this interactive map. Click on any building to learn more about what makes Kaiville special.',
+    aboutTitle: 'About Kaiville',
+    aboutText: 'Kaiville is a vibrant community where innovation meets tradition.'
+  });
 
   const fetchBuildings = useCallback(async () => {
     try {
@@ -211,15 +221,14 @@ export const HomePage: React.FC = () => {
           </div>
         </div>
 
-          {/* Instructions */}
+          {/* Instructions with CMS Content */}
           <div className="mt-12 text-center">
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
               <h2 className="text-xl font-semibold text-gray-800 mb-3">
-                How to Explore Kaiville
+                {cmsContent.aboutTitle || 'How to Explore Kaiville'}
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Click on any building card to learn more about that location.
-                {window.innerWidth > 768 && " Follow the connecting roads to discover relationships between different areas of our town."}
+                {cmsContent.heroText || 'Click on any building card to learn more about that location.'}
               </p>
             </div>
           </div>

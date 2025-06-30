@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { ArrowLeft, Building2, MapPin, Loader2 } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
 import { EditButton } from '../components/cms/EditButton';
+import { useCMSContent } from '../hooks/useCMSContent';
 
 interface BuildingDetail {
   id: string;
@@ -32,6 +33,9 @@ export const BuildingDetailPage: React.FC = () => {
   const [building, setBuilding] = useState<BuildingDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  
+  // Get CMS content for this building
+  const { content: cmsContent, loading: cmsLoading } = useCMSContent('building', id || '', {});
 
   const fetchBuildingDetails = useCallback(async () => {
     if (!id) {
@@ -136,10 +140,10 @@ export const BuildingDetailPage: React.FC = () => {
             
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
-                {building.title}
+                {cmsContent.title || building.title}
               </h1>
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                {building.description}
+                {cmsContent.description || building.description}
               </p>
             </div>
           </div>
@@ -156,7 +160,7 @@ export const BuildingDetailPage: React.FC = () => {
             <CardContent className="space-y-6">
               <div className="prose prose-lg max-w-none">
                 <p className="text-gray-700 leading-relaxed text-center">
-                  {building.details}
+                  {cmsContent.details || building.details}
                 </p>
               </div>
 
