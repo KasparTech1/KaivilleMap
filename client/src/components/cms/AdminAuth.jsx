@@ -10,7 +10,7 @@ const supabase = createClient(
 /**
  * Admin authentication modal component
  */
-export const AdminAuth = ({ onAuthenticated, onClose }) => {
+export const AdminAuth = ({ onAuthenticated, onClose, onCancel }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -47,9 +47,9 @@ export const AdminAuth = ({ onAuthenticated, onClose }) => {
   };
 
   return (
-    <div className="admin-auth-overlay" onClick={onClose}>
+    <div className="admin-auth-overlay" onClick={onCancel || onClose}>
       <div className="admin-auth-modal" onClick={e => e.stopPropagation()}>
-        <button className="admin-auth-close" onClick={onClose}>×</button>
+        <button className="admin-auth-close" onClick={onCancel || onClose}>×</button>
         
         <h2>Admin Access</h2>
         <p>Enter the admin password to enable editing mode</p>
@@ -78,7 +78,7 @@ export const AdminAuth = ({ onAuthenticated, onClose }) => {
             <button 
               type="button" 
               className="admin-auth-cancel"
-              onClick={onClose}
+              onClick={onCancel || onClose}
             >
               Cancel
             </button>

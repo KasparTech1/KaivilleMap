@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { ArrowLeft, Building2, MapPin, Loader2 } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
+import { EditButton } from '../components/cms/EditButton';
 
 interface BuildingDetail {
   id: string;
@@ -196,6 +197,14 @@ export const BuildingDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Floating Edit Button */}
+      {building && (
+        <EditButton 
+          editPath={`/admin/building/${building.id}`} 
+          label="Edit Building" 
+        />
+      )}
     </div>
   );
 };

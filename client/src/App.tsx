@@ -6,6 +6,7 @@ import { BuildingDetailPage } from "./pages/BuildingDetailPage"
 import { BlankPage } from "./pages/BlankPage"
 import { AdminPage } from "./pages/AdminPage"
 import { HomeEditor } from "./pages/admin/HomeEditor"
+import { BuildingEditor } from "./pages/admin/BuildingEditor"
 
 function App() {
   console.log('Initializing Kaiville Interactive Map App');
@@ -18,6 +19,7 @@ function App() {
           <Route path="/building/:id" element={<BuildingDetailPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/home" element={<HomeEditor />} />
+          <Route path="/admin/building/:id" element={<BuildingEditor />} />
           <Route path="*" element={<BlankPage />} />
         </Routes>
       </Router>

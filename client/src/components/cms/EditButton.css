@@ -1,0 +1,56 @@
+/* Floating Edit Button */
+.edit-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #1f2937;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.8;
+}
+
+.edit-button:hover {
+  background-color: #111827;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+}
+
+.edit-button-text {
+  display: none;
+}
+
+.edit-button:hover .edit-button-text {
+  display: inline;
+}
+
+/* Responsive - show text on larger screens */
+@media (min-width: 768px) {
+  .edit-button {
+    opacity: 0.6;
+  }
+  
+  .edit-button:hover {
+    opacity: 1;
+  }
+}
+
+/* When authenticated, use blue color */
+.edit-button-authenticated {
+  background-color: #3b82f6;
+}
+
+.edit-button-authenticated:hover {
+  background-color: #2563eb;
+}

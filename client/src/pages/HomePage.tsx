@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { WelcomeSign } from '../components/WelcomeSign';
 import { BuildingCard } from '../components/BuildingCard';
 import { RoadConnector } from '../components/RoadConnector';
+import { EditButton } from '../components/cms/EditButton';
 import { getBuildings } from '../api/buildings';
 import { useToast } from '../hooks/useToast';
 import { Loader2 } from 'lucide-react';
@@ -222,18 +223,11 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Hidden Admin Link - Bottom Right Corner */}
-          <div className="mt-8 flex justify-end">
-            <Link 
-              to="/admin" 
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-              title="Admin Panel"
-            >
-              Admin
-            </Link>
-          </div>
         </div>
       </div>
+      
+      {/* Floating Edit Button */}
+      <EditButton editPath="/admin/home" label="Edit Home" />
     </div>
   );
 };
