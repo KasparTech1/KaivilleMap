@@ -44,9 +44,47 @@ export const KNNFeedPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // For now, use mock data until we have real articles
-      // TODO: Replace with actual Supabase query
-      const mockArticles: ArticleCard[] = [
+      // First, try to fetch articles with a simpler query
+      const { data: articlesData, error: fetchError } = await supabase
+        .from('article_cards')
+        .select(`
+          *,
+          articles (
+            *,
+            pages (
+              *
+            )
+          )
+        `)
+        .not('articles', 'is', null)
+        .limit(20);
+
+      if (fetchError) {
+        console.error('Error fetching articles:', fetchError);
+        throw fetchError;
+      }
+
+      // Transform the data to match our interface
+      const transformedArticles: ArticleCard[] = articlesData?.map(item => ({
+        id: item.id,
+        article_id: item.article_id,
+        card_title: item.card_title,
+        card_description: item.card_description,
+        card_image_id: item.card_image_id,
+        card_style: item.card_style || 'default',
+        published_at: item.articles?.pages?.published_at || new Date().toISOString(),
+        reading_time: item.articles?.reading_time || 5,
+        author_name: item.articles?.author_name || 'Kaiville Team',
+        category_name: 'News', // Simplified for now
+        // Determine news type based on tags or author
+        news_type: item.articles?.tags?.includes('world') || 
+                   item.articles?.author_name === 'KNN Analysis' ? 'world' : 'local',
+        slug: item.articles?.pages?.slug || `article-${item.id}`
+      })).filter(article => article.card_title && article.card_description) || [];
+
+      // If no articles in database, use mock data
+      if (transformedArticles.length === 0) {
+        const mockArticles: ArticleCard[] = [
         // Local News articles
         {
           id: '1',
@@ -119,9 +157,11 @@ export const KNNFeedPage: React.FC = () => {
           news_type: 'world',
           slug: 'climate-summit-agreement'
         }
-      ];
-
-      setArticles(mockArticles);
+        ];
+        setArticles(mockArticles);
+      } else {
+        setArticles(transformedArticles);
+      }
     } catch (err) {
       console.error('Error fetching articles:', err);
       setError('Failed to load news articles');
@@ -234,14 +274,89 @@ export const KNNFeedPage: React.FC = () => {
 
       {/* News Feed */}
       <main className="pb-20">
-        {filteredArticles.map((article, index) => (
-          <Link 
-            key={article.id} 
-            to={`/news/${article.slug}`}
-            className="block"
-          >
-            <article className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-              <div className="p-4">
+        {/* Desktop Grid */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto">
+          {filteredArticles.map((article) => (
+            <Link 
+              key={article.id} 
+              to={`/news/${article.slug}`}
+              className="block group"
+            >
+              <article className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col">
+                {/* Image */}
+                <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
+                  {article.card_image_id ? (
+                    <img 
+                      src={`/api/assets/${article.card_image_id}`} 
+                      alt={article.card_title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img 
+                        src={getAssetUrl('knn-tower.svg')} 
+                        alt="KNN Placeholder"
+                        className="w-16 h-16 opacity-20"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="p-4 flex-1 flex flex-col">
+                  {/* Metadata */}
+                  <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                    <span className={`font-medium ${
+                      article.news_type === 'local' ? 'text-green-600' : 'text-purple-600'
+                    }`}>
+                      {article.news_type === 'local' ? 'Local' : 'World'}
+                    </span>
+                    {article.category_name && (
+                      <>
+                        <span>•</span>
+                        <span>{article.category_name}</span>
+                      </>
+                    )}
+                    <span>•</span>
+                    <span>{formatDate(article.published_at)}</span>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="text-lg font-bold text-gray-900 leading-tight mb-2 group-hover:text-blue-600 transition-colors">
+                    {article.card_title}
+                  </h2>
+
+                  {/* Description */}
+                  <p className="text-sm text-gray-600 line-clamp-3 flex-1">
+                    {article.card_description}
+                  </p>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {article.reading_time} min
+                    </span>
+                    <span className="text-blue-600 text-sm font-medium">
+                      Read →
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </Link>
+          ))}
+        </div>
+
+        {/* Mobile Feed */}
+        <div className="md:hidden">
+          {filteredArticles.map((article) => (
+            <Link 
+              key={article.id} 
+              to={`/news/${article.slug}`}
+              className="block"
+            >
+              <article className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                <div className="p-4">
                 {/* Large Image */}
                 <div className="aspect-[16/9] bg-gray-200 rounded-lg mb-3 overflow-hidden">
                   {article.card_image_id ? (
@@ -303,8 +418,10 @@ export const KNNFeedPage: React.FC = () => {
               </div>
             </article>
           </Link>
-        ))}
+          ))}
+        </div>
 
+        {/* Empty State */}
         {filteredArticles.length === 0 && (
           <div className="text-center py-20">
             <img 
