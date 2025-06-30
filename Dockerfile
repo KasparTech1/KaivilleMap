@@ -8,16 +8,14 @@ WORKDIR /app/client
 # Copy package files
 COPY client/package*.json ./
 
-# Install all dependencies (including dev) for build
-# Using npm install with cache mount to reduce memory
-RUN --mount=type=cache,target=/root/.npm \
-    npm install --prefer-offline --no-audit --progress=false
+# Install all dependencies for build
+ENV NODE_OPTIONS="--max_old_space_size=512"
+RUN npm install --legacy-peer-deps --no-audit --progress=false
 
 # Copy client source
 COPY client/ ./
 
-# Build React app with memory limit
-ENV NODE_OPTIONS="--max_old_space_size=512"
+# Build React app
 RUN npm run build
 
 # Stage 2: Setup Node.js server
@@ -31,13 +29,11 @@ WORKDIR /app
 
 # Copy server package files first
 COPY server/package.json ./server/
-COPY server/package-lock.json* ./server/
 
 # Install server dependencies with reduced memory
 WORKDIR /app/server
 ENV NODE_OPTIONS="--max_old_space_size=256"
-RUN npm install --production --prefer-offline --no-audit --progress=false || \
-    (npm cache clean --force && npm install --production --no-audit --progress=false)
+RUN npm install --production --legacy-peer-deps --no-audit --progress=false
 
 # Copy server source code
 COPY server/ ./
