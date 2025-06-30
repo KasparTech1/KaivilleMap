@@ -17,6 +17,7 @@ This guide documents the complete Railway deployment process for the KaivilleMap
 ### Project Details
 - **Railway Project**: kaiville-railway-01
 - **Project ID**: d94c0c6d-e669-4a34-a693-ecccf6e8533e
+- **Public URL**: https://kaivillemap-production.up.railway.app
 - **Stack**: React (Vite) + Node.js (Express) + Supabase
 - **Container**: Docker multi-stage build
 
@@ -64,6 +65,11 @@ This guide documents the complete Railway deployment process for the KaivilleMap
 - **Issue**: `npm ci` requires package-lock.json files
 - **Solution**: Use `npm install` instead of `npm ci`
 - **Learning**: Ensure lock files exist or use appropriate install command
+
+### 7. **Root Route Override**
+- **Issue**: Test endpoint at `/` was returning JSON instead of React app
+- **Solution**: Remove test endpoint, let static file serving handle root
+- **Learning**: Don't add test endpoints that override your main app routes
 
 ## Technical Specifications
 

@@ -45,15 +45,6 @@ if (isProduction) {
 
 // No database connection needed - using Supabase
 
-// Test endpoint
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'KaivilleMap Server is running',
-    environment: process.env.NODE_ENV,
-    port: port
-  });
-});
-
 // Health check endpoint for Railway
 app.get('/api/health', (req, res) => {
   res.json({ 
