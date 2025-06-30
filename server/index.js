@@ -3,16 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const MongoStore = require('connect-mongo');
 const basicRoutes = require("./routes/index");
-const { connectDB } = require("./config/database");
 
-// Environment checks
-if (!process.env.DATABASE_URL) {
-  console.warn("Warning: DATABASE_URL variable in .env missing. Database features will be disabled.");
-}
+// Environment info
+console.log('Starting server with environment:', process.env.NODE_ENV || 'development');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -46,12 +40,7 @@ if (isProduction) {
   app.set('trust proxy', 1);
 }
 
-// Database connection - only if DATABASE_URL exists
-if (process.env.DATABASE_URL) {
-  connectDB();
-} else {
-  console.log('Skipping database connection - DATABASE_URL not provided');
-}
+// No database connection needed - using Supabase
 
 // Health check endpoint for Railway
 app.get('/api/health', (req, res) => {
@@ -59,9 +48,7 @@ app.get('/api/health', (req, res) => {
     status: 'ok', 
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
-    database: process.env.DATABASE_URL ? 
-      (mongoose.connection.readyState === 1 ? 'connected' : 'disconnected') : 
-      'not configured',
+    database: 'Supabase',
     port: port
   });
 });
@@ -145,9 +132,6 @@ process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');
   server.close(() => {
     console.log('HTTP server closed');
-    mongoose.connection.close(false, () => {
-      console.log('MongoDB connection closed');
-      process.exit(0);
-    });
+    process.exit(0);
   });
 });
