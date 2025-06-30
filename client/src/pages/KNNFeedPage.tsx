@@ -242,7 +242,7 @@ export const KNNFeedPage: React.FC = () => {
               onClick={() => setActiveFilter('all')}
               className={`px-4 py-2 rounded-full font-medium text-sm transition-all ${
                 activeFilter === 'all'
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
+                  ? 'bg-[#6f5a37] text-white shadow-lg shadow-[#6f5a37]/30' // Warm brown from buildings
                   : 'bg-white/70 backdrop-blur text-gray-600 hover:bg-white hover:shadow-md border border-gray-200/50'
               }`}
             >
@@ -252,7 +252,7 @@ export const KNNFeedPage: React.FC = () => {
               onClick={() => setActiveFilter('local')}
               className={`flex-1 py-2 px-4 rounded-full font-medium transition-all ${
                 activeFilter === 'local'
-                  ? 'bg-green-600 text-white shadow-lg shadow-green-600/30'
+                  ? 'bg-[#879651] text-white shadow-lg shadow-[#879651]/30' // Olive green from buildings
                   : 'bg-white/70 backdrop-blur text-gray-700 hover:bg-white hover:shadow-md border border-gray-200/50'
               }`}
             >
@@ -262,7 +262,7 @@ export const KNNFeedPage: React.FC = () => {
               onClick={() => setActiveFilter('world')}
               className={`flex-1 py-2 px-4 rounded-full font-medium transition-all ${
                 activeFilter === 'world'
-                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                  ? 'bg-[#1a464f] text-white shadow-lg shadow-[#1a464f]/30' // Dark teal from welcome sign
                   : 'bg-white/70 backdrop-blur text-gray-700 hover:bg-white hover:shadow-md border border-gray-200/50'
               }`}
             >
@@ -307,7 +307,7 @@ export const KNNFeedPage: React.FC = () => {
                   {/* Metadata */}
                   <div className="flex items-center gap-2 text-xs text-gray-600 mb-3">
                     <span className={`font-medium ${
-                      article.news_type === 'local' ? 'text-green-600' : 'text-purple-600'
+                      article.news_type === 'local' ? 'text-[#879651]' : 'text-[#1a464f]'
                     }`}>
                       {article.news_type === 'local' ? 'Local' : 'World'}
                     </span>
@@ -381,7 +381,7 @@ export const KNNFeedPage: React.FC = () => {
                   {/* Category and Time */}
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <span className={`font-medium ${
-                      article.news_type === 'local' ? 'text-green-600' : 'text-purple-600'
+                      article.news_type === 'local' ? 'text-[#879651]' : 'text-[#1a464f]'
                     }`}>
                       {article.news_type === 'local' ? 'Local' : 'World'}
                     </span>
