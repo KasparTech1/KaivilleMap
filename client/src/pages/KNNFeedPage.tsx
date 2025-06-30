@@ -16,17 +16,28 @@ interface ArticleCard {
   reading_time: number;
   author_name: string;
   category_name?: string;
+  news_type: 'local' | 'world';
   slug: string;
 }
 
 export const KNNFeedPage: React.FC = () => {
   const [articles, setArticles] = useState<ArticleCard[]>([]);
+  const [filteredArticles, setFilteredArticles] = useState<ArticleCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'local' | 'world'>('all');
 
   useEffect(() => {
     fetchArticles();
   }, []);
+
+  useEffect(() => {
+    if (activeFilter === 'all') {
+      setFilteredArticles(articles);
+    } else {
+      setFilteredArticles(articles.filter(article => article.news_type === activeFilter));
+    }
+  }, [articles, activeFilter]);
 
   const fetchArticles = async () => {
     try {
@@ -36,6 +47,7 @@ export const KNNFeedPage: React.FC = () => {
       // For now, use mock data until we have real articles
       // TODO: Replace with actual Supabase query
       const mockArticles: ArticleCard[] = [
+        // Local News articles
         {
           id: '1',
           article_id: '1',
@@ -47,6 +59,7 @@ export const KNNFeedPage: React.FC = () => {
           reading_time: 3,
           author_name: 'Kaiville Team',
           category_name: 'Community',
+          news_type: 'local',
           slug: 'grand-opening-community-center'
         },
         {
@@ -60,6 +73,7 @@ export const KNNFeedPage: React.FC = () => {
           reading_time: 5,
           author_name: 'Kaiville Team',
           category_name: 'Arts',
+          news_type: 'local',
           slug: 'local-artist-national-recognition'
         },
         {
@@ -73,7 +87,37 @@ export const KNNFeedPage: React.FC = () => {
           reading_time: 4,
           author_name: 'Kaiville Team',
           category_name: 'Technology',
+          news_type: 'local',
           slug: 'tech-hub-learning-lodge'
+        },
+        // World News articles (from YouTube analysis)
+        {
+          id: '4',
+          article_id: '4',
+          card_title: 'AI Breakthrough: New Language Model Achieves Human-Level Understanding',
+          card_description: 'Researchers announce a revolutionary AI system that demonstrates unprecedented language comprehension...',
+          card_image_id: null,
+          card_style: 'default',
+          published_at: new Date(Date.now() - 3600000).toISOString(),
+          reading_time: 6,
+          author_name: 'KNN Analysis',
+          category_name: 'Technology',
+          news_type: 'world',
+          slug: 'ai-breakthrough-language-model'
+        },
+        {
+          id: '5',
+          article_id: '5',
+          card_title: 'Global Climate Summit Reaches Historic Agreement',
+          card_description: 'World leaders commit to ambitious new targets for carbon reduction and renewable energy adoption...',
+          card_image_id: null,
+          card_style: 'default',
+          published_at: new Date(Date.now() - 7200000).toISOString(),
+          reading_time: 7,
+          author_name: 'KNN Analysis',
+          category_name: 'Environment',
+          news_type: 'world',
+          slug: 'climate-summit-agreement'
         }
       ];
 
@@ -144,15 +188,53 @@ export const KNNFeedPage: React.FC = () => {
               alt="KNN" 
               className="h-8 w-auto"
             />
-            <h1 className="text-xl font-semibold">Kaiville News</h1>
+            <h1 className="text-xl font-semibold">Kaiville News Network</h1>
           </div>
           <div className="w-6" /> {/* Spacer for centering */}
         </div>
       </header>
 
+      {/* Filter Buttons */}
+      <div className="sticky top-[57px] z-30 bg-white border-b border-gray-100">
+        <div className="px-4 py-3">
+          <div className="flex gap-2 max-w-md mx-auto">
+            <button
+              onClick={() => setActiveFilter('all')}
+              className={`px-4 py-2 rounded-full font-medium text-sm transition-colors ${
+                activeFilter === 'all'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setActiveFilter('local')}
+              className={`flex-1 py-2 px-4 rounded-full font-medium transition-colors ${
+                activeFilter === 'local'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Local News
+            </button>
+            <button
+              onClick={() => setActiveFilter('world')}
+              className={`flex-1 py-2 px-4 rounded-full font-medium transition-colors ${
+                activeFilter === 'world'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              World News
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* News Feed */}
       <main className="pb-20">
-        {articles.map((article, index) => (
+        {filteredArticles.map((article, index) => (
           <Link 
             key={article.id} 
             to={`/news/${article.slug}`}
@@ -183,12 +265,18 @@ export const KNNFeedPage: React.FC = () => {
                 <div className="space-y-2">
                   {/* Category and Time */}
                   <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <span className={`font-medium ${
+                      article.news_type === 'local' ? 'text-green-600' : 'text-purple-600'
+                    }`}>
+                      {article.news_type === 'local' ? 'Local' : 'World'}
+                    </span>
                     {article.category_name && (
                       <>
-                        <span className="font-medium text-blue-600">{article.category_name}</span>
                         <span>•</span>
+                        <span className="font-medium text-gray-600">{article.category_name}</span>
                       </>
                     )}
+                    <span>•</span>
                     <span>{formatDate(article.published_at)}</span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
@@ -217,14 +305,18 @@ export const KNNFeedPage: React.FC = () => {
           </Link>
         ))}
 
-        {articles.length === 0 && (
+        {filteredArticles.length === 0 && (
           <div className="text-center py-20">
             <img 
               src={getAssetUrl('knn-tower.svg')} 
               alt="KNN"
               className="w-24 h-24 mx-auto opacity-20 mb-4"
             />
-            <p className="text-gray-500">No news articles yet.</p>
+            <p className="text-gray-500">
+              {activeFilter === 'local' ? 'No local news articles yet.' : 
+               activeFilter === 'world' ? 'No world news articles yet.' : 
+               'No news articles yet.'}
+            </p>
             <p className="text-gray-400 text-sm mt-2">Check back soon!</p>
           </div>
         )}
