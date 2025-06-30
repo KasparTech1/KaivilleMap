@@ -4,6 +4,8 @@ import { Toaster } from "./components/ui/toaster"
 import { HomePage } from "./pages/HomePage"
 import { BuildingDetailPage } from "./pages/BuildingDetailPage"
 import { BlankPage } from "./pages/BlankPage"
+import { AdminPage } from "./pages/AdminPage"
+import { HomeEditor } from "./pages/admin/HomeEditor"
 
 function App() {
   console.log('Initializing Kaiville Interactive Map App');
@@ -14,6 +16,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/building/:id" element={<BuildingDetailPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/home" element={<HomeEditor />} />
           <Route path="*" element={<BlankPage />} />
         </Routes>
       </Router>

@@ -221,6 +221,17 @@ export const HomePage: React.FC = () => {
               </p>
             </div>
           </div>
+
+          {/* Hidden Admin Link - Bottom Right Corner */}
+          <div className="mt-8 flex justify-end">
+            <Link 
+              to="/admin" 
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              title="Admin Panel"
+            >
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
     </div>
