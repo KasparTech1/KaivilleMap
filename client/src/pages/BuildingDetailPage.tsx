@@ -103,7 +103,7 @@ export const BuildingDetailPage: React.FC = () => {
             {/* Left: Welcome Sign Logo */}
             <Link to="/" className="group">
               <img
-                src="/assets/kai-sign-small.png"
+                src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/illustrations/kai-sign-small.svg"
                 alt="Kaiville"
                 className="h-16 w-auto transition-transform duration-200 group-hover:scale-105"
               />

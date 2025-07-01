@@ -16,7 +16,7 @@ export function BlankPage() {
           <Link to="/" className="group inline-block">
             <div className="flex items-center space-x-3">
               <img
-                src="/assets/kai-sign-small.png"
+                src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/illustrations/kai-sign-small.svg"
                 alt="Back to Home"
                 className="h-20 w-auto transition-transform duration-200 group-hover:scale-105"
               />
