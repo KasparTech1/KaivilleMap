@@ -42,7 +42,14 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     const sortedBuildingsForPosition = [...buildings].sort((a, b) => a.row - b.row || a.column - b.column);
     
     sortedBuildingsForPosition.forEach((building, index) => {
-      const element = document.querySelector(`[data-building-id="${building.id}"]`);
+      // Look for all elements with this building ID (there might be two during transition)
+      const elements = document.querySelectorAll(`[data-building-id="${building.id}"]`);
+      // Find the visible one
+      const element = Array.from(elements).find(el => {
+        const rect = el.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      }) || elements[0];
+      
       if (element) {
         const rect = element.getBoundingClientRect();
         const container = element.closest('.buildings-grid');
@@ -210,11 +217,21 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       setTimeout(calculatePaths, 100);
     });
     
-    // Observe all grid elements (both desktop and mobile)
-    const gridElements = document.querySelectorAll('.buildings-grid');
-    gridElements.forEach(gridElement => {
+    // Observe the single grid element
+    const gridElement = document.querySelector('.buildings-grid');
+    if (gridElement) {
       observer.observe(gridElement, { childList: true, subtree: true, attributes: true });
-    });
+      
+      // Also observe for class changes which happen during responsive transitions
+      const classObserver = new MutationObserver(() => {
+        console.log('Grid classes changed, recalculating paths');
+        setTimeout(calculatePaths, 100);
+      });
+      classObserver.observe(gridElement, { attributes: true, attributeFilter: ['class'] });
+      
+      // Store observer for cleanup
+      (window as any).__roadClassObserver = classObserver;
+    }
     
     // Also observe the parent container for visibility changes
     const parentContainer = document.querySelector('.relative.z-10');
@@ -225,6 +242,10 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     return () => {
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
+      if ((window as any).__roadClassObserver) {
+        (window as any).__roadClassObserver.disconnect();
+        delete (window as any).__roadClassObserver;
+      }
     };
   }, [calculatePaths]);
 

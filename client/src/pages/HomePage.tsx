@@ -170,13 +170,13 @@ export const HomePage: React.FC = () => {
 
         {/* Interactive Map */}
         <div className="relative">
-          {/* Desktop Grid Layout */}
-          <div className="hidden md:block">
-            <div className="buildings-grid relative grid grid-cols-3 gap-8 p-8 min-h-[400px]">
-              {/* Road Connections */}
-              <RoadConnector buildings={buildings} connections={connections} />
+          {/* Single Responsive Grid Layout */}
+          <div className="buildings-grid relative grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8 min-h-[600px] md:min-h-[400px]">
+            {/* Road Connections */}
+            <RoadConnector buildings={buildings} connections={connections} />
 
-              {/* Building Cards */}
+            {/* Building Cards - Desktop positioning */}
+            <div className="hidden md:contents">
               {buildings.map(building => (
                 <div
                   key={building.id}
@@ -192,15 +192,9 @@ export const HomePage: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Mobile Grid Layout - 2 columns */}
-          <div className="md:hidden">
-            <div className="buildings-grid relative grid grid-cols-2 gap-4 p-4 min-h-[600px]">
-              {/* Road Connections for Mobile */}
-              <RoadConnector buildings={buildings} connections={connections} />
-              
-              {/* Building Cards */}
+            
+            {/* Building Cards - Mobile positioning */}
+            <div className="md:hidden contents">
               {buildings
                 .sort((a, b) => a.row - b.row || a.column - b.column)
                 .map((building, index) => (
