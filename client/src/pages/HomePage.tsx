@@ -334,7 +334,7 @@ export const HomePage: React.FC = () => {
         
         <div className="max-w-6xl mx-auto">
           {/* Top Section with KNN Tower and Welcome Sign */}
-          <div className="top-section flex justify-between items-end mb-2 md:mb-4 -mt-4 md:-mt-0">
+          <div className="top-section flex justify-between items-end mb-0 -mt-4 md:-mt-0">
             {/* Spacer for layout balance */}
             <div className="flex-shrink-0 w-full max-w-[6rem] sm:max-w-[8rem] md:max-w-[12rem]"></div>
             
