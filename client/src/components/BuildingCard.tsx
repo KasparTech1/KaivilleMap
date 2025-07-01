@@ -37,14 +37,14 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
     return (
       <Link to={`/building/${building.id}`} className="block" style={style}>
         <div className={`relative hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group ${
-          building.id === 'heritage_center' ? '-mt-[15%]' : 
+          building.id === 'heritage_center' ? (isDayMode ? '-mt-[5%]' : '-mt-[15%]') : 
           building.id === 'learning_lodge' ? 'mt-[15%]' : ''
         }`}>
           <img
             src={svgPath}
             alt={building.title}
             className={`w-full h-full object-contain drop-shadow-xl hover:drop-shadow-2xl transition-all duration-300 ${
-              building.id === 'heritage_center' && !isDayMode ? 'scale-90' : ''
+              building.id === 'heritage_center' ? (isDayMode ? 'scale-[1.03]' : 'scale-90') : ''
             }`}
             onError={(e) => {
               // Fallback to default card style if SVG fails to load

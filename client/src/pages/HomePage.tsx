@@ -235,20 +235,12 @@ export const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen relative overflow-hidden">
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes shootingStar {
+        @keyframes driftRight {
           0% {
-            transform: translateX(0) translateY(0);
-            opacity: 0;
-          }
-          5% {
-            opacity: 1;
-          }
-          70% {
-            opacity: 1;
+            transform: translateX(0);
           }
           100% {
-            transform: translateX(-300px) translateY(300px);
-            opacity: 0;
+            transform: translateX(100px);
           }
         }
       `}} />
@@ -311,45 +303,18 @@ export const HomePage: React.FC = () => {
         {/* Stars for night mode */}
         {!isDayMode && (
           <div className="absolute inset-0">
-            {/* Generate random stars */}
+            {/* Generate random stars with slow drift */}
             {[...Array(50)].map((_, i) => (
               <div
                 key={i}
-                className="absolute w-0.5 h-0.5 bg-white rounded-full animate-pulse"
+                className="absolute w-0.5 h-0.5 bg-white rounded-full"
                 style={{
                   left: `${Math.random() * 100}%`,
                   top: `${Math.random() * horizonHeight}px`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  opacity: Math.random() * 0.8 + 0.2
+                  opacity: Math.random() * 0.8 + 0.2,
+                  animation: `driftRight ${60 + Math.random() * 40}s linear ${Math.random() * 20}s infinite`,
                 }}
               />
-            ))}
-            
-            {/* Shooting stars */}
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={`shooting-star-${i}`}
-                className="absolute"
-                style={{
-                  left: `${20 + Math.random() * 60}%`,
-                  top: `${20 + Math.random() * (horizonHeight - 40)}px`,
-                  animation: `shootingStar ${3 + Math.random() * 2}s linear ${i * 8 + Math.random() * 5}s infinite`
-                }}
-              >
-                <div className="relative">
-                  {/* Star head */}
-                  <div className="w-1 h-1 bg-white rounded-full shadow-[0_0_6px_2px_rgba(255,255,255,0.8)]" />
-                  {/* Star trail */}
-                  <div 
-                    className="absolute top-0 left-0 h-[1px] bg-gradient-to-r from-white via-white/50 to-transparent"
-                    style={{ 
-                      width: '60px',
-                      transform: 'translateX(-100%) translateY(-50%)',
-                      filter: 'blur(1px)'
-                    }}
-                  />
-                </div>
-              </div>
             ))}
             
             {/* Moon */}
