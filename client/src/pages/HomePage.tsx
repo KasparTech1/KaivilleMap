@@ -23,7 +23,7 @@ interface Building {
 export const HomePage: React.FC = () => {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
-  const [horizonHeight, setHorizonHeight] = useState(175); // Default to half height for mobile
+  const [horizonHeight, setHorizonHeight] = useState(150); // Lower default for tighter layout
   const [isDayMode, setIsDayMode] = useState(true);
   const { toast } = useToast();
   
@@ -96,7 +96,7 @@ export const HomePage: React.FC = () => {
         console.warn('Could not find suitable element for horizon adjustment');
         // Use a fixed height based on typical welcome sign position
         const isMobile = window.innerWidth < 768;
-        const defaultHeight = isMobile ? 200 : 250; // Lower on both mobile and desktop
+        const defaultHeight = isMobile ? 180 : 200; // Much lower on both
         setHorizonHeight(defaultHeight);
         return;
       }
@@ -137,10 +137,10 @@ export const HomePage: React.FC = () => {
       if (isMobile) {
         finalHeight = finalHeight / 2;  // Half for mobile
       } else {
-        finalHeight = finalHeight * 0.7;  // 70% for desktop
+        finalHeight = finalHeight * 0.5;  // Half for desktop too
       }
       
-      console.log('Setting horizon height to:', finalHeight, isMobile ? '(halved for mobile)' : '(70% for desktop)');
+      console.log('Setting horizon height to:', finalHeight, '(halved for both mobile and desktop)');
       setHorizonHeight(finalHeight);
     };
 
@@ -334,7 +334,7 @@ export const HomePage: React.FC = () => {
         
         <div className="max-w-6xl mx-auto">
           {/* Top Section with KNN Tower and Welcome Sign */}
-          <div className="top-section flex justify-between items-end mb-8 md:mb-12 -mt-4 md:-mt-0">
+          <div className="top-section flex justify-between items-end mb-2 md:mb-4 -mt-4 md:-mt-0">
             {/* Spacer for layout balance */}
             <div className="flex-shrink-0 w-full max-w-[6rem] sm:max-w-[8rem] md:max-w-[12rem]"></div>
             
