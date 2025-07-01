@@ -31,6 +31,11 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
       svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage-night-flagsdown.svg';
     }
   }
+  
+  // Special case for KNN Tower - use Supabase ticker URL for both day and night
+  if (building.id === 'knn_tower') {
+    svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/knn-tower-ticker.svg';
+  }
 
   // Special rendering for heritage_center, learning_lodge, craft_works, knn_tower, community-center, celebration_station, safety_station, and kasp_tower - SVG becomes the card
   if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'kasp_tower') {
