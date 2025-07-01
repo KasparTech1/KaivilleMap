@@ -34,36 +34,44 @@ export const ArticlePage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch article from Supabase
+      // First, try to find the page by slug
       const { data: pageData, error: pageError } = await supabase
         .from('pages')
-        .select(`
-          *,
-          articles!inner (
-            *
-          ),
-          content_blocks (
-            *
-          )
-        `)
+        .select('*')
         .eq('slug', slug)
         .eq('page_type', 'article')
         .single();
 
       if (pageError) {
-        console.error('Error fetching article:', pageError);
+        console.error('Error fetching page:', pageError);
         throw pageError;
       }
 
-      if (pageData && pageData.articles) {
-        // Transform the data
-        const article = pageData.articles[0] || pageData.articles;
+      if (pageData) {
+        // Now fetch the article using the page_id
+        const { data: articleData, error: articleError } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('page_id', pageData.id)
+          .single();
+
+        if (articleError && articleError.code !== 'PGRST116') {
+          console.error('Error fetching article:', articleError);
+        }
+
+        // Fetch content blocks
+        const { data: contentBlocks } = await supabase
+          .from('content_blocks')
+          .select('*')
+          .eq('page_id', pageData.id)
+          .order('order_index', { ascending: true });
+
+        const article = articleData || {};
         
         // Convert content blocks to HTML if available
         let htmlContent = '';
-        if (pageData.content_blocks && pageData.content_blocks.length > 0) {
-          htmlContent = pageData.content_blocks
-            .sort((a: any, b: any) => a.order_index - b.order_index)
+        if (contentBlocks && contentBlocks.length > 0) {
+          htmlContent = contentBlocks
             .map((block: any) => {
               switch (block.block_type) {
                 case 'text':
@@ -88,15 +96,15 @@ export const ArticlePage: React.FC = () => {
           id: article.id,
           headline: article.headline || pageData.title,
           subheadline: article.subheadline || pageData.subtitle,
-          content: htmlContent || article.content || pageData.description,
-          content_blocks: pageData.content_blocks,
+          content: htmlContent || article.content || pageData.description || '',
+          content_blocks: contentBlocks,
           author_name: article.author_name || 'Kaiville Team',
           published_at: pageData.published_at || pageData.created_at,
           reading_time: article.reading_time || 5,
           featured_image_id: article.featured_image_id,
           category_name: 'News',
           news_type: article.tags?.includes('world') || 
-                     article.author_name === 'KNN Analysis' ? 'world' : 'local'
+                     article.author_name === 'KNN AI' ? 'world' : 'local'
         };
 
         setArticle(transformedArticle);
