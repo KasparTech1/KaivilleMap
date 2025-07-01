@@ -26,7 +26,9 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
   if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'kasp_tower') {
     return (
       <Link to={`/building/${building.id}`} className="block" style={style}>
-        <div className="relative hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group">
+        <div className={`relative hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group ${
+          building.id === 'heritage_center' ? '-mt-[30%]' : ''
+        }`}>
           <img
             src={svgPath}
             alt={building.title}
