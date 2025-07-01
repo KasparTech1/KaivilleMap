@@ -21,7 +21,7 @@ export const WelcomeSign: React.FC<WelcomeSignProps> = React.memo(({ isDayMode =
             src={getAssetUrl(isDayMode ? 'kai-welocme.svg' : 'kai-welcome-moon.svg')}
             alt="Welcome to Kaiville"
             className={`w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto drop-shadow-2xl transition-all duration-1000 ${
-              !isDayMode ? 'brightness-110' : ''
+              !isDayMode ? 'brightness-110 -translate-y-2' : ''
             }`}
             onLoad={(e) => {
               // Dispatch a custom event when the image loads with the image element

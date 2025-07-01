@@ -43,7 +43,9 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
           <img
             src={svgPath}
             alt={building.title}
-            className="w-full h-full object-contain drop-shadow-xl hover:drop-shadow-2xl transition-all duration-300"
+            className={`w-full h-full object-contain drop-shadow-xl hover:drop-shadow-2xl transition-all duration-300 ${
+              building.id === 'heritage_center' && !isDayMode ? 'scale-90' : ''
+            }`}
             onError={(e) => {
               // Fallback to default card style if SVG fails to load
               const target = e.target as HTMLImageElement;

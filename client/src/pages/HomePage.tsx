@@ -234,6 +234,24 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes shootingStar {
+          0% {
+            transform: translateX(0) translateY(0);
+            opacity: 0;
+          }
+          5% {
+            opacity: 1;
+          }
+          70% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(-300px) translateY(300px);
+            opacity: 0;
+          }
+        }
+      `}} />
       {/* Sky and Grass Background */}
       <div className="absolute inset-0">
         {/* Sky - Dynamic height section */}
@@ -305,6 +323,33 @@ export const HomePage: React.FC = () => {
                   opacity: Math.random() * 0.8 + 0.2
                 }}
               />
+            ))}
+            
+            {/* Shooting stars */}
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={`shooting-star-${i}`}
+                className="absolute"
+                style={{
+                  left: `${20 + Math.random() * 60}%`,
+                  top: `${20 + Math.random() * (horizonHeight - 40)}px`,
+                  animation: `shootingStar ${3 + Math.random() * 2}s linear ${i * 8 + Math.random() * 5}s infinite`
+                }}
+              >
+                <div className="relative">
+                  {/* Star head */}
+                  <div className="w-1 h-1 bg-white rounded-full shadow-[0_0_6px_2px_rgba(255,255,255,0.8)]" />
+                  {/* Star trail */}
+                  <div 
+                    className="absolute top-0 left-0 h-[1px] bg-gradient-to-r from-white via-white/50 to-transparent"
+                    style={{ 
+                      width: '60px',
+                      transform: 'translateX(-100%) translateY(-50%)',
+                      filter: 'blur(1px)'
+                    }}
+                  />
+                </div>
+              </div>
             ))}
             
             {/* Moon */}
