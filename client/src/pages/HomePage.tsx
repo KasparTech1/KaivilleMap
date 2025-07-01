@@ -313,7 +313,7 @@ export const HomePage: React.FC = () => {
           <div className="absolute inset-0 pointer-events-none">
             {/* Generate fluffy clouds */}
             {[...Array(5)].map((_, i) => {
-              const cloudSpeed = 80 + Math.random() * 40; // 80-120 seconds
+              const cloudSpeed = 160 + Math.random() * 80; // 160-240 seconds
               const startPosition = i * 20; // Evenly distribute clouds 0%, 20%, 40%, 60%, 80%
               const randomOffset = Math.random() * 10 - 5; // Add some randomness -5% to +5%
               const cloudTop = 10 + Math.random() * (Math.max(horizonHeight - 60, 100));
