@@ -59,27 +59,90 @@ export const HomePage: React.FC = () => {
   // Adjust horizon based on welcome sign position
   useEffect(() => {
     const adjustHorizon = () => {
-      const topSection = document.querySelector('.top-section');
-      if (topSection) {
-        const rect = topSection.getBoundingClientRect();
-        const newHeight = rect.bottom + window.scrollY;
-        setHorizonHeight(Math.max(newHeight, 200)); // Minimum 200px
+      // Get the main content container padding
+      const mainContent = document.getElementById('main-content');
+      const contentPadding = mainContent ? parseInt(window.getComputedStyle(mainContent).paddingTop) : 0;
+      
+      // Try to find the welcome sign image specifically
+      let targetElement = document.querySelector('.top-section img');
+      
+      // If no image found, try the whole top section
+      if (!targetElement) {
+        targetElement = document.querySelector('.top-section');
+      }
+      
+      if (targetElement) {
+        const rect = targetElement.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // For mobile, we need to account for the actual position relative to viewport
+        const isMobile = window.innerWidth < 768;
+        
+        // Calculate the absolute position of the bottom of the element
+        let newHeight;
+        if (isMobile) {
+          // On mobile, use the rect.bottom directly plus the content padding
+          newHeight = rect.bottom + scrollTop + contentPadding;
+          console.log('Mobile horizon calculation:', {
+            rectBottom: rect.bottom,
+            scrollTop,
+            contentPadding,
+            calculated: newHeight
+          });
+        } else {
+          // Desktop calculation
+          newHeight = rect.bottom + scrollTop;
+        }
+        
+        console.log('Horizon adjustment:', {
+          element: targetElement.tagName,
+          signBottom: rect.bottom,
+          scrollTop,
+          newHeight,
+          isMobile,
+          contentPadding,
+          currentHeight: horizonHeight
+        });
+        
+        // Force a minimum that's higher on mobile
+        const minHeight = isMobile ? 300 : 250;
+        setHorizonHeight(Math.max(newHeight, minHeight));
       }
     };
 
+    // Multiple attempts to ensure we catch the sign after it loads
+    const attemptAdjustment = () => {
+      adjustHorizon();
+      // Try again after delays to catch late-loading images
+      setTimeout(adjustHorizon, 100);
+      setTimeout(adjustHorizon, 300);
+      setTimeout(adjustHorizon, 500);
+    };
+
     // Initial adjustment
-    adjustHorizon();
+    attemptAdjustment();
     
     // Listen for welcome sign load
-    const handleSignLoad = () => adjustHorizon();
+    const handleSignLoad = () => attemptAdjustment();
     window.addEventListener('welcomeSignLoaded', handleSignLoad);
     window.addEventListener('resize', adjustHorizon);
+    
+    // Also observe DOM changes
+    const observer = new MutationObserver(() => {
+      adjustHorizon();
+    });
+    
+    const topSection = document.querySelector('.top-section');
+    if (topSection) {
+      observer.observe(topSection, { childList: true, subtree: true });
+    }
 
     return () => {
       window.removeEventListener('welcomeSignLoaded', handleSignLoad);
       window.removeEventListener('resize', adjustHorizon);
+      observer.disconnect();
     };
-  }, []);
+  }, [isDayMode]); // Re-run when theme changes
 
   // Generate connections for road rendering
   const connections = React.useMemo(() => {
@@ -201,7 +264,7 @@ export const HomePage: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 p-4 md:p-8">
+      <div className="relative z-10 p-4 md:p-8" id="main-content">
         {/* Day/Night Toggle - Top Right */}
         <div className="absolute top-4 right-4 md:top-8 md:right-8 z-20">
           <DayNightToggle 
