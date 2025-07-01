@@ -276,26 +276,28 @@ export const ArticlePage: React.FC = () => {
       {/* Article Content */}
       <article className="pb-20">
         {/* Hero Image */}
-        <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
-          {article.featured_image_id ? (
-            <img 
-              src={`/api/assets/${article.featured_image_id}`} 
-              alt={article.headline}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
+        <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
+          <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
+            {article.featured_image_id ? (
               <img 
-                src={getAssetUrl('knn-tower.svg')} 
-                alt="KNN Placeholder"
-                className="w-24 h-24 opacity-20"
+                src={`/api/assets/${article.featured_image_id}`} 
+                alt={article.headline}
+                className="w-full h-full object-cover"
               />
-            </div>
-          )}
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <img 
+                  src={getAssetUrl('knn-tower.svg')} 
+                  alt="KNN Placeholder"
+                  className="w-24 h-24 opacity-20"
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Article Header */}
-        <div className="px-4 py-6 space-y-3">
+        <div className="px-4 py-6 space-y-3 md:max-w-3xl lg:max-w-4xl mx-auto">
           <div className="flex items-center gap-3">
             {article.news_type && (
               <span className={`text-sm font-medium px-3 py-1 rounded-full ${
@@ -335,7 +337,7 @@ export const ArticlePage: React.FC = () => {
 
         {/* Article Body */}
         <div 
-          className="px-4 prose prose-lg max-w-none
+          className="px-4 prose prose-lg md:max-w-3xl lg:max-w-4xl mx-auto
             prose-headings:font-bold prose-headings:text-gray-900
             prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
             prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6
