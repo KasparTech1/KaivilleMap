@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import { MapPin, Sparkles } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
 
-export const WelcomeSign: React.FC = React.memo(() => {
+interface WelcomeSignProps {
+  isDayMode?: boolean;
+}
+
+export const WelcomeSign: React.FC<WelcomeSignProps> = React.memo(({ isDayMode = true }) => {
 
   return (
     <Link to="/" className="block" onClick={(e) => {
@@ -14,9 +18,11 @@ export const WelcomeSign: React.FC = React.memo(() => {
         {/* Main Sign with SVG */}
         <div className="relative transform transition-all duration-300 group-hover:scale-105 group-hover:shadow-3xl">
           <img
-            src={getAssetUrl('kai-welocme.svg')}
+            src={getAssetUrl(isDayMode ? 'kai-welocme.svg' : 'kai-welcome-moon.svg')}
             alt="Welcome to Kaiville"
-            className="w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto drop-shadow-2xl"
+            className={`w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto drop-shadow-2xl transition-all duration-1000 ${
+              !isDayMode ? 'brightness-110' : ''
+            }`}
             onLoad={() => {
               // Dispatch a custom event when the image loads
               window.dispatchEvent(new Event('welcomeSignLoaded'));

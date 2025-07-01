@@ -4,6 +4,7 @@ import { WelcomeSign } from '../components/WelcomeSign';
 import { BuildingCard } from '../components/BuildingCard';
 import { RoadConnector } from '../components/RoadConnector';
 import { EditButton } from '../components/cms/EditButton';
+import { DayNightToggle } from '../components/DayNightToggle';
 import { getBuildings } from '../api/buildings';
 import { useToast } from '../hooks/useToast';
 import { useCMSContent } from '../hooks/useCMSContent';
@@ -23,6 +24,7 @@ export const HomePage: React.FC = () => {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
   const [horizonHeight, setHorizonHeight] = useState(256); // Default 256px (h-64)
+  const [isDayMode, setIsDayMode] = useState(true);
   const { toast } = useToast();
   
   // Get CMS content with defaults
@@ -114,7 +116,11 @@ export const HomePage: React.FC = () => {
       <div className="absolute inset-0">
         {/* Sky - Dynamic height section */}
         <div 
-          className="absolute top-0 left-0 right-0 bg-gradient-to-b from-sky-300 via-sky-200 to-sky-100" 
+          className={`absolute top-0 left-0 right-0 bg-gradient-to-b transition-all duration-1000 ${
+            isDayMode 
+              ? 'from-sky-300 via-sky-200 to-sky-100' 
+              : 'from-indigo-900 via-purple-900 to-pink-800'
+          }`}
           style={{ height: `${horizonHeight}px` }}
         />
         
@@ -132,27 +138,78 @@ export const HomePage: React.FC = () => {
             {/* Grass area with rolling hills */}
             <path 
               d="M0,20 Q300,5 600,15 T1200,10 L1200,800 L0,800 Z" 
-              fill="url(#grassGradient)" 
-              opacity="0.7"
+              fill={isDayMode ? "url(#grassGradient)" : "url(#nightGrassGradient)"} 
+              opacity={isDayMode ? "0.7" : "0.9"}
             />
             
-            {/* Gradient definition */}
+            {/* Gradient definitions */}
             <defs>
+              {/* Day gradient */}
               <linearGradient id="grassGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="#86efac" stopOpacity="0.5" />
                 <stop offset="50%" stopColor="#84cc16" stopOpacity="0.6" />
                 <stop offset="100%" stopColor="#65a30d" stopOpacity="0.7" />
+              </linearGradient>
+              
+              {/* Night gradient */}
+              <linearGradient id="nightGrassGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#1a1a2e" stopOpacity="0.7" />
+                <stop offset="50%" stopColor="#16213e" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#0f0f0f" stopOpacity="0.9" />
               </linearGradient>
             </defs>
           </svg>
         </div>
         
         {/* Soft overlay for depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/10 to-white/20" />
+        <div className={`absolute inset-0 bg-gradient-to-b transition-all duration-1000 ${
+          isDayMode 
+            ? 'from-transparent via-white/10 to-white/20' 
+            : 'from-transparent via-black/20 to-black/40'
+        }`} />
+        
+        {/* Stars for night mode */}
+        {!isDayMode && (
+          <div className="absolute inset-0">
+            {/* Generate random stars */}
+            {[...Array(50)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-0.5 h-0.5 bg-white rounded-full animate-pulse"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * horizonHeight}px`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  opacity: Math.random() * 0.8 + 0.2
+                }}
+              />
+            ))}
+            
+            {/* Moon */}
+            <div className="absolute top-10 right-20">
+              {/* Moon glow */}
+              <div className="absolute -inset-4 bg-yellow-100 rounded-full opacity-20 blur-xl animate-pulse" />
+              {/* Moon body */}
+              <div className="relative w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-300 rounded-full shadow-2xl">
+                <div className="absolute top-2 right-2 w-4 h-4 bg-gray-400 rounded-full opacity-30" />
+                <div className="absolute bottom-3 left-3 w-2 h-2 bg-gray-400 rounded-full opacity-30" />
+                <div className="absolute top-4 left-2 w-3 h-3 bg-gray-400 rounded-full opacity-20" />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div className="relative z-10 p-4 md:p-8">
+        {/* Day/Night Toggle - Top Right */}
+        <div className="absolute top-4 right-4 md:top-8 md:right-8 z-20">
+          <DayNightToggle 
+            isDayMode={isDayMode} 
+            onToggle={() => setIsDayMode(!isDayMode)} 
+          />
+        </div>
+        
         <div className="max-w-6xl mx-auto">
           {/* Top Section with KNN Tower and Welcome Sign */}
           <div className="top-section flex justify-between items-end mb-1">
@@ -161,7 +218,7 @@ export const HomePage: React.FC = () => {
             
             {/* Welcome Sign - Center */}
             <div className="flex-grow flex justify-center px-2">
-              <WelcomeSign />
+              <WelcomeSign isDayMode={isDayMode} />
             </div>
             
             {/* Spacer for balance */}
