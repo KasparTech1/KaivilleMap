@@ -96,7 +96,7 @@ export const HomePage: React.FC = () => {
         console.warn('Could not find suitable element for horizon adjustment');
         // Use a fixed height based on typical welcome sign position
         const isMobile = window.innerWidth < 768;
-        const defaultHeight = isMobile ? 200 : 350; // Much lower on mobile
+        const defaultHeight = isMobile ? 200 : 250; // Lower on both mobile and desktop
         setHorizonHeight(defaultHeight);
         return;
       }
@@ -133,12 +133,14 @@ export const HomePage: React.FC = () => {
       // Add buffer
       finalHeight += isMobile ? 30 : 20;
       
-      // On mobile, use half the height for a higher horizon line
+      // Reduce height for higher horizon line
       if (isMobile) {
-        finalHeight = finalHeight / 2;
+        finalHeight = finalHeight / 2;  // Half for mobile
+      } else {
+        finalHeight = finalHeight * 0.7;  // 70% for desktop
       }
       
-      console.log('Setting horizon height to:', finalHeight, isMobile ? '(halved for mobile)' : '');
+      console.log('Setting horizon height to:', finalHeight, isMobile ? '(halved for mobile)' : '(70% for desktop)');
       setHorizonHeight(finalHeight);
     };
 
