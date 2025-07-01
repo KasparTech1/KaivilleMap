@@ -23,9 +23,13 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
   // Use the illustration property from the building data if available
   let svgPath = building.illustration || '';
   
-  // Special case for Heritage Center in night mode
-  if (building.id === 'heritage_center' && !isDayMode) {
-    svgPath = '/assets/heritage-night-flagsdown.svg';
+  // Special case for Heritage Center - use Supabase URLs
+  if (building.id === 'heritage_center') {
+    if (isDayMode) {
+      svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage-center-with-flags.svg';
+    } else {
+      svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage-night-flagsdown.svg';
+    }
   }
 
   // Special rendering for heritage_center, learning_lodge, craft_works, knn_tower, community-center, celebration_station, safety_station, and kasp_tower - SVG becomes the card
