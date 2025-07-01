@@ -62,6 +62,12 @@ export const assetUrls = {
     "storagePath": "site-assets/icons/kai-welocme.svg",
     "category": "site-assets/icons"
   },
+  "kai-welcome-moon.svg": {
+    "originalPath": "/assets/kai-welcome-moon.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/kai-welcome-moon.svg",
+    "storagePath": "site-assets/icons/kai-welcome-moon.svg",
+    "category": "site-assets/icons"
+  },
   "kasp-tower.svg": {
     "originalPath": "/assets/kasp-tower.svg",
     "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/kasp-tower.svg",
@@ -132,8 +138,8 @@ export const assetUrls = {
 
 export type AssetName = keyof typeof assetUrls;
 
-export function getAssetUrl(assetName: AssetName): string {
-  return assetUrls[assetName]?.supabaseUrl || `/assets/${assetName}`;
+export function getAssetUrl(assetName: AssetName | string): string {
+  return assetUrls[assetName as AssetName]?.supabaseUrl || `/assets/${assetName}`;
 }
 
 export default assetUrls;
