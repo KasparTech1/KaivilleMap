@@ -208,9 +208,10 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       }
     });
 
-    // console.log('Path includes', sortedBuildings.length, 'buildings');
-    // console.log('Final path string length:', pathString.length);
-    // console.log('Last building in path:', sortedBuildings[sortedBuildings.length - 1]?.id);
+    console.log('Path includes', sortedBuildings.length, 'buildings');
+    console.log('Final path string length:', pathString.length);
+    console.log('First building in path:', sortedBuildings[0]?.id);
+    console.log('Last building in path:', sortedBuildings[sortedBuildings.length - 1]?.id);
     
     // Only set path if we have valid positions
     if (pathString && buildingPositions.size > 0) {
@@ -272,6 +273,8 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       });
       
       setReversePath(reversePathString);
+      console.log('Reverse path - First building:', reversedBuildings[0]?.id);
+      console.log('Reverse path - Last building:', reversedBuildings[reversedBuildings.length - 1]?.id);
     } else {
       // console.warn('No valid path generated, positions found:', buildingPositions.size);
     }
@@ -279,14 +282,14 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
 
   // Burst animation logic
   const startBurstAnimation = useCallback((reverse: boolean = false) => {
-    // console.log('AI Orb burst animation started, reverse:', reverse);
+    console.log('AI Orb burst animation started, reverse:', reverse);
     setIsReverseAnimation(reverse);
     setIsAnimating(true);
     setAnimationKey(prev => prev + 1); // Force SVG re-render
     // Animation duration is 2 seconds
     setTimeout(() => {
       setIsAnimating(false);
-      // console.log('AI Orb burst animation ended');
+      console.log('AI Orb burst animation ended');
     }, 2000);
   }, []);
 
@@ -484,9 +487,25 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
         />
       </g>
 
+      {/* Hidden paths for animation - both directions defined */}
+      <defs>
+        <path
+          id="road-path-forward"
+          d={mainPath}
+          fill="none"
+          stroke="none"
+        />
+        <path
+          id="road-path-reverse"
+          d={reversePath}
+          fill="none"
+          stroke="none"
+        />
+      </defs>
+
       {/* Animated AI Orb - Only visible during burst */}
       {isAnimating && (
-        <g id="ai-orb" key={animationKey}>
+        <g id="ai-orb" key={`${animationKey}-${isReverseAnimation ? 'reverse' : 'forward'}`}>
           {/* Glow effect */}
           <defs>
             <radialGradient id="orbGlow">
@@ -515,7 +534,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
                 keyPoints="0;1"
                 keyTimes="0;1"
               >
-                <mpath href={`#road-path-burst`} />
+                <mpath href={isReverseAnimation ? "#road-path-reverse" : "#road-path-forward"} />
               </animateMotion>
               <animate
                 attributeName="opacity"
@@ -535,7 +554,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
                 keyPoints="0;1"
                 keyTimes="0;1"
               >
-                <mpath href={`#road-path-burst`} />
+                <mpath href={isReverseAnimation ? "#road-path-reverse" : "#road-path-forward"} />
               </animateMotion>
               <animate
                 attributeName="opacity"
@@ -564,7 +583,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
                 keyPoints="0;1"
                 keyTimes="0;1"
               >
-                <mpath href={`#road-path-burst`} />
+                <mpath href={isReverseAnimation ? "#road-path-reverse" : "#road-path-forward"} />
               </animateMotion>
               <animate
                 attributeName="opacity"
@@ -584,7 +603,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
                 keyPoints="0;1"
                 keyTimes="0;1"
               >
-                <mpath href={`#road-path-burst`} />
+                <mpath href={isReverseAnimation ? "#road-path-reverse" : "#road-path-forward"} />
               </animateMotion>
               <animate
                 attributeName="opacity"
@@ -595,13 +614,6 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             </line>
           </g>
 
-          {/* Hidden path for animation */}
-          <path
-            id="road-path-burst"
-            d={isReverseAnimation ? reversePath : mainPath}
-            fill="none"
-            stroke="none"
-          />
         </g>
       )}
     </svg>
