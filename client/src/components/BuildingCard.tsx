@@ -26,7 +26,7 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
   // Special case for Heritage Center - use Supabase URLs
   if (building.id === 'heritage_center') {
     if (isDayMode) {
-      svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage-center-with-flags.svg';
+      svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage_center_animated.svg';
     } else {
       svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage-night-flagsdown.svg';
     }
