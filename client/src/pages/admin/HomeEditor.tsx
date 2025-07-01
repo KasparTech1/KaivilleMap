@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { EditableText } from '../../components/cms/EditableText';
+import { EditableText } from '../../archive/EditableText';
 import { Button } from '../../components/ui/button';
 import { ArrowLeft, Save, RotateCcw } from 'lucide-react';
 import { supabase } from '../../config/supabase';
