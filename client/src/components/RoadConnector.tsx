@@ -27,7 +27,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [animationKey, setAnimationKey] = useState<number>(0);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [containerSize, setContainerSize] = useState({ width: 1000, height: 1000 });
+  const [containerSize, setContainerSize] = useState({ width: 100, height: 100 });
   const animationRef = useRef<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -58,21 +58,28 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
           buildingPositions.set(building.id, position);
           console.log(`Building ${building.id} position:`, position, 'rect:', rect, 'container:', containerRect);
           
-          // Update container size only if valid
+          // Update container size with minimum values
           if (containerRect.width > 0 && containerRect.height > 0) {
-            setContainerSize({ width: containerRect.width, height: containerRect.height });
+            setContainerSize({ 
+              width: Math.max(containerRect.width, 300), 
+              height: Math.max(containerRect.height, 300) 
+            });
           }
         } else {
           console.warn(`No .buildings-grid container found for building ${building.id}`);
-          // Fallback: use absolute positioning
-          const position = {
-            x: rect.left + rect.width / 2,
-            y: rect.top + rect.height / 2,
-            row: isMobile ? Math.floor(index / 2) + 1 : building.row,
-            column: isMobile ? (index % 2) + 1 : building.column
-          };
-          buildingPositions.set(building.id, position);
-          console.log(`Building ${building.id} fallback position:`, position);
+          // Fallback: use window size as reference
+          const container = document.querySelector('.buildings-grid');
+          if (container) {
+            const containerRect = container.getBoundingClientRect();
+            const position = {
+              x: rect.left - containerRect.left + rect.width / 2,
+              y: rect.top - containerRect.top + rect.height / 2,
+              row: isMobile ? Math.floor(index / 2) + 1 : building.row,
+              column: isMobile ? (index % 2) + 1 : building.column
+            };
+            buildingPositions.set(building.id, position);
+            console.log(`Building ${building.id} alternative position:`, position);
+          }
         }
       } else {
         console.warn(`No element found for building ${building.id}`);
@@ -179,13 +186,21 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     
     checkMobile();
     
-    // Calculate paths after a short delay to ensure DOM is ready
-    const timer = setTimeout(calculatePaths, 300);
+    // Multiple attempts to calculate paths to ensure we catch the road
+    const calculateWithRetries = () => {
+      calculatePaths();
+      // Retry a few times to ensure we get the road drawn
+      setTimeout(calculatePaths, 100);
+      setTimeout(calculatePaths, 500);
+      setTimeout(calculatePaths, 1000);
+    };
+    
+    calculateWithRetries();
 
     // Recalculate on window resize
     const handleResize = () => {
       checkMobile();
-      setTimeout(calculatePaths, 200);
+      calculateWithRetries();
     };
 
     window.addEventListener('resize', handleResize);
@@ -198,11 +213,16 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     // Observe all grid elements (both desktop and mobile)
     const gridElements = document.querySelectorAll('.buildings-grid');
     gridElements.forEach(gridElement => {
-      observer.observe(gridElement, { childList: true, subtree: true });
+      observer.observe(gridElement, { childList: true, subtree: true, attributes: true });
     });
+    
+    // Also observe the parent container for visibility changes
+    const parentContainer = document.querySelector('.relative.z-10');
+    if (parentContainer) {
+      observer.observe(parentContainer, { childList: true, subtree: true });
+    }
 
     return () => {
-      clearTimeout(timer);
       window.removeEventListener('resize', handleResize);
       observer.disconnect();
     };
@@ -250,12 +270,16 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     return null;
   }
 
+  // Ensure we have valid container dimensions
+  const svgWidth = Math.max(containerSize.width, 300);
+  const svgHeight = Math.max(containerSize.height, 300);
+
   return (
     <svg
       className="absolute inset-0 pointer-events-none z-0"
-      style={{ width: '100%', height: '100%' }}
-      viewBox={`0 0 ${containerSize.width} ${containerSize.height}`}
-      preserveAspectRatio="none"
+      style={{ width: '100%', height: '100%', minWidth: '100%', minHeight: '100%' }}
+      viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+      preserveAspectRatio="xMidYMid meet"
     >
       <defs>
         <filter id="road-shadow">

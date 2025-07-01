@@ -172,7 +172,7 @@ export const HomePage: React.FC = () => {
         <div className="relative">
           {/* Desktop Grid Layout */}
           <div className="hidden md:block">
-            <div className="buildings-grid relative grid grid-cols-3 gap-8 p-8">
+            <div className="buildings-grid relative grid grid-cols-3 gap-8 p-8 min-h-[400px]">
               {/* Road Connections */}
               <RoadConnector buildings={buildings} connections={connections} />
 
@@ -196,7 +196,7 @@ export const HomePage: React.FC = () => {
 
           {/* Mobile Grid Layout - 2 columns */}
           <div className="md:hidden">
-            <div className="buildings-grid relative grid grid-cols-2 gap-4 p-4">
+            <div className="buildings-grid relative grid grid-cols-2 gap-4 p-4 min-h-[600px]">
               {/* Road Connections for Mobile */}
               <RoadConnector buildings={buildings} connections={connections} />
               
