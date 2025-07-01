@@ -97,14 +97,26 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     let sortedBuildings;
     
     if (isMobile) {
-      // For mobile, use simple left-to-right, top-to-bottom order
+      // For mobile, create a zig-zag pattern for more natural flow
       sortedBuildings = [...buildings].sort((a, b) => {
         const aIndex = buildings.indexOf(a);
         const bIndex = buildings.indexOf(b);
         // KASP Tower should always be last
         if (a.id === 'kasp_tower') return 1;
         if (b.id === 'kasp_tower') return -1;
-        return aIndex - bIndex;
+        
+        // Calculate row and column for mobile layout
+        const aRow = Math.floor(aIndex / 2);
+        const aCol = aIndex % 2;
+        const bRow = Math.floor(bIndex / 2);
+        const bCol = bIndex % 2;
+        
+        if (aRow !== bRow) return aRow - bRow;
+        // Alternate direction on each row for snake pattern
+        if (aRow % 2 === 0) {
+          return aCol - bCol; // Even rows: left to right
+        }
+        return bCol - aCol; // Odd rows: right to left
       });
     } else {
       // Desktop sorting logic
@@ -136,22 +148,47 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
           const prevBuilding = sortedBuildings[index - 1];
           const prevPos = buildingPositions.get(prevBuilding.id);
           if (prevPos) {
-            // Create smooth curves between buildings
-            const controlX = (pos.x + prevPos.x) / 2;
-            const controlY = (pos.y + prevPos.y) / 2;
+            // Calculate distance and direction
+            const dx = pos.x - prevPos.x;
+            const dy = pos.y - prevPos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
             
-            // Adjust control points for smoother curves
             if (isMobile) {
-              // Mobile: simpler curves
-              pathString += ` Q ${controlX} ${controlY} ${pos.x} ${pos.y}`;
-            } else {
-              // Desktop: more elaborate curves
-              if (pos.row !== prevPos.row) {
-                // Vertical connection - add horizontal offset for curve
-                pathString += ` Q ${controlX + 50} ${controlY} ${pos.x} ${pos.y}`;
+              // Mobile: Create flowing S-curves
+              const isHorizontal = Math.abs(dx) > Math.abs(dy);
+              
+              if (isHorizontal) {
+                // Horizontal connection - create S-curve
+                const cp1x = prevPos.x + dx * 0.5;
+                const cp1y = prevPos.y - (distance * 0.2); // Curve up first
+                const cp2x = prevPos.x + dx * 0.5;
+                const cp2y = pos.y + (distance * 0.2); // Then curve down
+                pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
               } else {
-                // Horizontal connection - add vertical offset for curve
-                pathString += ` Q ${controlX} ${controlY - 30} ${pos.x} ${pos.y}`;
+                // Vertical connection - create gentle curve
+                const curveOffset = distance * 0.3;
+                const cp1x = prevPos.x + curveOffset;
+                const cp1y = prevPos.y + dy * 0.3;
+                const cp2x = pos.x - curveOffset;
+                const cp2y = pos.y - dy * 0.3;
+                pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
+              }
+            } else {
+              // Desktop: Keep existing behavior but enhance curves
+              if (pos.row !== prevPos.row) {
+                // Vertical connection - add more dramatic curve
+                const curveIntensity = 80;
+                const cp1x = prevPos.x + (dx > 0 ? curveIntensity : -curveIntensity);
+                const cp1y = prevPos.y + dy * 0.3;
+                const cp2x = pos.x - (dx > 0 ? curveIntensity : -curveIntensity);
+                const cp2y = pos.y - dy * 0.3;
+                pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
+              } else {
+                // Horizontal connection - gentle arc
+                const arcHeight = 40;
+                const cpx = (pos.x + prevPos.x) / 2;
+                const cpy = (pos.y + prevPos.y) / 2 - arcHeight;
+                pathString += ` Q ${cpx} ${cpy} ${pos.x} ${pos.y}`;
               }
             }
           }
@@ -325,47 +362,57 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
         <path
           d={mainPath}
           stroke="#888888"
-          strokeWidth={isMobile ? "12" : "24"}
+          strokeWidth={isMobile ? "16" : "24"}
           fill="none"
           filter="url(#road-shadow)"
           opacity="0.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         
         {/* White/light gray edge lines */}
         <path
           d={mainPath}
           stroke="#e5e5e5"
-          strokeWidth={isMobile ? "10" : "22"}
+          strokeWidth={isMobile ? "14" : "22"}
           fill="none"
           strokeDasharray="none"
           opacity="0.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         
         {/* Light gray road surface */}
         <path
           d={mainPath}
           stroke="#b0b0b0"
-          strokeWidth={isMobile ? "8" : "18"}
+          strokeWidth={isMobile ? "12" : "18"}
           fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         
         {/* Center white dashed line */}
         <path
           d={mainPath}
           stroke="#ffffff"
-          strokeWidth={isMobile ? "1" : "1.5"}
+          strokeWidth={isMobile ? "1.5" : "2"}
           fill="none"
-          strokeDasharray={isMobile ? "10,5" : "20,10"}
+          strokeDasharray={isMobile ? "8,8" : "20,10"}
           opacity="0.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         
         {/* Subtle road texture */}
         <path
           d={mainPath}
           stroke="url(#asphalt)"
-          strokeWidth={isMobile ? "6" : "16"}
+          strokeWidth={isMobile ? "10" : "16"}
           fill="none"
           opacity="0.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
 
