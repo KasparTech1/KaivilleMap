@@ -16,11 +16,17 @@ interface Building {
 interface BuildingCardProps {
   building: Building;
   style?: React.CSSProperties;
+  isDayMode?: boolean;
 }
 
-export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building, style }) => {
+export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building, style, isDayMode = true }) => {
   // Use the illustration property from the building data if available
-  const svgPath = building.illustration || '';
+  let svgPath = building.illustration || '';
+  
+  // Special case for Heritage Center in night mode
+  if (building.id === 'heritage_center' && !isDayMode) {
+    svgPath = '/assets/heritage-night-flagsdown.svg';
+  }
 
   // Special rendering for heritage_center, learning_lodge, craft_works, knn_tower, community-center, celebration_station, safety_station, and kasp_tower - SVG becomes the card
   if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'kasp_tower') {

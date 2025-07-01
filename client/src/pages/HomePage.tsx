@@ -367,7 +367,7 @@ export const HomePage: React.FC = () => {
                     gridColumnEnd: `span ${building.span}`
                   }}
                 >
-                  <BuildingCard building={building} />
+                  <BuildingCard building={building} isDayMode={isDayMode} />
                 </div>
               ))}
             </div>
@@ -386,7 +386,7 @@ export const HomePage: React.FC = () => {
                       gridColumn: (index % 2) + 1
                     }}
                   >
-                    <BuildingCard building={building} />
+                    <BuildingCard building={building} isDayMode={isDayMode} />
                   </div>
                 ))}
             </div>
