@@ -244,11 +244,11 @@ export const HomePage: React.FC = () => {
           }
         }
         @keyframes cloudDrift {
-          0% {
-            transform: translateX(-200px);
+          from {
+            transform: translateX(0);
           }
-          100% {
-            transform: translateX(calc(100vw + 200px));
+          to {
+            transform: translateX(calc(100vw + 250px));
           }
         }
       `}} />
@@ -312,39 +312,50 @@ export const HomePage: React.FC = () => {
         {isDayMode && (
           <div className="absolute inset-0 pointer-events-none">
             {/* Generate fluffy clouds */}
-            {[...Array(5)].map((_, i) => (
-              <div
-                key={`cloud-${i}`}
-                className="absolute"
-                style={{
-                  top: `${10 + Math.random() * (horizonHeight - 60)}px`,
-                  animation: `cloudDrift ${80 + Math.random() * 40}s linear ${i * 15 + Math.random() * 10}s infinite`,
-                  opacity: 0.7 + Math.random() * 0.3
-                }}
-              >
-                <svg 
-                  width={150 + Math.random() * 100} 
-                  height={60 + Math.random() * 20}
-                  viewBox="0 0 200 80"
-                  className="filter drop-shadow-lg"
+            {[...Array(5)].map((_, i) => {
+              const cloudSpeed = 80 + Math.random() * 40; // 80-120 seconds
+              const startPosition = i * 20; // Evenly distribute clouds 0%, 20%, 40%, 60%, 80%
+              const randomOffset = Math.random() * 10 - 5; // Add some randomness -5% to +5%
+              const cloudTop = 10 + Math.random() * (Math.max(horizonHeight - 60, 100));
+              const cloudOpacity = 0.7 + Math.random() * 0.3;
+              const cloudWidth = 150 + Math.random() * 100;
+              const cloudHeight = 60 + Math.random() * 20;
+              
+              return (
+                <div
+                  key={`cloud-${i}`}
+                  className="absolute"
+                  style={{
+                    left: `${startPosition + randomOffset}%`,
+                    top: `${cloudTop}px`,
+                    animation: `cloudDrift ${cloudSpeed}s linear infinite`,
+                    opacity: cloudOpacity
+                  }}
                 >
-                  <g fill="white">
-                    {/* Main cloud body */}
-                    <ellipse cx="100" cy="50" rx="60" ry="25" opacity="0.9" />
-                    {/* Left puff */}
-                    <ellipse cx="60" cy="45" rx="35" ry="20" opacity="0.85" />
-                    {/* Right puff */}
-                    <ellipse cx="140" cy="45" rx="35" ry="20" opacity="0.85" />
-                    {/* Top puff */}
-                    <ellipse cx="100" cy="35" rx="40" ry="22" opacity="0.8" />
-                    {/* Small left detail */}
-                    <ellipse cx="45" cy="50" rx="20" ry="15" opacity="0.7" />
-                    {/* Small right detail */}
-                    <ellipse cx="155" cy="50" rx="20" ry="15" opacity="0.7" />
-                  </g>
-                </svg>
-              </div>
-            ))}
+                  <svg 
+                    width={cloudWidth} 
+                    height={cloudHeight}
+                    viewBox="0 0 200 80"
+                    className="filter drop-shadow-lg"
+                  >
+                    <g fill="white">
+                      {/* Main cloud body */}
+                      <ellipse cx="100" cy="50" rx="60" ry="25" opacity="0.9" />
+                      {/* Left puff */}
+                      <ellipse cx="60" cy="45" rx="35" ry="20" opacity="0.85" />
+                      {/* Right puff */}
+                      <ellipse cx="140" cy="45" rx="35" ry="20" opacity="0.85" />
+                      {/* Top puff */}
+                      <ellipse cx="100" cy="35" rx="40" ry="22" opacity="0.8" />
+                      {/* Small left detail */}
+                      <ellipse cx="45" cy="50" rx="20" ry="15" opacity="0.7" />
+                      {/* Small right detail */}
+                      <ellipse cx="155" cy="50" rx="20" ry="15" opacity="0.7" />
+                    </g>
+                  </svg>
+                </div>
+              );
+            })}
           </div>
         )}
         
