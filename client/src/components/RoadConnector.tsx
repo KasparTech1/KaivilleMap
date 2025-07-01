@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { AnimatedOrb } from './AnimatedOrb';
 
 interface Building {
   id: string;
@@ -208,10 +209,10 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       }
     });
 
-    console.log('Path includes', sortedBuildings.length, 'buildings');
-    console.log('Final path string length:', pathString.length);
-    console.log('First building in path:', sortedBuildings[0]?.id);
-    console.log('Last building in path:', sortedBuildings[sortedBuildings.length - 1]?.id);
+    // console.log('Path includes', sortedBuildings.length, 'buildings');
+    // console.log('Final path string length:', pathString.length);
+    // console.log('First building in path:', sortedBuildings[0]?.id);
+    // console.log('Last building in path:', sortedBuildings[sortedBuildings.length - 1]?.id);
     
     // Only set path if we have valid positions
     if (pathString && buildingPositions.size > 0) {
@@ -273,8 +274,8 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       });
       
       setReversePath(reversePathString);
-      console.log('Reverse path - First building:', reversedBuildings[0]?.id);
-      console.log('Reverse path - Last building:', reversedBuildings[reversedBuildings.length - 1]?.id);
+      // console.log('Reverse path - First building:', reversedBuildings[0]?.id);
+      // console.log('Reverse path - Last building:', reversedBuildings[reversedBuildings.length - 1]?.id);
     } else {
       // console.warn('No valid path generated, positions found:', buildingPositions.size);
     }
@@ -282,14 +283,14 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
 
   // Burst animation logic
   const startBurstAnimation = useCallback((reverse: boolean = false) => {
-    console.log('AI Orb burst animation started, reverse:', reverse);
+    // console.log('AI Orb burst animation started, reverse:', reverse);
     setIsReverseAnimation(reverse);
     setIsAnimating(true);
     setAnimationKey(prev => prev + 1); // Force SVG re-render
     // Animation duration is 2 seconds
     setTimeout(() => {
       setIsAnimating(false);
-      console.log('AI Orb burst animation ended');
+      // console.log('AI Orb burst animation ended');
     }, 2000);
   }, []);
 
@@ -404,12 +405,13 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
   const svgHeight = Math.max(containerSize.height, 300);
 
   return (
-    <svg
-      className="absolute inset-0 pointer-events-none z-0"
-      style={{ width: '100%', height: '100%', minWidth: '100%', minHeight: '100%' }}
-      viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-      preserveAspectRatio="xMidYMid meet"
-    >
+    <>
+      <svg
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{ width: '100%', height: '100%', minWidth: '100%', minHeight: '100%' }}
+        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+        preserveAspectRatio="xMidYMid meet"
+      >
       <defs>
         <filter id="road-shadow">
           <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
@@ -487,136 +489,26 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
         />
       </g>
 
-      {/* Hidden paths for animation - both directions defined */}
-      <defs>
-        <path
-          id="road-path-forward"
-          d={mainPath}
-          fill="none"
-          stroke="none"
-        />
-        <path
-          id="road-path-reverse"
-          d={reversePath}
-          fill="none"
-          stroke="none"
-        />
-      </defs>
-
-      {/* Animated AI Orb - Only visible during burst */}
-      {isAnimating && (
-        <g id="ai-orb" key={`${animationKey}-${isReverseAnimation ? 'reverse' : 'forward'}`}>
-          {/* Glow effect */}
-          <defs>
-            <radialGradient id="orbGlow">
-              <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.9" />
-              <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#1e40af" stopOpacity="0" />
-            </radialGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-
-          {/* Orb container that moves along path */}
-          <g filter="url(#glow)">
-            {/* Outer glow halo */}
-            <circle r="30" fill="url(#orbGlow)" opacity="0.8">
-              <animateMotion
-                dur="2s"
-                repeatCount="1"
-                rotate="auto"
-                fill="freeze"
-                keyPoints="0;1"
-                keyTimes="0;1"
-              >
-                <mpath href={isReverseAnimation ? "#road-path-reverse" : "#road-path-forward"} />
-              </animateMotion>
-              <animate
-                attributeName="opacity"
-                values="0;0.8;0.8;0"
-                dur="2s"
-                repeatCount="1"
-              />
-            </circle>
-
-            {/* Triple diamond AI icon */}
-            <g opacity="1">
-              <animateMotion
-                dur="2s"
-                repeatCount="1"
-                rotate="auto"
-                fill="freeze"
-                keyPoints="0;1"
-                keyTimes="0;1"
-              >
-                <mpath href={isReverseAnimation ? "#road-path-reverse" : "#road-path-forward"} />
-              </animateMotion>
-              <animate
-                attributeName="opacity"
-                values="0;1;1;0"
-                dur="2s"
-                repeatCount="1"
-              />
-              
-              {/* Diamond 1 - Left */}
-              <path d="M -12 0 L -8 -4 L -4 0 L -8 4 Z" fill="#60a5fa" stroke="#ffffff" strokeWidth="0.5" />
-              
-              {/* Diamond 2 - Center */}
-              <path d="M -4 0 L 0 -4 L 4 0 L 0 4 Z" fill="#3b82f6" stroke="#ffffff" strokeWidth="0.5" />
-              
-              {/* Diamond 3 - Right */}
-              <path d="M 4 0 L 8 -4 L 12 0 L 8 4 Z" fill="#60a5fa" stroke="#ffffff" strokeWidth="0.5" />
-            </g>
-
-            {/* Inner bright core */}
-            <circle r="5" fill="#ffffff" opacity="1">
-              <animateMotion
-                dur="2s"
-                repeatCount="1"
-                rotate="auto"
-                fill="freeze"
-                keyPoints="0;1"
-                keyTimes="0;1"
-              >
-                <mpath href={isReverseAnimation ? "#road-path-reverse" : "#road-path-forward"} />
-              </animateMotion>
-              <animate
-                attributeName="opacity"
-                values="0;1;1;0"
-                dur="2s"
-                repeatCount="1"
-              />
-            </circle>
-
-            {/* Motion blur trail effect */}
-            <line x1="-20" y1="0" x2="-50" y2="0" stroke="url(#orbGlow)" strokeWidth="20" opacity="0.6">
-              <animateMotion
-                dur="2s"
-                repeatCount="1"
-                rotate="auto"
-                fill="freeze"
-                keyPoints="0;1"
-                keyTimes="0;1"
-              >
-                <mpath href={isReverseAnimation ? "#road-path-reverse" : "#road-path-forward"} />
-              </animateMotion>
-              <animate
-                attributeName="opacity"
-                values="0;0.6;0.6;0"
-                dur="2s"
-                repeatCount="1"
-              />
-            </line>
-          </g>
-
-        </g>
+      </svg>
+      
+      {/* Animated AI Orb using JavaScript animation */}
+      {isAnimating && mainPath && reversePath && (
+        <div className="absolute inset-0 pointer-events-none z-10">
+          <svg
+            style={{ width: '100%', height: '100%' }}
+            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+            preserveAspectRatio="xMidYMid meet"
+          >
+            <AnimatedOrb
+              pathData={isReverseAnimation ? reversePath : mainPath}
+              duration={2000}
+              size={24}
+              color="#3B82F6"
+            />
+          </svg>
+        </div>
       )}
-    </svg>
+    </>
   );
 });
 
