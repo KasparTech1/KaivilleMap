@@ -311,30 +311,30 @@ export const HomePage: React.FC = () => {
         {/* Clouds for day mode */}
         {isDayMode && (
           <div className="absolute inset-0 pointer-events-none">
-            {/* Generate fluffy clouds */}
-            {[...Array(5)].map((_, i) => {
-              const cloudSpeed = 160 + Math.random() * 80; // 160-240 seconds
-              const startPosition = i * 20; // Evenly distribute clouds 0%, 20%, 40%, 60%, 80%
-              const randomOffset = Math.random() * 10 - 5; // Add some randomness -5% to +5%
-              const cloudTop = 10 + Math.random() * (Math.max(horizonHeight - 60, 100));
-              const cloudOpacity = 0.7 + Math.random() * 0.3;
-              const cloudWidth = 150 + Math.random() * 100;
-              const cloudHeight = 60 + Math.random() * 20;
+            {/* Predefined cloud configurations for consistent positioning */}
+            {[
+              { left: 5, top: 20, speed: 300, opacity: 0.8, width: 180, height: 70 },
+              { left: 25, top: 50, speed: 350, opacity: 0.9, width: 220, height: 80 },
+              { left: 45, top: 30, speed: 320, opacity: 0.7, width: 200, height: 75 },
+              { left: 65, top: 60, speed: 380, opacity: 0.85, width: 190, height: 70 },
+              { left: 85, top: 40, speed: 340, opacity: 0.75, width: 210, height: 85 }
+            ].map((cloud, i) => {
+              const cloudTop = Math.min(cloud.top, horizonHeight - 60);
               
               return (
                 <div
                   key={`cloud-${i}`}
                   className="absolute"
                   style={{
-                    left: `${startPosition + randomOffset}%`,
+                    left: `${cloud.left}%`,
                     top: `${cloudTop}px`,
-                    animation: `cloudDrift ${cloudSpeed}s linear infinite`,
-                    opacity: cloudOpacity
+                    animation: `cloudDrift ${cloud.speed}s linear infinite`,
+                    opacity: cloud.opacity
                   }}
                 >
                   <svg 
-                    width={cloudWidth} 
-                    height={cloudHeight}
+                    width={cloud.width} 
+                    height={cloud.height}
                     viewBox="0 0 200 80"
                     className="filter drop-shadow-lg"
                   >
