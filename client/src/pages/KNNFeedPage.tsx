@@ -11,6 +11,7 @@ interface ArticleCard {
   card_title: string;
   card_description: string;
   card_image_id: string | null;
+  card_image_url?: string | null;
   card_style: string;
   published_at: string;
   reading_time: number;
@@ -39,6 +40,53 @@ export const KNNFeedPage: React.FC = () => {
     }
   }, [articles, activeFilter]);
 
+  // Helper function to extract YouTube video ID and get thumbnail URL
+  const getYouTubeThumbnail = (pageData: any): string | null => {
+    try {
+      // Check featured_video_url first
+      if (pageData?.featured_video_url && pageData.featured_video_url.includes('youtube.com')) {
+        const match = pageData.featured_video_url.match(/[?&]v=([^&]+)/);
+        if (match) {
+          return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+        }
+      }
+
+      // Check content if it's a string (YouTube imports)
+      if (typeof pageData?.content === 'string') {
+        try {
+          const content = JSON.parse(pageData.content);
+          if (Array.isArray(content)) {
+            const videoItem = content.find((item: any) => item.type === 'video' && item.url?.includes('youtube.com'));
+            if (videoItem?.url) {
+              const match = videoItem.url.match(/[?&]v=([^&]+)/);
+              if (match) {
+                return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+              }
+            }
+          }
+        } catch (e) {
+          // Not JSON, skip
+        }
+      }
+
+      // Check content_blocks array
+      if (Array.isArray(pageData?.content_blocks)) {
+        const videoBlock = pageData.content_blocks.find((block: any) => 
+          block.block_type === 'video' && block.content?.video_url?.includes('youtube.com')
+        );
+        if (videoBlock?.content?.video_url) {
+          const match = videoBlock.content.video_url.match(/[?&]v=([^&]+)/);
+          if (match) {
+            return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error extracting YouTube thumbnail:', error);
+    }
+    return null;
+  };
+
   const fetchArticles = async () => {
     try {
       setLoading(true);
@@ -66,22 +114,31 @@ export const KNNFeedPage: React.FC = () => {
       }
 
       // Transform the data to match our interface
-      const transformedArticles: ArticleCard[] = articlesData?.map(item => ({
-        id: item.id,
-        article_id: item.article_id,
-        card_title: item.card_title,
-        card_description: item.card_description,
-        card_image_id: item.card_image_id,
-        card_style: item.card_style || 'default',
-        published_at: item.articles?.pages?.published_at || new Date().toISOString(),
-        reading_time: item.articles?.reading_time || 5,
-        author_name: item.articles?.author_name || 'Kaiville Team',
-        category_name: 'News', // Simplified for now
-        // Determine news type based on tags or author
-        news_type: item.articles?.tags?.includes('world') || 
-                   item.articles?.author_name === 'KNN Analysis' ? 'world' : 'local',
-        slug: item.articles?.pages?.slug || `article-${item.id}`
-      })).filter(article => article.card_title && article.card_description) || [];
+      const transformedArticles: ArticleCard[] = articlesData?.map(item => {
+        // Extract YouTube thumbnail if no card image
+        let cardImageUrl = null;
+        if (!item.card_image_id) {
+          cardImageUrl = getYouTubeThumbnail(item.articles?.pages);
+        }
+
+        return {
+          id: item.id,
+          article_id: item.article_id,
+          card_title: item.card_title,
+          card_description: item.card_description,
+          card_image_id: item.card_image_id,
+          card_image_url: cardImageUrl,
+          card_style: item.card_style || 'default',
+          published_at: item.articles?.pages?.published_at || new Date().toISOString(),
+          reading_time: item.articles?.reading_time || 5,
+          author_name: item.articles?.author_name || 'Kaiville Team',
+          category_name: 'News', // Simplified for now
+          // Determine news type based on tags or author
+          news_type: item.articles?.tags?.includes('world') || 
+                     item.articles?.author_name === 'KNN AI' ? 'world' : 'local',
+          slug: item.articles?.pages?.slug || `article-${item.id}`
+        };
+      }).filter(article => article.card_title && article.card_description) || [];
 
       // If no articles in database, use mock data
       if (transformedArticles.length === 0) {
@@ -292,8 +349,19 @@ export const KNNFeedPage: React.FC = () => {
                       alt={article.card_title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
+                  ) : article.card_image_url ? (
+                    <img 
+                      src={article.card_image_url} 
+                      alt={article.card_title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                  ) : null}
+                  {(!article.card_image_id && !article.card_image_url) || (
+                    <div className="w-full h-full flex items-center justify-center hidden">
                       <img 
                         src={getAssetUrl('knn-tower.svg')} 
                         alt="KNN Placeholder"
@@ -366,8 +434,19 @@ export const KNNFeedPage: React.FC = () => {
                       alt={article.card_title}
                       className="w-full h-full object-cover"
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
+                  ) : article.card_image_url ? (
+                    <img 
+                      src={article.card_image_url} 
+                      alt={article.card_title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
+                  ) : null}
+                  {(!article.card_image_id && !article.card_image_url) || (
+                    <div className="w-full h-full flex items-center justify-center hidden">
                       <img 
                         src={getAssetUrl('knn-tower.svg')} 
                         alt="KNN Placeholder"
