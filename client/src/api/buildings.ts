@@ -42,7 +42,7 @@ export const getBuildings = () => {
             id: "community-center",
             title: "Community Center",
             row: 2,
-            column: 2,
+            column: 3,
             span: 1,
             illustration: getAssetUrl('community-center.svg'),
             connections: ["learning_lodge", "craft_works", "knn_tower", "celebration_station"]
@@ -60,7 +60,7 @@ export const getBuildings = () => {
             id: "celebration_station",
             title: "Celebration Station",
             row: 2,
-            column: 3,
+            column: 2,
             span: 1,
             illustration: getAssetUrl('celebration-station.svg'),
             connections: ["community-center", "knn_tower", "kasp_tower"]
