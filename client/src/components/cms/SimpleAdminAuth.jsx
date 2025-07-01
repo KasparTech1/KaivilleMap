@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './AdminAuth.css';
+import '../../archive/AdminAuth.css';
 
 export const SimpleAdminAuth = ({ onAuthenticated, onCancel }) => {
   const [password, setPassword] = useState('');
