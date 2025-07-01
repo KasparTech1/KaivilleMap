@@ -49,14 +49,15 @@ export const KNNFeedPage: React.FC = () => {
         .from('article_cards')
         .select(`
           *,
-          articles (
+          articles!inner (
             *,
-            pages (
+            pages!inner (
               *
             )
           )
         `)
-        .not('articles', 'is', null)
+        .eq('articles.pages.is_published', true)
+        .eq('articles.pages.status', 'published')
         .limit(20);
 
       if (fetchError) {

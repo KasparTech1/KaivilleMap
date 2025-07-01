@@ -70,6 +70,8 @@ export const ArticlePage: React.FC = () => {
         
         // Convert content blocks to HTML if available
         let htmlContent = '';
+        
+        // First check for content blocks (newer format)
         if (contentBlocks && contentBlocks.length > 0) {
           htmlContent = contentBlocks
             .map((block: any) => {
@@ -90,6 +92,20 @@ export const ArticlePage: React.FC = () => {
               }
             })
             .join('\n');
+        } 
+        // If no content blocks, check for content in pages.content or articles.content_blocks
+        else if (pageData.content || article.content_blocks) {
+          const contentArray = pageData.content || article.content_blocks || [];
+          if (Array.isArray(contentArray)) {
+            htmlContent = contentArray
+              .map((item: any) => {
+                if (item.type === 'paragraph' && item.content) {
+                  return `<p class="mb-4">${item.content}</p>`;
+                }
+                return '';
+              })
+              .join('\n');
+          }
         }
 
         const transformedArticle: Article = {
