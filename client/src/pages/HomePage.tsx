@@ -243,6 +243,14 @@ export const HomePage: React.FC = () => {
             transform: translateX(100px);
           }
         }
+        @keyframes cloudDrift {
+          0% {
+            transform: translateX(-200px);
+          }
+          100% {
+            transform: translateX(calc(100vw + 200px));
+          }
+        }
       `}} />
       {/* Sky and Grass Background */}
       <div className="absolute inset-0">
@@ -299,6 +307,46 @@ export const HomePage: React.FC = () => {
             ? 'from-transparent via-white/10 to-white/20' 
             : 'from-transparent via-black/20 to-black/40'
         }`} />
+        
+        {/* Clouds for day mode */}
+        {isDayMode && (
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Generate fluffy clouds */}
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={`cloud-${i}`}
+                className="absolute"
+                style={{
+                  top: `${10 + Math.random() * (horizonHeight - 60)}px`,
+                  animation: `cloudDrift ${80 + Math.random() * 40}s linear ${i * 15 + Math.random() * 10}s infinite`,
+                  opacity: 0.7 + Math.random() * 0.3
+                }}
+              >
+                <svg 
+                  width={150 + Math.random() * 100} 
+                  height={60 + Math.random() * 20}
+                  viewBox="0 0 200 80"
+                  className="filter drop-shadow-lg"
+                >
+                  <g fill="white">
+                    {/* Main cloud body */}
+                    <ellipse cx="100" cy="50" rx="60" ry="25" opacity="0.9" />
+                    {/* Left puff */}
+                    <ellipse cx="60" cy="45" rx="35" ry="20" opacity="0.85" />
+                    {/* Right puff */}
+                    <ellipse cx="140" cy="45" rx="35" ry="20" opacity="0.85" />
+                    {/* Top puff */}
+                    <ellipse cx="100" cy="35" rx="40" ry="22" opacity="0.8" />
+                    {/* Small left detail */}
+                    <ellipse cx="45" cy="50" rx="20" ry="15" opacity="0.7" />
+                    {/* Small right detail */}
+                    <ellipse cx="155" cy="50" rx="20" ry="15" opacity="0.7" />
+                  </g>
+                </svg>
+              </div>
+            ))}
+          </div>
+        )}
         
         {/* Stars for night mode */}
         {!isDayMode && (
