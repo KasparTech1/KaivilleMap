@@ -383,9 +383,9 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       intervalRef.current = setTimeout(runBurst, 7000); // 2s animation + 5s pause
     };
     
-    // Start first burst after 1 second
+    // Start first burst after 7 seconds
     // console.log('Initializing burst animation cycle');
-    intervalRef.current = setTimeout(runBurst, 1000);
+    intervalRef.current = setTimeout(runBurst, 7000);
 
     return () => {
       // console.log('Cleaning up burst animation');
