@@ -23,9 +23,11 @@ interface ConnectionPath {
 
 export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildings, connections }) => {
   const [mainPath, setMainPath] = useState<string>('');
+  const [reversePath, setReversePath] = useState<string>('');
   const [pathLength, setPathLength] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [animationKey, setAnimationKey] = useState<number>(0);
+  const [isReverseAnimation, setIsReverseAnimation] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [containerSize, setContainerSize] = useState({ width: 100, height: 100 });
   const animationRef = useRef<number | null>(null);
@@ -99,6 +101,10 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     if (isMobile) {
       // For mobile, create a zig-zag pattern for more natural flow
       sortedBuildings = [...buildings].sort((a, b) => {
+        // Heritage Center should always be first
+        if (a.id === 'heritage_center') return -1;
+        if (b.id === 'heritage_center') return 1;
+        
         const aIndex = buildings.indexOf(a);
         const bIndex = buildings.indexOf(b);
         // KASP Tower should always be last
@@ -121,6 +127,10 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     } else {
       // Desktop sorting logic
       sortedBuildings = [...buildings].sort((a, b) => {
+        // Heritage Center should always be first
+        if (a.id === 'heritage_center') return -1;
+        if (b.id === 'heritage_center') return 1;
+        
         // KASP Tower should always be last
         if (a.id === 'kasp_tower') return 1;
         if (b.id === 'kasp_tower') return -1;
@@ -205,14 +215,72 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     // Only set path if we have valid positions
     if (pathString && buildingPositions.size > 0) {
       setMainPath(pathString);
+      
+      // Create reverse path - same buildings but in reverse order
+      const reversedBuildings = [...sortedBuildings].reverse();
+      let reversePathString = '';
+      
+      reversedBuildings.forEach((building, index) => {
+        const pos = buildingPositions.get(building.id);
+        if (pos) {
+          if (index === 0) {
+            reversePathString = `M ${pos.x} ${pos.y}`;
+          } else {
+            const prevBuilding = reversedBuildings[index - 1];
+            const prevPos = buildingPositions.get(prevBuilding.id);
+            if (prevPos) {
+              // Same curve logic as forward path
+              const dx = pos.x - prevPos.x;
+              const dy = pos.y - prevPos.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              
+              if (isMobile) {
+                const isHorizontal = Math.abs(dx) > Math.abs(dy);
+                
+                if (isHorizontal) {
+                  const cp1x = prevPos.x + dx * 0.5;
+                  const cp1y = prevPos.y - (distance * 0.2);
+                  const cp2x = prevPos.x + dx * 0.5;
+                  const cp2y = pos.y + (distance * 0.2);
+                  reversePathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
+                } else {
+                  const curveOffset = distance * 0.3;
+                  const cp1x = prevPos.x + curveOffset;
+                  const cp1y = prevPos.y + dy * 0.3;
+                  const cp2x = pos.x - curveOffset;
+                  const cp2y = pos.y - dy * 0.3;
+                  reversePathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
+                }
+              } else {
+                if (pos.row !== prevPos.row) {
+                  const curveIntensity = 80;
+                  const cp1x = prevPos.x + (dx > 0 ? curveIntensity : -curveIntensity);
+                  const cp1y = prevPos.y + dy * 0.3;
+                  const cp2x = pos.x - (dx > 0 ? curveIntensity : -curveIntensity);
+                  const cp2y = pos.y - dy * 0.3;
+                  reversePathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
+                } else {
+                  const arcHeight = 40;
+                  const cpx = (pos.x + prevPos.x) / 2;
+                  const cpy = (pos.y + prevPos.y) / 2 - arcHeight;
+                  reversePathString += ` Q ${cpx} ${cpy} ${pos.x} ${pos.y}`;
+                }
+              }
+            }
+          }
+        }
+      });
+      
+      setReversePath(reversePathString);
     } else {
       // console.warn('No valid path generated, positions found:', buildingPositions.size);
     }
   }, [buildings]);
 
   // Burst animation logic
-  const startBurstAnimation = useCallback(() => {
-    // console.log('AI Orb burst animation started');
+  const startBurstAnimation = useCallback((reverse: boolean = false) => {
+    // console.log('AI Orb burst animation started, reverse:', reverse);
+    setIsReverseAnimation(reverse);
     setIsAnimating(true);
     setAnimationKey(prev => prev + 1); // Force SVG re-render
     // Animation duration is 2 seconds
@@ -296,19 +364,19 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
 
   // Separate effect for animation to prevent restarts
   useEffect(() => {
-    if (!mainPath) return;
+    if (!mainPath || !reversePath) return;
 
-    // Start burst animation cycle
-    let isAlternate = false;
+    // Start burst animation cycle with alternating directions
+    let isReverse = false;
     const runBurst = () => {
-      // console.log('Starting next burst cycle');
-      startBurstAnimation();
-      // Alternate between 4 and 8 seconds
-      const nextInterval = isAlternate ? 8000 : 4000;
-      isAlternate = !isAlternate;
-      // console.log(`Next burst in ${nextInterval/1000} seconds`);
+      // console.log('Starting next burst cycle, reverse:', isReverse);
+      startBurstAnimation(isReverse);
       
-      intervalRef.current = setTimeout(runBurst, nextInterval);
+      // Toggle direction for next animation
+      isReverse = !isReverse;
+      
+      // Wait 2 seconds for animation to complete, then 5 seconds pause
+      intervalRef.current = setTimeout(runBurst, 7000); // 2s animation + 5s pause
     };
     
     // Start first burst after 1 second
@@ -321,7 +389,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
         clearTimeout(intervalRef.current);
       }
     };
-  }, [mainPath, startBurstAnimation]);
+  }, [mainPath, reversePath, startBurstAnimation]);
 
   if (!mainPath) {
     // console.log('No main path generated, returning null');
@@ -530,7 +598,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
           {/* Hidden path for animation */}
           <path
             id="road-path-burst"
-            d={mainPath}
+            d={isReverseAnimation ? reversePath : mainPath}
             fill="none"
             stroke="none"
           />
