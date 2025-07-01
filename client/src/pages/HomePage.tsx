@@ -23,7 +23,7 @@ interface Building {
 export const HomePage: React.FC = () => {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
-  const [horizonHeight, setHorizonHeight] = useState(350); // Default higher for mobile
+  const [horizonHeight, setHorizonHeight] = useState(175); // Default to half height for mobile
   const [isDayMode, setIsDayMode] = useState(true);
   const { toast } = useToast();
   
@@ -96,7 +96,7 @@ export const HomePage: React.FC = () => {
         console.warn('Could not find suitable element for horizon adjustment');
         // Use a fixed height based on typical welcome sign position
         const isMobile = window.innerWidth < 768;
-        const defaultHeight = isMobile ? 400 : 350;
+        const defaultHeight = isMobile ? 200 : 350; // Much lower on mobile
         setHorizonHeight(defaultHeight);
         return;
       }
@@ -133,7 +133,12 @@ export const HomePage: React.FC = () => {
       // Add buffer
       finalHeight += isMobile ? 30 : 20;
       
-      console.log('Setting horizon height to:', finalHeight);
+      // On mobile, use half the height for a higher horizon line
+      if (isMobile) {
+        finalHeight = finalHeight / 2;
+      }
+      
+      console.log('Setting horizon height to:', finalHeight, isMobile ? '(halved for mobile)' : '');
       setHorizonHeight(finalHeight);
     };
 
