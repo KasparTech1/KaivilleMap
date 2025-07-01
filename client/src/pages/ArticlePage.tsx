@@ -95,14 +95,38 @@ export const ArticlePage: React.FC = () => {
         } 
         // If no content blocks, check for content in pages.content or articles.content_blocks
         else if (pageData.content || article.content_blocks) {
-          const contentArray = pageData.content || article.content_blocks || [];
+          let contentArray = article.content_blocks || [];
+          
+          // If pageData.content is a string, parse it
+          if (typeof pageData.content === 'string') {
+            try {
+              contentArray = JSON.parse(pageData.content);
+            } catch (e) {
+              console.error('Failed to parse page content:', e);
+            }
+          } else if (pageData.content) {
+            contentArray = pageData.content;
+          }
+          
           if (Array.isArray(contentArray)) {
             htmlContent = contentArray
               .map((item: any) => {
-                if (item.type === 'paragraph' && item.content) {
-                  return `<p class="mb-4">${item.content}</p>`;
+                switch (item.type) {
+                  case 'paragraph':
+                    return `<p class="mb-4 ${item.style?.fontStyle === 'italic' ? 'italic' : ''} ${item.style?.fontSize ? 'text-sm' : ''}" ${item.style?.color ? `style="color: ${item.style.color}"` : ''}>${item.content}</p>`;
+                  case 'heading':
+                    const level = item.level || 2;
+                    return `<h${level} class="text-${level === 2 ? '2xl' : 'xl'} font-bold my-4">${item.content}</h${level}>`;
+                  case 'video':
+                    return `<div class="my-6">
+                      ${item.caption ? `<p class="text-sm text-gray-600 mb-2">${item.caption}</p>` : ''}
+                      <iframe src="${item.url.replace('watch?v=', 'embed/')}" class="w-full aspect-video rounded-lg" frameborder="0" allowfullscreen></iframe>
+                    </div>`;
+                  case 'divider':
+                    return '<hr class="my-8 border-gray-300" />';
+                  default:
+                    return '';
                 }
-                return '';
               })
               .join('\n');
           }
