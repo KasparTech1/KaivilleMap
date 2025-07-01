@@ -64,9 +64,24 @@ export const HomePage: React.FC = () => {
       const welcomeSignImg = document.querySelector('.top-section img');
       
       if (welcomeSignContainer) {
-        // Get the actual welcome sign element (prefer image if it exists)
-        const targetElement = welcomeSignImg || welcomeSignContainer;
+        // Get the actual welcome sign element (prefer image if it exists and is loaded)
+        let targetElement = welcomeSignContainer;
+        
+        // Only use the image if it's actually loaded (has height)
+        if (welcomeSignImg) {
+          const imgRect = welcomeSignImg.getBoundingClientRect();
+          if (imgRect.height > 0) {
+            targetElement = welcomeSignImg;
+          }
+        }
+        
         const rect = targetElement.getBoundingClientRect();
+        
+        // If we still have no height, don't update yet
+        if (rect.height === 0) {
+          console.log('Welcome sign has no height yet, skipping adjustment');
+          return;
+        }
         
         // Get the absolute position from top of page
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -87,11 +102,11 @@ export const HomePage: React.FC = () => {
         });
         
         // Set the horizon to the absolute bottom position of the sign
-        // On mobile, ensure we account for any negative margins
         let finalHeight = absoluteBottom;
         
-        // Add a small buffer to ensure it's clearly below the sign
-        finalHeight += 10;
+        // Add buffer to ensure it's clearly below the sign
+        // More buffer on mobile since the sign might be smaller
+        finalHeight += isMobile ? 20 : 10;
         
         console.log('Setting horizon height to:', finalHeight);
         setHorizonHeight(finalHeight);
@@ -114,8 +129,29 @@ export const HomePage: React.FC = () => {
     // Initial adjustment
     attemptAdjustment();
     
+    // Also check if images are already loaded
+    const checkImagesLoaded = () => {
+      const img = document.querySelector('.top-section img') as HTMLImageElement;
+      if (img && img.complete && img.naturalHeight > 0) {
+        console.log('Image already loaded, adjusting horizon');
+        adjustHorizon();
+      }
+    };
+    
+    // Check immediately and after short delays
+    checkImagesLoaded();
+    setTimeout(checkImagesLoaded, 200);
+    setTimeout(checkImagesLoaded, 500);
+    
     // Listen for welcome sign load
-    const handleSignLoad = () => attemptAdjustment();
+    const handleSignLoad = (event: any) => {
+      console.log('Welcome sign loaded event received');
+      // Give it a moment to fully render, then adjust multiple times
+      setTimeout(adjustHorizon, 50);
+      setTimeout(adjustHorizon, 150);
+      setTimeout(adjustHorizon, 300);
+      setTimeout(adjustHorizon, 500);
+    };
     window.addEventListener('welcomeSignLoaded', handleSignLoad);
     window.addEventListener('resize', adjustHorizon);
     
