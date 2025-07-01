@@ -20,7 +20,8 @@ interface Article {
 }
 
 export const ArticlePage: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { '*': slugPath } = useParams();
+  const slug = slugPath || '';
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,8 +133,27 @@ export const ArticlePage: React.FC = () => {
           }
         }
 
+        console.log('Debug - Article content parsing:', {
+          slug,
+          pageId: pageData.id,
+          hasContentBlocks: contentBlocks?.length > 0,
+          hasPageContent: !!pageData.content,
+          hasArticleContentBlocks: !!article.content_blocks,
+          htmlContentLength: htmlContent.length,
+          pageContentType: typeof pageData.content,
+          firstCharsOfHtml: htmlContent.substring(0, 100)
+        });
+        
+        // If we still have no content, log what we tried
+        if (!htmlContent) {
+          console.log('No HTML content generated. Data check:', {
+            pageContent: pageData.content?.substring(0, 100),
+            articleContentBlocks: article.content_blocks?.slice(0, 2)
+          });
+        }
+
         const transformedArticle: Article = {
-          id: article.id,
+          id: article.id || pageData.id,
           headline: article.headline || pageData.title,
           subheadline: article.subheadline || pageData.subtitle,
           content: htmlContent || article.content || pageData.description || '',

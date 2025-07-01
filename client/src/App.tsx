@@ -22,7 +22,7 @@ function App() {
           <Route path="/building/knn_tower" element={<Navigate to="/news" replace />} />
           <Route path="/building/:id" element={<BuildingDetailPage />} />
           <Route path="/news" element={<KNNFeedPage />} />
-          <Route path="/news/:slug" element={<ArticlePage />} />
+          <Route path="/news/*" element={<ArticlePage />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/home" element={<HomeEditor />} />
