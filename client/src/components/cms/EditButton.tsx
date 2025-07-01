@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Wrench } from 'lucide-react';
 import { SimpleAdminAuth } from './SimpleAdminAuth';
-import './EditButton.css';
+import '../../archive/EditButton.css';
 
 interface EditButtonProps {
   editPath: string; // Where to navigate when authenticated
