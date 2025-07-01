@@ -23,9 +23,12 @@ export const WelcomeSign: React.FC<WelcomeSignProps> = React.memo(({ isDayMode =
             className={`w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto drop-shadow-2xl transition-all duration-1000 ${
               !isDayMode ? 'brightness-110' : ''
             }`}
-            onLoad={() => {
-              // Dispatch a custom event when the image loads
-              window.dispatchEvent(new Event('welcomeSignLoaded'));
+            onLoad={(e) => {
+              // Dispatch a custom event when the image loads with the image element
+              const event = new CustomEvent('welcomeSignLoaded', { 
+                detail: { element: e.target } 
+              });
+              window.dispatchEvent(event);
             }}
             onError={(e) => {
               // Fallback to the original design if SVG fails to load

@@ -23,7 +23,7 @@ interface Building {
 export const HomePage: React.FC = () => {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
-  const [horizonHeight, setHorizonHeight] = useState(256); // Default 256px (h-64)
+  const [horizonHeight, setHorizonHeight] = useState(350); // Default higher for mobile
   const [isDayMode, setIsDayMode] = useState(true);
   const { toast } = useToast();
   
@@ -59,54 +59,46 @@ export const HomePage: React.FC = () => {
   // Adjust horizon based on welcome sign position
   useEffect(() => {
     const adjustHorizon = () => {
-      // Get the main content container padding
-      const mainContent = document.getElementById('main-content');
-      const contentPadding = mainContent ? parseInt(window.getComputedStyle(mainContent).paddingTop) : 0;
+      // Find the welcome sign container or image
+      const welcomeSignContainer = document.querySelector('.top-section');
+      const welcomeSignImg = document.querySelector('.top-section img');
       
-      // Try to find the welcome sign image specifically
-      let targetElement = document.querySelector('.top-section img');
-      
-      // If no image found, try the whole top section
-      if (!targetElement) {
-        targetElement = document.querySelector('.top-section');
-      }
-      
-      if (targetElement) {
+      if (welcomeSignContainer) {
+        // Get the actual welcome sign element (prefer image if it exists)
+        const targetElement = welcomeSignImg || welcomeSignContainer;
         const rect = targetElement.getBoundingClientRect();
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
-        // For mobile, we need to account for the actual position relative to viewport
+        // Get the absolute position from top of page
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const absoluteBottom = rect.bottom + scrollTop;
+        
+        // Add the full height of the welcome sign to ensure horizon is below it
+        const signHeight = rect.height;
         const isMobile = window.innerWidth < 768;
         
-        // Calculate the absolute position of the bottom of the element
-        let newHeight;
-        if (isMobile) {
-          // On mobile, use the rect.bottom directly plus the content padding
-          newHeight = rect.bottom + scrollTop + contentPadding;
-          console.log('Mobile horizon calculation:', {
-            rectBottom: rect.bottom,
-            scrollTop,
-            contentPadding,
-            calculated: newHeight
-          });
-        } else {
-          // Desktop calculation
-          newHeight = rect.bottom + scrollTop;
-        }
-        
-        console.log('Horizon adjustment:', {
+        console.log('Horizon calculation:', {
           element: targetElement.tagName,
-          signBottom: rect.bottom,
-          scrollTop,
-          newHeight,
-          isMobile,
-          contentPadding,
-          currentHeight: horizonHeight
+          rectTop: rect.top,
+          rectBottom: rect.bottom,
+          signHeight: signHeight,
+          scrollTop: scrollTop,
+          absoluteBottom: absoluteBottom,
+          isMobile: isMobile
         });
         
-        // Force a minimum that's higher on mobile
-        const minHeight = isMobile ? 300 : 250;
-        setHorizonHeight(Math.max(newHeight, minHeight));
+        // Set the horizon to the absolute bottom position of the sign
+        // On mobile, ensure we account for any negative margins
+        let finalHeight = absoluteBottom;
+        
+        // Add a small buffer to ensure it's clearly below the sign
+        finalHeight += 10;
+        
+        console.log('Setting horizon height to:', finalHeight);
+        setHorizonHeight(finalHeight);
+      } else {
+        console.warn('Could not find welcome sign for horizon adjustment');
+        // Fallback to a reasonable default
+        setHorizonHeight(window.innerWidth < 768 ? 350 : 300);
       }
     };
 
@@ -275,7 +267,7 @@ export const HomePage: React.FC = () => {
         
         <div className="max-w-6xl mx-auto">
           {/* Top Section with KNN Tower and Welcome Sign */}
-          <div className="top-section flex justify-between items-end mb-1">
+          <div className="top-section flex justify-between items-end mb-8 md:mb-12 -mt-4 md:-mt-0">
             {/* Spacer for layout balance */}
             <div className="flex-shrink-0 w-full max-w-[6rem] sm:max-w-[8rem] md:max-w-[12rem]"></div>
             
