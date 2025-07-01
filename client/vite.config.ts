@@ -16,10 +16,11 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
       },
-      '/logs': {
-        target: 'http://localhost:4444',
-        changeOrigin: true,
-      }
+      // Commented out logging proxy - uncomment if you need logging service
+      // '/logs': {
+      //   target: 'http://localhost:4444',
+      //   changeOrigin: true,
+      // }
     },
     allowedHosts: [
       'localhost',

@@ -35,7 +35,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     const buildingPositions = new Map();
     const isMobile = window.innerWidth < 768; // md breakpoint
     
-    console.log('Calculating paths, isMobile:', isMobile, 'window width:', window.innerWidth);
+    // console.log('Calculating paths, isMobile:', isMobile, 'window width:', window.innerWidth);
 
     // Calculate building positions based on grid
     // Sort buildings for mobile layout consistency
@@ -63,7 +63,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             column: isMobile ? (index % 2) + 1 : building.column
           };
           buildingPositions.set(building.id, position);
-          console.log(`Building ${building.id} position:`, position, 'rect:', rect, 'container:', containerRect);
+          // console.log(`Building ${building.id} position:`, position, 'rect:', rect, 'container:', containerRect);
           
           // Update container size with minimum values
           if (containerRect.width > 0 && containerRect.height > 0) {
@@ -73,7 +73,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             });
           }
         } else {
-          console.warn(`No .buildings-grid container found for building ${building.id}`);
+          // console.warn(`No .buildings-grid container found for building ${building.id}`);
           // Fallback: use window size as reference
           const container = document.querySelector('.buildings-grid');
           if (container) {
@@ -85,11 +85,11 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
               column: isMobile ? (index % 2) + 1 : building.column
             };
             buildingPositions.set(building.id, position);
-            console.log(`Building ${building.id} alternative position:`, position);
+            // console.log(`Building ${building.id} alternative position:`, position);
           }
         }
       } else {
-        console.warn(`No element found for building ${building.id}`);
+        // console.warn(`No element found for building ${building.id}`);
       }
     });
 
@@ -136,8 +136,8 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
 
     // Create the main road path
     let pathString = '';
-    console.log('Building path for buildings:', sortedBuildings.map(b => `${b.id} (row:${b.row}, col:${b.column})`));
-    console.log('Building positions found:', buildingPositions.size);
+    // console.log('Building path for buildings:', sortedBuildings.map(b => `${b.id} (row:${b.row}, col:${b.column})`));
+    // console.log('Building positions found:', buildingPositions.size);
     
     sortedBuildings.forEach((building, index) => {
       const pos = buildingPositions.get(building.id);
@@ -194,31 +194,31 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
           }
         }
       } else {
-        console.warn(`No position found for building ${building.id}`);
+        // console.warn(`No position found for building ${building.id}`);
       }
     });
 
-    console.log('Path includes', sortedBuildings.length, 'buildings');
-    console.log('Final path string length:', pathString.length);
-    console.log('Last building in path:', sortedBuildings[sortedBuildings.length - 1]?.id);
+    // console.log('Path includes', sortedBuildings.length, 'buildings');
+    // console.log('Final path string length:', pathString.length);
+    // console.log('Last building in path:', sortedBuildings[sortedBuildings.length - 1]?.id);
     
     // Only set path if we have valid positions
     if (pathString && buildingPositions.size > 0) {
       setMainPath(pathString);
     } else {
-      console.warn('No valid path generated, positions found:', buildingPositions.size);
+      // console.warn('No valid path generated, positions found:', buildingPositions.size);
     }
   }, [buildings]);
 
   // Burst animation logic
   const startBurstAnimation = useCallback(() => {
-    console.log('AI Orb burst animation started');
+    // console.log('AI Orb burst animation started');
     setIsAnimating(true);
     setAnimationKey(prev => prev + 1); // Force SVG re-render
     // Animation duration is 2 seconds
     setTimeout(() => {
       setIsAnimating(false);
-      console.log('AI Orb burst animation ended');
+      // console.log('AI Orb burst animation ended');
     }, 2000);
   }, []);
 
@@ -261,7 +261,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       
       // Also observe for class changes which happen during responsive transitions
       const classObserver = new MutationObserver(() => {
-        console.log('Grid classes changed, recalculating paths');
+        // console.log('Grid classes changed, recalculating paths');
         setTimeout(calculatePaths, 100);
       });
       classObserver.observe(gridElement, { attributes: true, attributeFilter: ['class'] });
@@ -301,22 +301,22 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     // Start burst animation cycle
     let isAlternate = false;
     const runBurst = () => {
-      console.log('Starting next burst cycle');
+      // console.log('Starting next burst cycle');
       startBurstAnimation();
       // Alternate between 4 and 8 seconds
       const nextInterval = isAlternate ? 8000 : 4000;
       isAlternate = !isAlternate;
-      console.log(`Next burst in ${nextInterval/1000} seconds`);
+      // console.log(`Next burst in ${nextInterval/1000} seconds`);
       
       intervalRef.current = setTimeout(runBurst, nextInterval);
     };
     
     // Start first burst after 1 second
-    console.log('Initializing burst animation cycle');
+    // console.log('Initializing burst animation cycle');
     intervalRef.current = setTimeout(runBurst, 1000);
 
     return () => {
-      console.log('Cleaning up burst animation');
+      // console.log('Cleaning up burst animation');
       if (intervalRef.current) {
         clearTimeout(intervalRef.current);
       }
@@ -324,7 +324,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
   }, [mainPath, startBurstAnimation]);
 
   if (!mainPath) {
-    console.log('No main path generated, returning null');
+    // console.log('No main path generated, returning null');
     return null;
   }
 
