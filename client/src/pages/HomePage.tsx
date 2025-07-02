@@ -5,7 +5,6 @@ import { BuildingCard } from '../components/BuildingCard';
 import { RoadConnector } from '../components/RoadConnector';
 import { EditButton } from '../components/cms/EditButton';
 import { DayNightToggle } from '../components/DayNightToggle';
-import { KNNTowerIcon } from '../components/KNNTowerIcon';
 import { getBuildings } from '../api/buildings';
 import { useToast } from '../hooks/useToast';
 import { useCMSContent } from '../hooks/useCMSContent';
@@ -406,10 +405,8 @@ export const HomePage: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           {/* Top Section with KNN Tower and Welcome Sign */}
           <div className="top-section flex justify-between items-end mb-0 -mt-4 md:-mt-0">
-            {/* KNN Tower - Left side */}
-            <div className="flex-shrink-0 w-full max-w-[6rem] sm:max-w-[8rem] md:max-w-[12rem] flex items-end justify-center">
-              <KNNTowerIcon isDayMode={isDayMode} />
-            </div>
+            {/* Spacer for layout balance */}
+            <div className="flex-shrink-0 w-full max-w-[6rem] sm:max-w-[8rem] md:max-w-[12rem]"></div>
             
             {/* Welcome Sign - Center */}
             <div className="flex-grow flex justify-center px-2">
