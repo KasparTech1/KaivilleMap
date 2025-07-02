@@ -499,6 +499,18 @@ export const HomePage: React.FC = () => {
                   }}
                 />
               </div>
+              
+              {/* Wire Basket */}
+              <div className="flex-shrink-0 self-end">
+                <img 
+                  src={getAssetUrl('wire-basket.svg')} 
+                  alt="Wire basket"
+                  className="w-8 h-auto md:w-10 opacity-70"
+                  style={{
+                    filter: isDayMode ? 'none' : 'brightness(0.8)'
+                  }}
+                />
+              </div>
             </div>
           </div>
 
