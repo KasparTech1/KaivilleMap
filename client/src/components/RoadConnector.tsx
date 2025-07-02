@@ -218,10 +218,6 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     if (pathString && buildingPositions.size > 0) {
       setMainPath(pathString);
       
-      // Debug: Log the forward path
-      console.log('Forward path:', pathString.substring(0, 200) + '...');
-      console.log('Forward buildings order:', sortedBuildings.map(b => b.id).join(' -> '));
-      
       // Create reverse path by parsing and reversing the forward path
       // This ensures the exact same curves but in reverse order
       const reversePath = (() => {
@@ -318,10 +314,6 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       })();
       
       setReversePath(reversePath);
-      
-      // Debug: Log the reverse path
-      console.log('Reverse path:', reversePath.substring(0, 200) + '...');
-      console.log('Reverse path segments:', reversePath.match(/[MLCQmlcq]/g)?.join(','));
       // console.log('Reverse path - First building:', reversedBuildings[0]?.id);
       // console.log('Reverse path - Last building:', reversedBuildings[reversedBuildings.length - 1]?.id);
     } else {
