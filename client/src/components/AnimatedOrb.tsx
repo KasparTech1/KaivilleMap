@@ -179,11 +179,13 @@ export const AnimatedOrb: React.FC<AnimatedOrbProps> = ({
       {/* Wire Basket Icon */}
       <image
         href={getAssetUrl('wire-basket.svg')}
-        x={-size / 2.5}
-        y={-size / 2.5}
-        width={size / 1.25}
-        height={size / 1.25}
-        opacity="0.9"
+        x={-size / 1.6}
+        y={-size / 1.6}
+        width={size * 1.25}
+        height={size * 1.25}
+        opacity="0.95"
+        preserveAspectRatio="xMidYMid meet"
+        style={{ pointerEvents: 'none' }}
       />
       
       {/* Pulse animation */}
