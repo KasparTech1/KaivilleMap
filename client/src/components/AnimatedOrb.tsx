@@ -176,14 +176,21 @@ export const AnimatedOrb: React.FC<AnimatedOrbProps> = ({
         cy={-size / 6}
       />
       
+      {/* White background for basket visibility */}
+      <circle
+        r={size * 0.35}
+        fill="white"
+        opacity="0.7"
+      />
+      
       {/* Wire Basket Icon */}
       <image
         href={getAssetUrl('wire-basket.svg')}
-        x={-size / 1.6}
-        y={-size / 1.6}
-        width={size * 1.25}
-        height={size * 1.25}
-        opacity="0.95"
+        x={-size * 0.45}
+        y={-size * 0.45}
+        width={size * 0.9}
+        height={size * 0.9}
+        opacity="1"
         preserveAspectRatio="xMidYMid meet"
         style={{ pointerEvents: 'none' }}
       />
