@@ -287,11 +287,11 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     setIsReverseAnimation(reverse);
     setIsAnimating(true);
     setAnimationKey(prev => prev + 1); // Force SVG re-render
-    // Animation duration is 2 seconds
+    // Animation duration is 5 seconds
     setTimeout(() => {
       setIsAnimating(false);
       // console.log('AI Orb burst animation ended');
-    }, 2000);
+    }, 5000);
   }, []);
 
   useEffect(() => {
@@ -379,8 +379,8 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       // Toggle direction for next animation
       isReverse = !isReverse;
       
-      // Wait 2 seconds for animation to complete, then 5 seconds pause
-      intervalRef.current = setTimeout(runBurst, 7000); // 2s animation + 5s pause
+      // Wait 5 seconds for animation to complete, then 5 seconds pause
+      intervalRef.current = setTimeout(runBurst, 10000); // 5s animation + 5s pause
     };
     
     // Start first burst after 7 seconds
@@ -501,7 +501,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
           >
             <AnimatedOrb
               pathData={isReverseAnimation ? reversePath : mainPath}
-              duration={2000}
+              duration={5000}
               size={24}
               color="#3B82F6"
             />
