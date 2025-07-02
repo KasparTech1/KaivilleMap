@@ -21,6 +21,9 @@ REACT_APP_API_URL=https://kaiville-railway-01.up.railway.app
 REACT_APP_SUPABASE_URL=https://yvbtqcmiuymyvtvaqgcf.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2YnRxY21pdXlteXZ0dmFxZ2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyOTA3ODcsImV4cCI6MjA2Njg2Njc4N30.Rv05YRSTAOcv1rDpaB13uyno8RgHDU_XIldZP1-d7cc
 
+# Railway API Configuration
+RAILWAY_API_KEY=a5831590-6312-4ba4-9344-eba2db5ae960
+
 # Optional: Add any API keys for other services
 # OPENAI_API_KEY=your_openai_key_if_used
 # ANTHROPIC_API_KEY=your_anthropic_key_if_used
