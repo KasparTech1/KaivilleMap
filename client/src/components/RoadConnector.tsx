@@ -349,6 +349,8 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       setTimeout(calculatePaths, 100);
       setTimeout(calculatePaths, 500);
       setTimeout(calculatePaths, 1000);
+      setTimeout(calculatePaths, 1500);
+      setTimeout(calculatePaths, 2000);
     };
     
     calculateWithRetries();
