@@ -241,12 +241,14 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
                 
                 if (isHorizontal) {
                   const cp1x = prevPos.x + dx * 0.5;
-                  const cp1y = prevPos.y - (distance * 0.2);
+                  // Invert the curve direction for reverse path
+                  const cp1y = prevPos.y + (distance * 0.2); // Curve down first (opposite of forward)
                   const cp2x = prevPos.x + dx * 0.5;
-                  const cp2y = pos.y + (distance * 0.2);
+                  const cp2y = pos.y - (distance * 0.2); // Then curve up (opposite of forward)
                   reversePathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
                 } else {
                   const curveOffset = distance * 0.3;
+                  // Keep vertical curves the same - they work fine
                   const cp1x = prevPos.x + curveOffset;
                   const cp1y = prevPos.y + dy * 0.3;
                   const cp2x = pos.x - curveOffset;
@@ -264,6 +266,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
                 } else {
                   const arcHeight = 40;
                   const cpx = (pos.x + prevPos.x) / 2;
+                  // Keep the arc the same - quadratic bezier curves are symmetric
                   const cpy = (pos.y + prevPos.y) / 2 - arcHeight;
                   reversePathString += ` Q ${cpx} ${cpy} ${pos.x} ${pos.y}`;
                 }
