@@ -218,65 +218,110 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     if (pathString && buildingPositions.size > 0) {
       setMainPath(pathString);
       
-      // Create reverse path - same buildings but in reverse order
-      const reversedBuildings = [...sortedBuildings].reverse();
-      let reversePathString = '';
+      // Debug: Log the forward path
+      console.log('Forward path:', pathString.substring(0, 200) + '...');
+      console.log('Forward buildings order:', sortedBuildings.map(b => b.id).join(' -> '));
       
-      reversedBuildings.forEach((building, index) => {
-        const pos = buildingPositions.get(building.id);
-        if (pos) {
-          if (index === 0) {
-            reversePathString = `M ${pos.x} ${pos.y}`;
-          } else {
-            const prevBuilding = reversedBuildings[index - 1];
-            const prevPos = buildingPositions.get(prevBuilding.id);
-            if (prevPos) {
-              // Same curve logic as forward path
-              const dx = pos.x - prevPos.x;
-              const dy = pos.y - prevPos.y;
-              const distance = Math.sqrt(dx * dx + dy * dy);
-              
-              if (isMobile) {
-                const isHorizontal = Math.abs(dx) > Math.abs(dy);
-                
-                if (isHorizontal) {
-                  const cp1x = prevPos.x + dx * 0.5;
-                  // Invert the curve direction for reverse path
-                  const cp1y = prevPos.y + (distance * 0.2); // Curve down first (opposite of forward)
-                  const cp2x = prevPos.x + dx * 0.5;
-                  const cp2y = pos.y - (distance * 0.2); // Then curve up (opposite of forward)
-                  reversePathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
-                } else {
-                  const curveOffset = distance * 0.3;
-                  // Keep vertical curves the same - they work fine
-                  const cp1x = prevPos.x + curveOffset;
-                  const cp1y = prevPos.y + dy * 0.3;
-                  const cp2x = pos.x - curveOffset;
-                  const cp2y = pos.y - dy * 0.3;
-                  reversePathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
-                }
-              } else {
-                if (pos.row !== prevPos.row) {
-                  const curveIntensity = 80;
-                  const cp1x = prevPos.x + (dx > 0 ? curveIntensity : -curveIntensity);
-                  const cp1y = prevPos.y + dy * 0.3;
-                  const cp2x = pos.x - (dx > 0 ? curveIntensity : -curveIntensity);
-                  const cp2y = pos.y - dy * 0.3;
-                  reversePathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
-                } else {
-                  const arcHeight = 40;
-                  const cpx = (pos.x + prevPos.x) / 2;
-                  // Keep the arc the same - quadratic bezier curves are symmetric
-                  const cpy = (pos.y + prevPos.y) / 2 - arcHeight;
-                  reversePathString += ` Q ${cpx} ${cpy} ${pos.x} ${pos.y}`;
-                }
-              }
-            }
+      // Create reverse path by parsing and reversing the forward path
+      // This ensures the exact same curves but in reverse order
+      const reversePath = (() => {
+        // Parse the forward path to extract all commands and points
+        const commands = pathString.match(/[MLHVCSQTAZmlhvcsqtaz][^MLHVCSQTAZmlhvcsqtaz]*/g) || [];
+        const pathSegments: Array<{ type: string; points: number[] }> = [];
+        
+        commands.forEach(cmd => {
+          const type = cmd[0];
+          const args = cmd.slice(1).trim().split(/[\s,]+/).map(Number);
+          pathSegments.push({ type, points: args });
+        });
+        
+        // Reverse the segments (except the initial M command)
+        const reversed: Array<{ type: string; points: number[] }> = [];
+        
+        // Start from the last point
+        const lastSegment = pathSegments[pathSegments.length - 1];
+        let lastX = 0, lastY = 0;
+        
+        // Get the final position from the last segment
+        if (lastSegment) {
+          switch (lastSegment.type) {
+            case 'L':
+            case 'M':
+              lastX = lastSegment.points[0];
+              lastY = lastSegment.points[1];
+              break;
+            case 'C':
+              lastX = lastSegment.points[4];
+              lastY = lastSegment.points[5];
+              break;
+            case 'Q':
+              lastX = lastSegment.points[2];
+              lastY = lastSegment.points[3];
+              break;
           }
         }
-      });
+        
+        // Start the reverse path from the last point
+        reversed.push({ type: 'M', points: [lastX, lastY] });
+        
+        // Process segments in reverse order
+        for (let i = pathSegments.length - 1; i > 0; i--) {
+          const segment = pathSegments[i];
+          const prevSegment = pathSegments[i - 1];
+          
+          // Get the start point of this segment (end point of previous segment)
+          let startX = 0, startY = 0;
+          switch (prevSegment.type) {
+            case 'L':
+            case 'M':
+              startX = prevSegment.points[0];
+              startY = prevSegment.points[1];
+              break;
+            case 'C':
+              startX = prevSegment.points[4];
+              startY = prevSegment.points[5];
+              break;
+            case 'Q':
+              startX = prevSegment.points[2];
+              startY = prevSegment.points[3];
+              break;
+          }
+          
+          // Reverse the segment
+          switch (segment.type) {
+            case 'L':
+              reversed.push({ type: 'L', points: [startX, startY] });
+              break;
+            case 'C':
+              // Reverse cubic bezier by swapping control points
+              reversed.push({
+                type: 'C',
+                points: [
+                  segment.points[2], segment.points[3], // Second control point becomes first
+                  segment.points[0], segment.points[1], // First control point becomes second
+                  startX, startY // End point becomes start
+                ]
+              });
+              break;
+            case 'Q':
+              // Quadratic bezier - control point stays the same
+              reversed.push({
+                type: 'Q',
+                points: [segment.points[0], segment.points[1], startX, startY]
+              });
+              break;
+          }
+        }
+        
+        // Construct the reverse path string
+        return reversed.map(seg => `${seg.type} ${seg.points.join(' ')}`).join(' ');
+      })();
       
-      setReversePath(reversePathString);
+      setReversePath(reversePath);
+      
+      // Debug: Log the reverse path
+      console.log('Reverse path:', reversePath.substring(0, 200) + '...');
+      console.log('Reverse path segments:', reversePath.match(/[MLCQmlcq]/g)?.join(','));
       // console.log('Reverse path - First building:', reversedBuildings[0]?.id);
       // console.log('Reverse path - Last building:', reversedBuildings[reversedBuildings.length - 1]?.id);
     } else {
