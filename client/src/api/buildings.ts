@@ -31,13 +31,13 @@ export const getBuildings = () => {
             column: 2,
             span: 1,
             illustration: getAssetUrl('community-center.svg'),
-            connections: ["heritage_center", "learning_lodge"]
+            connections: ["heritage_center", "learning_lodge", "celebration_station"]
           },
           {
             id: "learning_lodge",
             title: "Learning Lodge",
-            row: 2,
-            column: 1,
+            row: 1,
+            column: 3,
             span: 1,
             illustration: getAssetUrl('learning_lodge.svg'),
             connections: ["community-center", "celebration_station"]
@@ -46,16 +46,16 @@ export const getBuildings = () => {
             id: "celebration_station",
             title: "Celebration Station",
             row: 2,
-            column: 2,
+            column: 1,
             span: 1,
             illustration: getAssetUrl('celebration-station.svg'),
-            connections: ["learning_lodge", "kasp_tower"]
+            connections: ["community-center", "learning_lodge", "kasp_tower"]
           },
           {
             id: "kasp_tower",
             title: "KASP Tower",
-            row: 3,
-            column: 1,
+            row: 2,
+            column: 2,
             span: 2,
             illustration: getAssetUrl('kasp-tower.svg'),
             connections: ["celebration_station"]

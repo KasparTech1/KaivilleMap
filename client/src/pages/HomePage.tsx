@@ -406,18 +406,18 @@ export const HomePage: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           {/* Top Section with KNN Tower and Welcome Sign */}
           <div className="top-section flex justify-between items-end mb-0 -mt-4 md:-mt-0">
-            {/* KNN Tower - Left side */}
-            <div className="flex-shrink-0 w-full max-w-[6rem] sm:max-w-[8rem] md:max-w-[12rem] flex items-end justify-center">
-              <KNNTowerIcon isDayMode={isDayMode} />
-            </div>
+            {/* Spacer for balance */}
+            <div className="flex-shrink-0 w-16 sm:w-24 md:w-48" />
             
             {/* Welcome Sign - Center */}
             <div className="flex-grow flex justify-center px-2">
               <WelcomeSign isDayMode={isDayMode} />
             </div>
             
-            {/* Spacer for balance */}
-            <div className="flex-shrink-0 w-16 sm:w-24 md:w-48" />
+            {/* KNN Tower - Right side */}
+            <div className="flex-shrink-0 w-full max-w-[6rem] sm:max-w-[8rem] md:max-w-[12rem] flex items-end justify-center">
+              <KNNTowerIcon isDayMode={isDayMode} />
+            </div>
           </div>
 
         {/* Interactive Map */}
