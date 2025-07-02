@@ -22,7 +22,11 @@ REACT_APP_SUPABASE_URL=https://yvbtqcmiuymyvtvaqgcf.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2YnRxY21pdXlteXZ0dmFxZ2NmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEyOTA3ODcsImV4cCI6MjA2Njg2Njc4N30.Rv05YRSTAOcv1rDpaB13uyno8RgHDU_XIldZP1-d7cc
 
 # Railway API Configuration
+# Note: Use RAILWAY_TOKEN for CLI and deployment access
+RAILWAY_TOKEN=3ef17b6e-e493-447f-a095-1856c35bb7fc
 RAILWAY_API_KEY=a5831590-6312-4ba4-9344-eba2db5ae960
+RAILWAY_PROJECT_ID=d94c0c6d-e669-4a34-a693-ecccf6e8533e
+RAILWAY_ENVIRONMENT_ID=5292214a-94a5-47d4-97a3-e474e3c43fe5
 
 # Optional: Add any API keys for other services
 # OPENAI_API_KEY=your_openai_key_if_used
