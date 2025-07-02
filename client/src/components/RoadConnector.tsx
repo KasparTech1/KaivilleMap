@@ -54,7 +54,17 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       }) || elements[0];
       
       if (element) {
-        const rect = element.getBoundingClientRect();
+        // For Kaspar Tower and Celebration Station, look for the transformed inner div
+        let targetElement = element;
+        if (building.id === 'kasp_tower' || building.id === 'celebration_station') {
+          // Find the transformed div inside (it's inside Link > div)
+          const innerDiv = element.querySelector('a > div');
+          if (innerDiv) {
+            targetElement = innerDiv;
+          }
+        }
+        
+        const rect = targetElement.getBoundingClientRect();
         const container = element.closest('.buildings-grid');
         
         if (container) {
