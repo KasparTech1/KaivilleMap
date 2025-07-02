@@ -8,7 +8,7 @@ interface KNNTowerIconProps {
 
 export const KNNTowerIcon: React.FC<KNNTowerIconProps> = React.memo(({ isDayMode = true }) => {
   return (
-    <Link to="/knn-news" className="block group">
+    <Link to="/news" className="block group">
       <div className="relative transform transition-all duration-300 group-hover:scale-110">
         <img
           src={getAssetUrl('knn-tower.svg')}
