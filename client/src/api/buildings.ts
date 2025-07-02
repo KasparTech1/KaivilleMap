@@ -6,9 +6,9 @@ import { getAssetUrl } from '../config/assetUrls';
 // Request: {}
 // Response: { buildings: Array<{ id: string, title: string, row: number, column: number, span: number, illustration: string, connections: string[] }> }
 export const getBuildings = () => {
-  // IMPORTANT: This mock data must match client/src/data/town-layout.json
-  // When changing building positions, update BOTH this file AND town-layout.json
-  // TODO: Consider loading from town-layout.json directly to avoid duplication
+  // IMPORTANT: This is the ONLY place where building layout data is stored
+  // The town-layout.json file has been archived and is NOT used
+  // When changing building positions, update only this mock data below
   
   // Mocking the response
   return new Promise((resolve) => {
