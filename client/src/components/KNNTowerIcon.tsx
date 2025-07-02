@@ -13,7 +13,7 @@ export const KNNTowerIcon: React.FC<KNNTowerIconProps> = React.memo(({ isDayMode
         <img
           src={getAssetUrl('knn-tower.svg')}
           alt="Kaiville News Network"
-          className={`w-full max-w-[5.2rem] sm:max-w-[7.8rem] md:max-w-[13rem] mx-auto drop-shadow-2xl transition-all duration-1000 ${
+          className={`w-full max-w-[5.7rem] sm:max-w-[8.6rem] md:max-w-[11.7rem] mx-auto drop-shadow-2xl transition-all duration-1000 ${
             !isDayMode ? 'brightness-110' : ''
           }`}
         />
