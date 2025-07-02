@@ -44,7 +44,7 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
         <div className={`relative hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group ${
           building.id === 'heritage_center' ? (isDayMode ? '-mt-[10%] md:-mt-[8%] md:ml-[10%]' : '-mt-[20%] md:-mt-[18%] md:ml-[10%]') : 
           building.id === 'learning_lodge' ? 'scale-100 -mt-[50%] -ml-[25%] md:scale-100 md:mt-[10%] md:-ml-[15%]' : 
-          building.id === 'community-center' ? 'mt-[60%] md:mt-0' : 
+          building.id === 'community-center' ? 'mt-[60%] md:mt-0 md:scale-[0.95]' : 
           building.id === 'celebration_station' ? 'scale-[2.0] -mt-[25%] ml-[50%] md:scale-[1.2] md:-mt-[10%] md:ml-[40%] md:-translate-x-[220px]' : 
           building.id === 'kasp_tower' ? 'scale-100 md:scale-[0.63] -mt-[5%] md:-mt-[85%] ml-[25%] md:-ml-[20%] md:-translate-x-[180px]' : ''
         }`}>
