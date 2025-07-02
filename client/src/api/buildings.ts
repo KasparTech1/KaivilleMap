@@ -46,17 +46,17 @@ export const getBuildings = () => {
             id: "celebration_station",
             title: "Celebration Station",
             row: 2,
-            column: 1,
+            column: 3,
             span: 1,
             illustration: getAssetUrl('celebration-station.svg'),
-            connections: ["community-center", "learning_lodge", "kasp_tower"]
+            connections: ["learning_lodge", "kasp_tower"]
           },
           {
             id: "kasp_tower",
             title: "KASP Tower",
             row: 2,
             column: 2,
-            span: 2,
+            span: 1,
             illustration: getAssetUrl('kasp-tower.svg'),
             connections: ["celebration_station"]
           }
