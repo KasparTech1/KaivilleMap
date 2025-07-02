@@ -9,6 +9,7 @@ import { getBuildings } from '../api/buildings';
 import { useToast } from '../hooks/useToast';
 import { useCMSContent } from '../hooks/useCMSContent';
 import { Loader2 } from 'lucide-react';
+import { getAssetUrl } from '../config/assetUrls';
 
 interface Building {
   id: string;
@@ -439,6 +440,51 @@ export const HomePage: React.FC = () => {
                   <BuildingCard building={building} isDayMode={isDayMode} />
                 </div>
               ))}
+              
+              {/* Lamp 1: Between Craft Works (row 1, col 3) and Community Center (row 2, col 3) - right side */}
+              <div
+                className="relative z-15 pointer-events-none"
+                style={{
+                  gridRow: '1 / 3',
+                  gridColumn: '3',
+                  display: 'flex',
+                  alignItems: 'end',
+                  justifyContent: 'flex-end',
+                  paddingRight: '2rem',
+                  paddingBottom: '4rem'
+                }}
+              >
+                <img 
+                  src={getAssetUrl('lamp.svg')} 
+                  alt="Street lamp"
+                  className="w-12 h-auto opacity-80"
+                  style={{
+                    filter: isDayMode ? 'none' : 'brightness(1.2) drop-shadow(0 0 20px rgba(255, 220, 100, 0.5))'
+                  }}
+                />
+              </div>
+              
+              {/* Lamp 2: Between Celebration Station (row 2, col 2) and KASP Tower (row 3, col 2) - left of road */}
+              <div
+                className="relative z-15 pointer-events-none"
+                style={{
+                  gridRow: '2 / 4',
+                  gridColumn: '2',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  paddingLeft: '2rem'
+                }}
+              >
+                <img 
+                  src={getAssetUrl('lamp.svg')} 
+                  alt="Street lamp"
+                  className="w-12 h-auto opacity-80"
+                  style={{
+                    filter: isDayMode ? 'none' : 'brightness(1.2) drop-shadow(0 0 20px rgba(255, 220, 100, 0.5))'
+                  }}
+                />
+              </div>
             </div>
             
             {/* Building Cards - Mobile positioning */}
@@ -458,6 +504,50 @@ export const HomePage: React.FC = () => {
                     <BuildingCard building={building} isDayMode={isDayMode} />
                   </div>
                 ))}
+              
+              {/* Mobile Lamp 1: After row 2 (buildings 3 & 4) */}
+              <div
+                className="relative z-15 pointer-events-none col-span-2"
+                style={{
+                  gridRow: '3',
+                  gridColumn: '1 / 3',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '3rem'
+                }}
+              >
+                <img 
+                  src={getAssetUrl('lamp.svg')} 
+                  alt="Street lamp"
+                  className="w-10 h-auto opacity-80"
+                  style={{
+                    filter: isDayMode ? 'none' : 'brightness(1.2) drop-shadow(0 0 20px rgba(255, 220, 100, 0.5))'
+                  }}
+                />
+              </div>
+              
+              {/* Mobile Lamp 2: After row 3 (buildings 5 & 6) */}
+              <div
+                className="relative z-15 pointer-events-none col-span-2"
+                style={{
+                  gridRow: '5',
+                  gridColumn: '1 / 3',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '3rem'
+                }}
+              >
+                <img 
+                  src={getAssetUrl('lamp.svg')} 
+                  alt="Street lamp"
+                  className="w-10 h-auto opacity-80"
+                  style={{
+                    filter: isDayMode ? 'none' : 'brightness(1.2) drop-shadow(0 0 20px rgba(255, 220, 100, 0.5))'
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
