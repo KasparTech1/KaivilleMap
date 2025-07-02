@@ -18,42 +18,24 @@ export const getBuildings = () => {
             column: 1,
             span: 1,
             illustration: getAssetUrl('heritage_center_animated.svg'),
-            connections: ["learning_lodge", "craft_works"]
-          },
-          {
-            id: "learning_lodge",
-            title: "Learning Lodge",
-            row: 1,
-            column: 2,
-            span: 1,
-            illustration: getAssetUrl('learning_lodge.svg'),
-            connections: ["heritage_center", "craft_works", "community-center"]
-          },
-          {
-            id: "craft_works",
-            title: "Craft Works",
-            row: 1,
-            column: 3,
-            span: 1,
-            illustration: getAssetUrl('craft_works.svg'),
-            connections: ["learning_lodge", "community-center"]
+            connections: ["community-center"]
           },
           {
             id: "community-center",
             title: "Community Center",
-            row: 2,
-            column: 3,
+            row: 1,
+            column: 2,
             span: 1,
             illustration: getAssetUrl('community-center.svg'),
-            connections: ["learning_lodge", "craft_works", "knn_tower", "celebration_station"]
+            connections: ["heritage_center", "learning_lodge"]
           },
           {
-            id: "knn_tower",
-            title: "KNN Tower",
+            id: "learning_lodge",
+            title: "Learning Lodge",
             row: 2,
             column: 1,
             span: 1,
-            illustration: getAssetUrl('knn-tower.svg'),
+            illustration: getAssetUrl('learning_lodge.svg'),
             connections: ["community-center", "celebration_station"]
           },
           {
@@ -63,25 +45,16 @@ export const getBuildings = () => {
             column: 2,
             span: 1,
             illustration: getAssetUrl('celebration-station.svg'),
-            connections: ["community-center", "knn_tower", "kasp_tower"]
+            connections: ["learning_lodge", "kasp_tower"]
           },
           {
             id: "kasp_tower",
             title: "KASP Tower",
             row: 3,
-            column: 2,
-            span: 1,
-            illustration: getAssetUrl('kasp-tower.svg'),
-            connections: ["celebration_station", "safety_station"]
-          },
-          {
-            id: "safety_station",
-            title: "Safety Station",
-            row: 3,
             column: 1,
-            span: 1,
-            illustration: getAssetUrl('safety-station.svg'),
-            connections: ["kasp_tower"]
+            span: 2,
+            illustration: getAssetUrl('kasp-tower.svg'),
+            connections: ["celebration_station"]
           }
         ]
       });
