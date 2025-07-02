@@ -1,4 +1,5 @@
 {
+  "__comment": "IMPORTANT: This data is currently NOT being used by the app. The actual data is hardcoded in client/src/api/buildings.ts. When changing building positions, you MUST update BOTH files!",
   "buildings": [
     {
       "id": "heritage_center",
