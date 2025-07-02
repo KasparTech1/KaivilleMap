@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { getAssetUrl } from '../config/assetUrls';
 
 interface AnimatedOrbProps {
   pathData: string;
@@ -175,13 +176,15 @@ export const AnimatedOrb: React.FC<AnimatedOrbProps> = ({
         cy={-size / 6}
       />
       
-      {/* AI Icon (simple robot) */}
-      <g transform={`scale(${size / 24})`}>
-        <rect x="-4" y="-6" width="8" height="10" fill="white" rx="2" opacity="0.9" />
-        <circle cx="-2" cy="-3" r="1" fill={color} />
-        <circle cx="2" cy="-3" r="1" fill={color} />
-        <rect x="-1" y="0" width="2" height="3" fill={color} opacity="0.8" />
-      </g>
+      {/* Wire Basket Icon */}
+      <image
+        href={getAssetUrl('wire-basket.svg')}
+        x={-size / 2.5}
+        y={-size / 2.5}
+        width={size / 1.25}
+        height={size / 1.25}
+        opacity="0.9"
+      />
       
       {/* Pulse animation */}
       <circle
