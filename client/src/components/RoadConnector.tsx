@@ -57,7 +57,8 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
         // For transformed buildings, look for the transformed inner div
         let targetElement = element;
         if (building.id === 'kasp_tower' || building.id === 'celebration_station' || 
-            building.id === 'learning_lodge' || building.id === 'community-center') {
+            building.id === 'learning_lodge' || building.id === 'community-center' ||
+            building.id === 'heritage_center') {
           // Find the transformed div inside (it's inside Link > div)
           const innerDiv = element.querySelector('a > div');
           if (innerDiv) {
