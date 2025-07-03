@@ -35,11 +35,11 @@ export const getBuildings = () => {
           },
           {
             id: "learning_lodge",
-            title: "Learning Lodge",
+            title: "Skills University",
             row: 1,
             column: 3,
             span: 1,
-            illustration: getAssetUrl('learning_lodge.svg'),
+            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg?t=${Date.now()}`,
             connections: ["community-center", "celebration_station"]
           },
           {
@@ -89,9 +89,9 @@ export const getBuildingDetails = (id: string) => {
         },
         "learning_lodge": {
           id: "learning_lodge",
-          title: "Learning Lodge",
-          description: "A modern educational hub where knowledge meets innovation and creativity flourishes.",
-          details: "The Learning Lodge offers workshops, seminars, and hands-on learning experiences for all ages, fostering lifelong learning and skill development."
+          title: "Skills University",
+          description: "The premier institution for professional development and skill mastery in Kaiville.",
+          details: "Skills University provides comprehensive training programs, certifications, and workshops designed to empower residents with practical skills for career advancement and personal growth."
         },
         "craft_works": {
           id: "craft_works",

@@ -65,9 +65,9 @@ async function createSimpleTable() {
         details: 'The Heritage Center is the heart of Kaiville\'s cultural preservation efforts. Here, visitors can explore exhibits showcasing our town\'s rich history, from its founding days to present achievements.'
       }),
       JSON.stringify({
-        title: 'Learning Lodge',
-        description: 'Where curiosity meets opportunity',
-        details: 'The Learning Lodge serves as our community\'s educational hub, offering programs for all ages. From early childhood development to adult continuing education, we foster lifelong learning.'
+        title: 'Skills University',
+        description: 'The premier institution for professional development and skill mastery',
+        details: 'Skills University provides comprehensive training programs, certifications, and workshops designed to empower residents with practical skills for career advancement and personal growth.'
       })
     ]);
     

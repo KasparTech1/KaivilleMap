@@ -175,7 +175,7 @@ export const KNNFeedPage: React.FC = () => {
         {
           id: '3',
           article_id: '3',
-          card_title: 'Tech Innovation Hub Coming to Learning Lodge',
+          card_title: 'Tech Innovation Hub Coming to Skills University',
           card_description: 'New partnership brings cutting-edge technology programs and resources to our education center...',
           card_image_id: null,
           card_style: 'default',
