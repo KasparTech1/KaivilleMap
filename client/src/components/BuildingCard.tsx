@@ -23,13 +23,9 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
   // Use the illustration property from the building data if available
   let svgPath = building.illustration || '';
   
-  // Special case for Heritage Center - use Supabase URLs
+  // Special case for Heritage Center (now Stewardship Hall) - use new URL
   if (building.id === 'heritage_center') {
-    if (isDayMode) {
-      svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage_center_animated.svg';
-    } else {
-      svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/heritage-night-flagsdown.svg';
-    }
+    svgPath = `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/stewardship_hall_01.svg?t=${Date.now()}`;
   }
   
   // Special case for KNN Tower - use Supabase ticker URL for both day and night

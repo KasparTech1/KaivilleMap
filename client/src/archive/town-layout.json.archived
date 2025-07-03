@@ -3,11 +3,11 @@
   "buildings": [
     {
       "id": "heritage_center",
-      "title": "Heritage Center",
+      "title": "Stewardship Hall",
       "row": 1,
       "column": 1,
       "span": 1,
-      "illustration": "/assets/heritage_center_animated.svg",
+      "illustration": "/assets/stewardship-hall.svg",
       "connections": ["community-center"]
     },
     {

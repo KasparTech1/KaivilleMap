@@ -60,9 +60,9 @@ async function createSimpleTable() {
         aboutText: 'Kaiville is a vibrant community where innovation meets tradition. Our town is home to diverse businesses, cultural centers, and community spaces that make life here truly special.'
       }),
       JSON.stringify({
-        title: 'Heritage Center',
-        description: 'Preserving our past, inspiring our future',
-        details: 'The Heritage Center is the heart of Kaiville\'s cultural preservation efforts. Here, visitors can explore exhibits showcasing our town\'s rich history, from its founding days to present achievements.'
+        title: 'Stewardship Hall',
+        description: 'Where responsible leadership and community care come together',
+        details: 'Stewardship Hall is dedicated to fostering responsible governance, environmental sustainability, and community stewardship. This center hosts leadership development programs, sustainability initiatives, and civic engagement activities.'
       }),
       JSON.stringify({
         title: 'Skills University',

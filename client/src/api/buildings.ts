@@ -17,11 +17,11 @@ export const getBuildings = () => {
         buildings: [
           {
             id: "heritage_center",
-            title: "Heritage Center",
+            title: "Stewardship Hall",
             row: 1,
             column: 1,
             span: 1,
-            illustration: getAssetUrl('heritage_center_animated.svg'),
+            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/stewardship_hall_01.svg?t=${Date.now()}`,
             connections: ["community-center"]
           },
           {
@@ -83,9 +83,9 @@ export const getBuildingDetails = (id: string) => {
       const buildingDetails = {
         "heritage_center": {
           id: "heritage_center",
-          title: "Heritage Center",
-          description: "Discover the rich history and cultural heritage of Kaiville through interactive exhibits and historical artifacts.",
-          details: "The Heritage Center houses a collection of artifacts, photographs, and documents that tell the story of Kaiville's founding and development over the years."
+          title: "Stewardship Hall",
+          description: "Where responsible leadership and community care come together to shape Kaiville's future.",
+          details: "Stewardship Hall is dedicated to fostering responsible governance, environmental sustainability, and community stewardship. This center hosts leadership development programs, sustainability initiatives, and civic engagement activities that empower residents to be active stewards of their community."
         },
         "learning_lodge": {
           id: "learning_lodge",

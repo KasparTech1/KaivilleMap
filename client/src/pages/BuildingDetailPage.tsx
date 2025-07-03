@@ -17,7 +17,7 @@ interface BuildingDetail {
 }
 
 const buildingSvgMap: Record<string, string> = {
-  heritage_center: getAssetUrl('heritage_center-notext.svg'),
+  heritage_center: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/stewardship_hall_01.svg?t=${Date.now()}`,
   learning_lodge: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg?t=${Date.now()}`,
   craft_works: getAssetUrl('craft_works.svg'),
   'community-center': `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
