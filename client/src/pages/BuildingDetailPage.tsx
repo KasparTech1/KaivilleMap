@@ -20,7 +20,7 @@ const buildingSvgMap: Record<string, string> = {
   heritage_center: getAssetUrl('heritage_center-notext.svg'),
   learning_lodge: getAssetUrl('learning_lodge-notext.svg'),
   craft_works: getAssetUrl('craft_works.svg'),
-  'community-center': getAssetUrl('community-center.svg'),
+  'community-center': `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
   knn_tower: getAssetUrl('knn-tower.svg'),
   celebration_station: getAssetUrl('celebration-station-notext.svg'),
   kasp_tower: getAssetUrl('kasp-tower.svg'),
@@ -130,13 +130,15 @@ export const BuildingDetailPage: React.FC = () => {
         <div className="space-y-8">
           {/* Building Header */}
           <div className="text-center space-y-4">
-            <div className="mx-auto">
-              <img 
-                src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
-                alt={building.title}
-                className="h-32 w-auto mx-auto"
-              />
-            </div>
+            {building.id !== 'community-center' && (
+              <div className="mx-auto">
+                <img 
+                  src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
+                  alt={building.title}
+                  className="h-32 w-auto mx-auto"
+                />
+              </div>
+            )}
             
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
@@ -167,13 +169,15 @@ export const BuildingDetailPage: React.FC = () => {
               {/* Placeholder for future content */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 text-center">
                 <div className="space-y-4">
-                  <div className="mx-auto">
-                    <img 
-                      src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
-                      alt={building.title}
-                      className="h-16 w-auto mx-auto opacity-50"
-                    />
-                  </div>
+                  {building.id !== 'community-center' && (
+                    <div className="mx-auto">
+                      <img 
+                        src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
+                        alt={building.title}
+                        className="h-16 w-auto mx-auto opacity-50"
+                      />
+                    </div>
+                  )}
                   <div>
                     <h3 className="text-xl font-semibold text-gray-800 mb-2">
                       More Content Coming Soon
