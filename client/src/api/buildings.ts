@@ -26,11 +26,11 @@ export const getBuildings = () => {
           },
           {
             id: "community-center",
-            title: "Community Center",
+            title: "Join Junction",
             row: 1,
             column: 2,
             span: 1,
-            illustration: getAssetUrl('community-center.svg'),
+            illustration: 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg',
             connections: ["heritage_center", "learning_lodge", "celebration_station"]
           },
           {
@@ -101,9 +101,9 @@ export const getBuildingDetails = (id: string) => {
         },
         "community-center": {
           id: "community-center",
-          title: "Community Center",
-          description: "The social hub of Kaiville, hosting events, classes, and bringing neighbors together.",
-          details: "The Community Center features multipurpose rooms, a gymnasium, and regularly hosts fitness classes, social events, and community gatherings."
+          title: "Join Junction",
+          description: "The connection hub of Kaiville, where paths cross and community thrives.",
+          details: "Join Junction serves as the central meeting point where residents connect, collaborate, and build lasting relationships throughout Kaiville."
         },
         "knn_tower": {
           id: "knn_tower",

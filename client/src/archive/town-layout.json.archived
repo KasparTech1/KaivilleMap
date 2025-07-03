@@ -12,11 +12,11 @@
     },
     {
       "id": "community-center",
-      "title": "Community Center",
+      "title": "Join Junction",
       "row": 1,
       "column": 2,
       "span": 1,
-      "illustration": "/assets/community-center.svg",
+      "illustration": "/assets/join-junction-070325a.svg",
       "connections": ["heritage_center", "learning_lodge"]
     },
     {
