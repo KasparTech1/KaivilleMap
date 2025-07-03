@@ -30,11 +30,11 @@
     },
     {
       "id": "celebration_station",
-      "title": "Celebration Station",
+      "title": "Innovation Plaza",
       "row": 2,
       "column": 2,
       "span": 1,
-      "illustration": "/assets/celebration-station.svg",
+      "illustration": "/assets/innovation-plaza.svg",
       "connections": ["learning_lodge", "kasp_tower"]
     },
     {

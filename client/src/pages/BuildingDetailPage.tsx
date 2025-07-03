@@ -22,7 +22,7 @@ const buildingSvgMap: Record<string, string> = {
   craft_works: getAssetUrl('craft_works.svg'),
   'community-center': `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
   knn_tower: getAssetUrl('knn-tower.svg'),
-  celebration_station: getAssetUrl('celebration-station-notext.svg'),
+  celebration_station: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/innovation_plaza_01.svg?t=${Date.now()}`,
   kasp_tower: getAssetUrl('kasp-tower.svg'),
   safety_station: getAssetUrl('safety-station.svg'),
   town_hall: getAssetUrl('town-hall.svg')

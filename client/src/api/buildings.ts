@@ -44,11 +44,11 @@ export const getBuildings = () => {
           },
           {
             id: "celebration_station",
-            title: "Celebration Station",
+            title: "Innovation Plaza",
             row: 2,
             column: 3,
             span: 1,
-            illustration: getAssetUrl('celebration-station.svg'),
+            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/innovation_plaza_01.svg?t=${Date.now()}`,
             connections: ["learning_lodge", "kasp_tower"]
           },
           {
@@ -113,9 +113,9 @@ export const getBuildingDetails = (id: string) => {
         },
         "celebration_station": {
           id: "celebration_station",
-          title: "Celebration Station",
-          description: "The heart of joy and festivities in Kaiville, where every day is a celebration.",
-          details: "Celebration Station hosts parties, events, and community gatherings, bringing smiles and laughter to residents of all ages."
+          title: "Innovation Plaza",
+          description: "Where groundbreaking ideas come to life and entrepreneurial dreams take flight.",
+          details: "Innovation Plaza is Kaiville's hub for startups, tech innovation, and creative collaboration. This dynamic space features co-working areas, maker spaces, and incubator programs that foster entrepreneurship and technological advancement."
         },
         "kasp_tower": {
           id: "kasp_tower",
