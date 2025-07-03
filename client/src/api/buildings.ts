@@ -53,11 +53,11 @@ export const getBuildings = () => {
           },
           {
             id: "kasp_tower",
-            title: "KASP Tower",
+            title: "Kaizen Tower",
             row: 2,
             column: 2,
             span: 1,
-            illustration: getAssetUrl('kasp-tower.svg'),
+            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/kaizen_tower_01.svg?t=${Date.now()}`,
             connections: ["celebration_station"]
           }
         ]
@@ -119,9 +119,9 @@ export const getBuildingDetails = (id: string) => {
         },
         "kasp_tower": {
           id: "kasp_tower",
-          title: "KASP Tower",
-          description: "The technological hub of Kaiville, where innovation meets community service.",
-          details: "KASP Tower houses advanced technology services, digital infrastructure, and serves as the nerve center for Kaiville's smart city initiatives."
+          title: "Kaizen Tower",
+          description: "The center of continuous improvement and excellence in Kaiville.",
+          details: "Kaizen Tower embodies the philosophy of continuous improvement, housing quality management systems, process optimization teams, and excellence training programs that help Kaiville residents and businesses achieve their highest potential."
         },
         "safety_station": {
           id: "safety_station",

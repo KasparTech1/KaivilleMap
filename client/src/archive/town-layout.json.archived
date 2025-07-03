@@ -39,11 +39,11 @@
     },
     {
       "id": "kasp_tower",
-      "title": "KASP Tower",
+      "title": "Kaizen Tower",
       "row": 3,
       "column": 1,
       "span": 2,
-      "illustration": "/assets/kasp-tower.svg",
+      "illustration": "/assets/kaizen-tower.svg",
       "connections": ["celebration_station"]
     }
   ]
