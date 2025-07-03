@@ -30,7 +30,7 @@ export const getBuildings = () => {
             row: 1,
             column: 2,
             span: 1,
-            illustration: 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg',
+            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
             connections: ["heritage_center", "learning_lodge", "celebration_station"]
           },
           {
