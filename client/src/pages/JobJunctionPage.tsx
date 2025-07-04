@@ -32,7 +32,9 @@ export const JobJunctionPage: React.FC = () => {
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <h1 className="text-2xl text-[#1f4e79] font-serif font-bold">Kaiville</h1>
+              <Link to="/" className="no-underline">
+                <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
+              </Link>
               <nav className="ml-10 hidden md:block">
                 <ul className="flex space-x-8">
                   <li>
