@@ -4,7 +4,7 @@ import { getBuildingDetails } from '../api/buildings';
 import { useToast } from '../hooks/useToast';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { ArrowLeft, Building2, MapPin, Loader2 } from 'lucide-react';
+import { ArrowLeft, Building2, MapPin, Loader2, ChevronRight } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
 import { EditButton } from '../components/cms/EditButton';
 import { useCMSContent } from '../hooks/useCMSContent';
@@ -26,6 +26,15 @@ const buildingSvgMap: Record<string, string> = {
   kasp_tower: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/kaizen_tower_01.svg?t=${Date.now()}`,
   safety_station: getAssetUrl('safety-station.svg'),
   town_hall: getAssetUrl('town-hall.svg')
+};
+
+// Next building navigation map
+const nextBuildingMap: Record<string, { id: string, name: string }> = {
+  heritage_center: { id: 'community-center', name: 'Job Junction' },
+  'community-center': { id: 'learning_lodge', name: 'Skills Academy' },
+  learning_lodge: { id: 'celebration_station', name: 'Innovation Plaza' },
+  celebration_station: { id: 'kasp_tower', name: 'Kaizen Tower' },
+  kasp_tower: { id: 'community-center', name: 'Job Junction' }
 };
 
 export const BuildingDetailPage: React.FC = () => {
@@ -104,6 +113,8 @@ export const BuildingDetailPage: React.FC = () => {
     );
   }
 
+  const nextBuilding = nextBuildingMap[building.id];
+
   return (
     <div className="min-h-screen bg-sky-100">
       {/* Header */}
@@ -139,58 +150,109 @@ export const BuildingDetailPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="space-y-8">
           {/* Building Header */}
-          <div className="text-center space-y-4">
-            {/* SVG removed from body - now only shows in header */}
+          <div className="text-center space-y-6">
+            {cmsContent.subtitle && (
+              <h2 className="text-2xl md:text-3xl font-semibold text-blue-600">
+                {cmsContent.subtitle}
+              </h2>
+            )}
             
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
                 {cmsContent.title || building.title}
               </h1>
+              
+              {/* Hero Quote */}
+              {cmsContent.heroQuote && (
+                <div className="max-w-3xl mx-auto mt-6 mb-8">
+                  <blockquote className="text-xl md:text-2xl text-gray-700 italic font-medium leading-relaxed">
+                    {cmsContent.heroQuote}
+                  </blockquote>
+                </div>
+              )}
+              
               <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                 {cmsContent.description || building.description}
               </p>
             </div>
           </div>
 
-          {/* Building Details Card */}
-          <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
-            <CardHeader className="text-center pb-6">
-              <CardTitle className="text-2xl text-gray-800">About This Location</CardTitle>
-              <CardDescription className="text-lg">
-                Learn more about what makes this place special
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-6">
-              <div className="prose prose-lg max-w-none">
-                <p className="text-gray-700 leading-relaxed text-center">
-                  {cmsContent.details || building.details}
-                </p>
-              </div>
-
-              {/* Placeholder for future content */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 text-center">
-                <div className="space-y-4">
-                  {/* SVG removed from body - now only shows in header */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                      More Content Coming Soon
-                    </h3>
-                    <p className="text-gray-600">
-                      We're working on adding more interactive features, photos, and detailed information about {building.title}.
-                    </p>
-                  </div>
+          {/* Dynamic Content Sections */}
+          {cmsContent.sections && cmsContent.sections.length > 0 ? (
+            <div className="space-y-8">
+              {cmsContent.sections.map((section: any, index: number) => (
+                <Card key={index} className="bg-white/90 backdrop-blur-sm shadow-xl border-0">
+                  <CardHeader>
+                    <CardTitle className="text-2xl text-gray-800">{section.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="prose prose-lg max-w-none">
+                      <div 
+                        className="text-gray-700 leading-relaxed whitespace-pre-wrap"
+                        dangerouslySetInnerHTML={{ 
+                          __html: section.content
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\n/g, '<br />')
+                            .replace(/•/g, '<li>')
+                            .replace(/<li>(.*?)(?=<br \/>|$)/g, '<ul><li>$1</li></ul>')
+                            .replace(/<\/ul><ul>/g, '')
+                        }}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            // Fallback content if no sections
+            <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
+              <CardHeader className="text-center pb-6">
+                <CardTitle className="text-2xl text-gray-800">About This Location</CardTitle>
+                <CardDescription className="text-lg">
+                  Learn more about what makes this place special
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="prose prose-lg max-w-none">
+                  <p className="text-gray-700 leading-relaxed text-center">
+                    {cmsContent.details || building.details}
+                  </p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Call to Action */}
+          {cmsContent.callToAction && (
+            <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl border-0">
+              <CardContent className="p-8">
+                <p className="text-xl text-center font-medium mb-6">
+                  {cmsContent.callToAction}
+                </p>
+                {nextBuilding && (
+                  <div className="text-center">
+                    <Link to={`/building/${nextBuilding.id}`}>
+                      <Button
+                        size="lg"
+                        className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        Continue to {nextBuilding.name}
+                        <ChevronRight className="w-5 h-5 ml-2" />
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Return to Map CTA */}
           <div className="text-center pt-8">
             <Link to="/">
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                variant="outline"
+                className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 <MapPin className="w-5 h-5 mr-2" />
                 Explore More Buildings
