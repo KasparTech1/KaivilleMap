@@ -103,14 +103,9 @@ export const StewardshipHallPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="h-[500px] relative overflow-hidden">
-        <img 
-          className="absolute inset-0 w-full h-full object-cover"
-          src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/buildings/stewardship-hall-hero.jpg"
-          alt="Stewardship Hall"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-        <div className="container mx-auto px-6 h-full flex items-center relative z-10">
+      <div className="h-[500px] relative overflow-hidden bg-gradient-to-br from-[#1f4e79] to-[#2d5a87]">
+        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+        <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
           <div className="max-w-4xl">
             <h1 className="text-5xl font-serif text-white mb-4 font-bold">
               {cmsContent.title || 'Stewardship Hall'}
@@ -124,6 +119,13 @@ export const StewardshipHallPage: React.FC = () => {
             <Button className="bg-[#D4AF37] text-[#1f4e79] hover:bg-[#D4AF37]/90 text-lg px-8 py-6">
               <Building2 className="mr-2" /> Explore Our Heritage
             </Button>
+          </div>
+          <div className="hidden lg:block">
+            <img 
+              className="h-[400px] w-auto drop-shadow-2xl"
+              src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/stewardship_hall_01.svg"
+              alt="Stewardship Hall Building"
+            />
           </div>
         </div>
       </div>
