@@ -147,8 +147,8 @@ export const KNNFeedPage: React.FC = () => {
         {
           id: '1',
           article_id: '1',
-          card_title: 'Grand Opening of the New Community Center',
-          card_description: 'Kaiville celebrates the opening of our state-of-the-art community center with activities for all ages...',
+          card_title: 'Grand Opening of Join Junction',
+          card_description: 'Kaiville celebrates the opening of our state-of-the-art Join Junction with activities for all ages...',
           card_image_id: null,
           card_style: 'default',
           published_at: new Date().toISOString(),
