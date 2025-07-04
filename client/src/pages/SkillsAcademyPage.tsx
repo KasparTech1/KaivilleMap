@@ -83,32 +83,31 @@ export const SkillsAcademyPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="py-16 bg-[#F5F5DC]">
-        <div className="container mx-auto px-6">
-          <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg border border-gray-200 p-16">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-              <div className="space-y-6">
-                <h1 className="text-5xl lg:text-6xl font-serif text-[#1f4e79] font-bold leading-tight">
-                  {cmsContent.title || 'Skills Academy'}
-                </h1>
-                <h2 className="text-2xl font-serif text-[#D4AF37]">
-                  {cmsContent.subtitle || 'Learn and Develop Your AI Skills'}
-                </h2>
-                <p className="text-lg text-gray-700 leading-relaxed">
-                  {cmsContent.description || 'From Swiss Guards to Texas Aggies to AI Pioneers - we\'ve always valued learning and service'}
-                </p>
-                <Button className="bg-[#D4AF37] text-[#1f4e79] hover:bg-[#D4AF37]/90 text-lg px-8 py-4">
-                  <GraduationCap className="mr-3" /> Enter the Academy
-                </Button>
-              </div>
-              <div className="flex justify-center">
-                <img 
-                  className="h-[400px] w-auto drop-shadow-xl"
-                  src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg"
-                  alt="Skills Academy Building"
-                />
-              </div>
+      <div className="h-[500px] relative overflow-hidden">
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+        <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
+          <div className="max-w-5xl">
+            <h1 className="text-5xl font-serif text-white mb-4 font-bold">
+              {cmsContent.title || 'Skills Academy'}
+            </h1>
+            <h2 className="text-3xl font-serif text-[#D4AF37] mb-6">
+              {cmsContent.subtitle || 'Learn and Develop Your AI Skills'}
+            </h2>
+            <div className="bg-white bg-opacity-10 p-6 rounded-lg mb-6 backdrop-blur-sm">
+              <p className="text-xl text-white italic font-serif">
+                {cmsContent.description || 'From Swiss Guards to Texas Aggies to AI Pioneers - we\'ve always valued learning and service'}
+              </p>
             </div>
+            <Button className="bg-[#D4AF37] text-[#1f4e79] hover:bg-[#D4AF37]/90 text-lg px-6 py-3">
+              <GraduationCap className="mr-2" /> Enter the Academy
+            </Button>
+          </div>
+          <div className="hidden lg:block">
+            <img 
+              className="h-[400px] w-auto drop-shadow-2xl"
+              src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg"
+              alt="Skills Academy Building"
+            />
           </div>
         </div>
       </div>
