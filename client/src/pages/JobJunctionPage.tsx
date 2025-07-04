@@ -33,7 +33,7 @@ export const JobJunctionPage: React.FC = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <Link to="/" className="no-underline">
-                <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
+                <h1 className="text-2xl text-[#1f4e79] font-['Bebas_Neue'] font-normal hover:text-[#D4AF37] transition cursor-pointer">KAIVILLE</h1>
               </Link>
               <nav className="ml-10 hidden md:block">
                 <ul className="flex space-x-8">
@@ -82,7 +82,7 @@ export const JobJunctionPage: React.FC = () => {
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
           <div className="max-w-5xl">
-            <h1 className="text-5xl font-serif text-white mb-4 font-bold">
+            <h1 className="text-5xl font-['Bebas_Neue'] text-white mb-4 font-normal">
               {cmsContent.title || 'Job Junction'}
             </h1>
             <h2 className="text-3xl font-serif text-[#D4AF37] mb-6">
@@ -283,7 +283,7 @@ export const JobJunctionPage: React.FC = () => {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl mb-4 font-serif text-[#D4AF37]">Kaiville</h3>
+              <h3 className="text-xl mb-4 font-serif text-[#D4AF37]">KAIVILLE</h3>
               <p className="text-gray-400">
                 125 years of faithful stewardship, building a legacy for future generations.
               </p>
