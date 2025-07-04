@@ -271,7 +271,7 @@ export const JobJunctionPage: React.FC = () => {
                 </Button>
               </Link>
               <Link to="/">
-                <Button variant="outline" className="border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-4">
+                <Button className="bg-white/20 text-white border-2 border-white hover:bg-white/30 text-lg px-8 py-4">
                   <MapIcon className="mr-2" /> Return to Town Map
                 </Button>
               </Link>
