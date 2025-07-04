@@ -77,7 +77,7 @@ export const KaizenTowerPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="h-[600px] relative overflow-hidden">
+      <div className="h-[500px] relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
         <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
           <div className="max-w-5xl">
@@ -99,7 +99,7 @@ export const KaizenTowerPage: React.FC = () => {
           </div>
           <div className="hidden lg:block">
             <img 
-              className="h-[500px] w-auto drop-shadow-2xl"
+              className="h-[400px] w-auto drop-shadow-2xl"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/kaizen_tower_01.svg"
               alt="Kaizen Tower"
             />
