@@ -6,6 +6,7 @@ import { BuildingDetailPage } from "./pages/BuildingDetailPage"
 import { StewardshipHallPage } from "./pages/StewardshipHallPage"
 import { InnovationPlazaPage } from "./pages/InnovationPlazaPage"
 import { SkillsAcademyPage } from "./pages/SkillsAcademyPage"
+import { KaizenTowerPage } from "./pages/KaizenTowerPage"
 import { KNNFeedPage } from "./pages/KNNFeedPage"
 import { ArticlePage } from "./pages/ArticlePage"
 import { BlankPage } from "./pages/BlankPage"
@@ -26,6 +27,7 @@ function App() {
           <Route path="/building/heritage_center" element={<StewardshipHallPage />} />
           <Route path="/building/celebration_station" element={<InnovationPlazaPage />} />
           <Route path="/building/learning_lodge" element={<SkillsAcademyPage />} />
+          <Route path="/building/kasp_tower" element={<KaizenTowerPage />} />
           <Route path="/building/:id" element={<BuildingDetailPage />} />
           <Route path="/news" element={<KNNFeedPage />} />
           <Route path="/news/*" element={<ArticlePage />} />
