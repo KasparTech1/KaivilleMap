@@ -43,7 +43,7 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
           'hover:scale-[1.02]'
         } active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group filter drop-shadow-[0_5px_15px_rgba(0,0,0,0.15)] ${
           building.id === 'heritage_center' ? '-mt-[20%] translate-x-[5px] -translate-y-[10px] md:-mt-[18%] md:ml-[10%] md:translate-x-0 md:translate-y-0' : 
-          building.id === 'learning_lodge' ? 'scale-x-[0.75] scale-y-100 -mt-[50%] -ml-[25%] translate-y-[-25px] md:scale-x-[0.75] md:scale-y-100 md:mt-[10%] md:-ml-[15%] md:translate-y-0' : 
+          building.id === 'learning_lodge' ? '-mt-[50%] -ml-[25%] translate-y-[-25px] md:mt-[10%] md:-ml-[15%] md:translate-y-0' : 
           building.id === 'community-center' ? 'scale-x-[1.2] scale-y-[1.5] hover:scale-x-[1.26] hover:scale-y-[1.575] mt-[60%] translate-y-[-10px] md:mt-0 md:scale-[1.425] md:translate-y-0' : 
           building.id === 'celebration_station' ? 'scale-x-[1.6] scale-y-[2.0] hover:scale-x-[1.68] hover:scale-y-[2.1] -mt-[25%] ml-[50%] -translate-x-[40px] translate-y-[-20px] md:scale-[1.2] md:-mt-[10%] md:ml-[40%] md:-translate-x-[220px] md:translate-y-0' : 
           building.id === 'kasp_tower' ? 'scale-100 -mt-[5%] ml-[25%] translate-y-[-10px] md:scale-[0.63] md:-mt-[85%] md:-ml-[20%] md:-translate-x-[180px] md:translate-y-0' : ''
