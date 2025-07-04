@@ -90,11 +90,9 @@ export const SkillsAcademyPage: React.FC = () => {
                 {cmsContent.subtitle || 'Learn and Develop Your AI Skills'}
               </h2>
             </div>
-            <div className="bg-white bg-opacity-10 p-6 rounded-lg mb-6 backdrop-blur-sm">
-              <p className="text-xl text-white italic font-serif">
-                {cmsContent.description || 'From Swiss Guards to Texas Aggies to AI Pioneers - we\'ve always valued learning and service'}
-              </p>
-            </div>
+            <p className="text-xl text-white italic font-serif max-w-3xl">
+              {cmsContent.description || 'From Swiss Guards to Texas Aggies to AI Pioneers - we\'ve always valued learning and service'}
+            </p>
           </div>
           <div className="hidden lg:block">
             <img 

@@ -85,14 +85,12 @@ export const JobJunctionPage: React.FC = () => {
                 {cmsContent.subtitle || 'Where We Choose to Join, Not Judge'}
               </h2>
             </div>
-            <div className="bg-white bg-opacity-10 p-6 rounded-lg mb-6 backdrop-blur-sm">
-              <p className="text-xl text-white mb-2 italic font-serif">
-                {cmsContent.heroQuote?.text || '"You felt like you were a part of this family, that it wasn\'t just a work environment. This was like your second family."'}
-              </p>
-              <p className="text-lg text-[#D4AF37]">
-                {cmsContent.heroQuote?.author || '- Arthur Kaspar'}
-              </p>
-            </div>
+            <p className="text-xl text-white italic font-serif mb-2 max-w-3xl">
+              {cmsContent.heroQuote?.text || '"You felt like you were a part of this family, that it wasn\'t just a work environment. This was like your second family."'}
+            </p>
+            <p className="text-lg text-[#D4AF37]">
+              {cmsContent.heroQuote?.author || '- Arthur Kaspar'}
+            </p>
           </div>
           <div className="hidden lg:block">
             <img 

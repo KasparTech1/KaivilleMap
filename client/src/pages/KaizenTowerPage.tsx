@@ -90,14 +90,12 @@ export const KaizenTowerPage: React.FC = () => {
                 {cmsContent.subtitle || 'Continuous Improvement Never Ends'}
               </h2>
             </div>
-            <div className="bg-white bg-opacity-15 p-6 rounded-lg mb-6 backdrop-blur-sm border border-white border-opacity-20">
-              <p className="text-xl text-white italic font-serif">
-                {cmsContent.heroQuote?.text || '"At 125 years old, we\'re putting our foot on the accelerator, not coasting."'}
-              </p>
-              <p className="text-lg text-[#D4AF37] mt-2">
-                {cmsContent.heroQuote?.author || '- Jason Kaspar'}
-              </p>
-            </div>
+            <p className="text-xl text-white italic font-serif mb-2 max-w-3xl">
+              {cmsContent.heroQuote?.text || '"At 125 years old, we\'re putting our foot on the accelerator, not coasting."'}
+            </p>
+            <p className="text-lg text-[#D4AF37]">
+              {cmsContent.heroQuote?.author || '- Jason Kaspar'}
+            </p>
           </div>
           <div className="hidden lg:block">
             <img 

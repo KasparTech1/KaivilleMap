@@ -90,11 +90,9 @@ export const InnovationPlazaPage: React.FC = () => {
                 {cmsContent.subtitle || 'Where Ideas Take Flight'}
               </h2>
             </div>
-            <div className="bg-white bg-opacity-15 p-6 rounded-lg mb-6 backdrop-blur-sm">
-              <p className="text-xl text-white italic font-serif">
-                {cmsContent.heroQuote || '"Your experience is the secret ingredient. AI has the recipes, but you know what tastes right."'}
-              </p>
-            </div>
+            <p className="text-xl text-white italic font-serif max-w-3xl">
+              {cmsContent.heroQuote || '"Your experience is the secret ingredient. AI has the recipes, but you know what tastes right."'}
+            </p>
           </div>
           <div className="hidden lg:block">
             <img 
