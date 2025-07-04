@@ -62,6 +62,12 @@ export const assetUrls = {
     "storagePath": "site-assets/icons/kai-welocme.svg",
     "category": "site-assets/icons"
   },
+  "kai-welcome.svg": {
+    "originalPath": "/assets/kai-welcome.svg",
+    "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/kai-welcome.svg",
+    "storagePath": "site-assets/icons/kai-welcome.svg",
+    "category": "site-assets/icons"
+  },
   "kai-welcome-moon.svg": {
     "originalPath": "/assets/kai-welcome-moon.svg",
     "supabaseUrl": "https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/site-assets/icons/kai-welcome-moon.svg",
