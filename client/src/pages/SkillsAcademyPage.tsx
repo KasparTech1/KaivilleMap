@@ -33,7 +33,7 @@ export const SkillsAcademyPage: React.FC = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <Link to="/" className="no-underline">
-                <h1 className="text-2xl text-[#F5F5DC] font-['Bebas_Neue'] font-normal hover:text-[#D4AF37] transition cursor-pointer">KAIVILLE</h1>
+                <h1 className="text-2xl text-[#F5F5DC] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">KAIVILLE</h1>
               </Link>
               <nav className="ml-10 hidden md:block">
                 <ul className="flex space-x-8">
@@ -88,7 +88,7 @@ export const SkillsAcademyPage: React.FC = () => {
           <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg border border-gray-200 p-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div className="space-y-6">
-                <h1 className="text-5xl lg:text-6xl font-['Bebas_Neue'] text-[#1f4e79] font-normal leading-tight">
+                <h1 className="text-5xl lg:text-6xl font-serif text-[#1f4e79] font-bold leading-tight">
                   {cmsContent.title || 'Skills Academy'}
                 </h1>
                 <h2 className="text-2xl font-serif text-[#D4AF37]">
@@ -312,7 +312,7 @@ export const SkillsAcademyPage: React.FC = () => {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl mb-4 font-serif text-[#D4AF37]">KAIVILLE</h3>
+              <h3 className="text-xl mb-4 font-serif font-bold text-[#D4AF37]">KAIVILLE</h3>
               <p className="text-gray-400">
                 Building skills for the future while honoring our heritage of learning.
               </p>
