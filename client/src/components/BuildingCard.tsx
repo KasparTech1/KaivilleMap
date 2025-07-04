@@ -37,7 +37,11 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
   if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'kasp_tower') {
     return (
       <Link to={`/building/${building.id}`} className="block" style={style}>
-        <div className={`relative hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group filter drop-shadow-[0_5px_15px_rgba(0,0,0,0.15)] ${
+        <div className={`relative ${
+          building.id === 'community-center' || building.id === 'celebration_station' ? 'hover:scale-[1.05]' : 
+          building.id === 'learning_lodge' ? 'hover:scale-[1.01]' : 
+          'hover:scale-[1.02]'
+        } active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group filter drop-shadow-[0_5px_15px_rgba(0,0,0,0.15)] ${
           building.id === 'heritage_center' ? '-mt-[20%] translate-x-[15px] -translate-y-[10px] md:-mt-[18%] md:ml-[10%] md:translate-x-0 md:translate-y-0' : 
           building.id === 'learning_lodge' ? 'scale-x-[0.75] scale-y-100 -mt-[50%] -ml-[25%] translate-y-[-25px] md:scale-x-[0.75] md:scale-y-100 md:mt-[10%] md:-ml-[15%] md:translate-y-0' : 
           building.id === 'community-center' ? 'scale-x-[1.2] scale-y-[1.5] mt-[60%] translate-y-[-10px] md:mt-0 md:scale-[1.425] md:translate-y-0' : 
