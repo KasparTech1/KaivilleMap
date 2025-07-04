@@ -39,28 +39,33 @@ export const InnovationPlazaPage: React.FC = () => {
                 <ul className="flex space-x-8">
                   <li>
                     <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Home
+                      Map
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/heritage_center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Stewardship Hall
+                      (1) Stewardship Hall
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Job Junction
+                      (2) Job Junction
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Skills Academy
+                      (3) Skills Academy
                     </Link>
                   </li>
                   <li>
                     <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      Innovation Plaza
+                      (4) Innovation Plaza
                     </span>
+                  </li>
+                  <li>
+                    <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (5) Kaizen Tower
+                    </Link>
                   </li>
                 </ul>
               </nav>
@@ -288,7 +293,7 @@ export const InnovationPlazaPage: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
               <Link to="/building/kasp_tower">
                 <Button className="bg-white text-[#1f4e79] hover:bg-[#F5F5DC] text-lg px-8 py-4">
-                  <TowerControl className="mr-2" /> Visit Kaizen Tower
+                  <TowerControl className="mr-2" /> Continue to next stop - Kaizen Tower
                 </Button>
               </Link>
               <Link to="/">
@@ -324,6 +329,11 @@ export const InnovationPlazaPage: React.FC = () => {
               <h3 className="text-xl mb-4 font-serif text-[#D4AF37]">Explore</h3>
               <ul className="space-y-2">
                 <li>
+                  <Link to="/" className="text-gray-400 hover:text-white transition">
+                    Map
+                  </Link>
+                </li>
+                <li>
                   <Link to="/building/heritage_center" className="text-gray-400 hover:text-white transition">
                     Stewardship Hall
                   </Link>
@@ -336,6 +346,11 @@ export const InnovationPlazaPage: React.FC = () => {
                 <li>
                   <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
                     Skills Academy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/celebration_station" className="text-gray-400 hover:text-white transition">
+                    Innovation Plaza
                   </Link>
                 </li>
                 <li>

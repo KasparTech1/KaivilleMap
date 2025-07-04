@@ -28,38 +28,43 @@ export const SkillsAcademyPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Header */}
-      <header className="bg-[#8B4513] shadow-lg sticky top-0 z-50">
+      <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <Link to="/" className="no-underline">
-                <h1 className="text-2xl text-[#F5F5DC] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
+                <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
               </Link>
               <nav className="ml-10 hidden md:block">
                 <ul className="flex space-x-8">
                   <li>
-                    <Link to="/" className="text-[#F5F5DC] hover:text-[#D4AF37] transition">
-                      Home
+                    <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      Map
                     </Link>
                   </li>
                   <li>
-                    <Link to="/building/heritage_center" className="text-[#F5F5DC] hover:text-[#D4AF37] transition">
-                      Stewardship Hall
+                    <Link to="/building/heritage_center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (1) Stewardship Hall
                     </Link>
                   </li>
                   <li>
-                    <Link to="/building/community-center" className="text-[#F5F5DC] hover:text-[#D4AF37] transition">
-                      Job Junction
+                    <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (2) Job Junction
                     </Link>
                   </li>
                   <li>
-                    <span className="text-[#F5F5DC] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      Skills Academy
+                    <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
+                      (3) Skills Academy
                     </span>
                   </li>
                   <li>
-                    <Link to="/building/kasp_tower" className="text-[#F5F5DC] hover:text-[#D4AF37] transition">
-                      Kaizen Tower
+                    <Link to="/building/celebration_station" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (4) Innovation Plaza
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (5) Kaizen Tower
                     </Link>
                   </li>
                 </ul>
@@ -67,7 +72,7 @@ export const SkillsAcademyPage: React.FC = () => {
             </div>
             <div className="flex items-center space-x-4">
               <Link to="/">
-                <Button className="bg-[#D4AF37] text-[#1f4e79] hover:bg-[#D4AF37]/90">
+                <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90">
                   Return to Map
                 </Button>
               </Link>
@@ -285,7 +290,7 @@ export const SkillsAcademyPage: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
               <Link to="/building/celebration_station">
                 <Button className="bg-white text-[#1f4e79] hover:bg-[#F5F5DC] text-lg px-8 py-4">
-                  Visit Innovation Plaza
+                  Continue to next stop - Innovation Plaza
                 </Button>
               </Link>
               <Link to="/">
@@ -321,6 +326,11 @@ export const SkillsAcademyPage: React.FC = () => {
               <h3 className="text-xl mb-4 font-serif text-[#D4AF37]">Explore</h3>
               <ul className="space-y-2">
                 <li>
+                  <Link to="/" className="text-gray-400 hover:text-white transition">
+                    Map
+                  </Link>
+                </li>
+                <li>
                   <Link to="/building/heritage_center" className="text-gray-400 hover:text-white transition">
                     Stewardship Hall
                   </Link>
@@ -328,6 +338,11 @@ export const SkillsAcademyPage: React.FC = () => {
                 <li>
                   <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
                     Job Junction
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
+                    Skills Academy
                   </Link>
                 </li>
                 <li>

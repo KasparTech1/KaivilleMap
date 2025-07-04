@@ -39,27 +39,32 @@ export const KaizenTowerPage: React.FC = () => {
                 <ul className="flex space-x-8">
                   <li>
                     <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Home
+                      Map
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/heritage_center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Stewardship Hall
+                      (1) Stewardship Hall
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Job Junction
+                      (2) Job Junction
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Skills Academy
+                      (3) Skills Academy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/celebration_station" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (4) Innovation Plaza
                     </Link>
                   </li>
                   <li>
                     <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      Kaizen Tower
+                      (5) Kaizen Tower
                     </span>
                   </li>
                 </ul>
@@ -368,6 +373,11 @@ export const KaizenTowerPage: React.FC = () => {
               <h3 className="text-xl mb-4 font-serif text-[#D4AF37]">Explore</h3>
               <ul className="space-y-2">
                 <li>
+                  <Link to="/" className="text-gray-400 hover:text-white transition">
+                    Map
+                  </Link>
+                </li>
+                <li>
                   <Link to="/building/heritage_center" className="text-gray-400 hover:text-white transition">
                     Stewardship Hall
                   </Link>
@@ -385,6 +395,11 @@ export const KaizenTowerPage: React.FC = () => {
                 <li>
                   <Link to="/building/celebration_station" className="text-gray-400 hover:text-white transition">
                     Innovation Plaza
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/kasp_tower" className="text-gray-400 hover:text-white transition">
+                    Kaizen Tower
                   </Link>
                 </li>
               </ul>

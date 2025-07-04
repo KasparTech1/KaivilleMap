@@ -39,22 +39,32 @@ export const JobJunctionPage: React.FC = () => {
                 <ul className="flex space-x-8">
                   <li>
                     <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Home
+                      Map
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/heritage_center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Stewardship Hall
+                      (1) Stewardship Hall
                     </Link>
                   </li>
                   <li>
                     <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      Job Junction
+                      (2) Job Junction
                     </span>
                   </li>
                   <li>
                     <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      Skills Academy
+                      (3) Skills Academy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/celebration_station" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (4) Innovation Plaza
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (5) Kaizen Tower
                     </Link>
                   </li>
                 </ul>
@@ -257,7 +267,7 @@ export const JobJunctionPage: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
               <Link to="/building/learning_lodge">
                 <Button className="bg-white text-[#1f4e79] hover:bg-[#F5F5DC] text-lg px-8 py-4">
-                  <School className="mr-2" /> Visit Skills Academy
+                  <School className="mr-2" /> Continue to next stop - Skills Academy
                 </Button>
               </Link>
               <Link to="/">
@@ -293,8 +303,18 @@ export const JobJunctionPage: React.FC = () => {
               <h3 className="text-xl mb-4 font-serif text-[#D4AF37]">Explore</h3>
               <ul className="space-y-2">
                 <li>
+                  <Link to="/" className="text-gray-400 hover:text-white transition">
+                    Map
+                  </Link>
+                </li>
+                <li>
                   <Link to="/building/heritage_center" className="text-gray-400 hover:text-white transition">
                     Stewardship Hall
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
+                    Job Junction
                   </Link>
                 </li>
                 <li>
