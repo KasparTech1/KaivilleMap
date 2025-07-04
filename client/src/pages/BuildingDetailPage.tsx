@@ -63,6 +63,16 @@ export const BuildingDetailPage: React.FC = () => {
     fetchBuildingDetails();
   }, [fetchBuildingDetails]);
 
+  // Set page title dynamically
+  useEffect(() => {
+    if (building) {
+      document.title = `${cmsContent.title || building.title} - Kaiville Map`;
+    }
+    return () => {
+      document.title = 'Kaiville Map';
+    };
+  }, [building, cmsContent.title]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-sky-100 flex items-center justify-center">
