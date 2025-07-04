@@ -72,6 +72,11 @@ export const BuildingDetailPage: React.FC = () => {
     fetchBuildingDetails();
   }, [fetchBuildingDetails]);
 
+  // Scroll to top when building changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [id]);
+
   // Set page title dynamically
   useEffect(() => {
     if (building) {
@@ -82,12 +87,43 @@ export const BuildingDetailPage: React.FC = () => {
     };
   }, [building, cmsContent.title]);
 
-  if (loading) {
+  if (loading || cmsLoading) {
     return (
-      <div className="min-h-screen bg-sky-100 flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-12 h-12 animate-spin mx-auto text-blue-600" />
-          <p className="text-lg text-gray-600">Loading building details...</p>
+      <div className="min-h-screen bg-sky-100">
+        {/* Header Skeleton */}
+        <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm border-b">
+          <div className="max-w-6xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="w-24 h-16 bg-gray-200 rounded animate-pulse" />
+              <div className="w-32 h-8 bg-gray-200 rounded animate-pulse" />
+              <div className="w-16 h-16 bg-gray-200 rounded animate-pulse" />
+            </div>
+          </div>
+        </div>
+        
+        {/* Content Skeleton */}
+        <div className="max-w-4xl mx-auto px-4 py-12">
+          <div className="space-y-8">
+            <div className="text-center space-y-4">
+              <div className="w-48 h-8 bg-gray-200 rounded mx-auto animate-pulse" />
+              <div className="w-64 h-12 bg-gray-200 rounded mx-auto animate-pulse" />
+              <div className="max-w-2xl mx-auto space-y-2">
+                <div className="w-full h-6 bg-gray-200 rounded animate-pulse" />
+                <div className="w-3/4 h-6 bg-gray-200 rounded mx-auto animate-pulse" />
+              </div>
+            </div>
+            
+            <Card className="bg-white/80 backdrop-blur-sm shadow-xl border-0">
+              <CardHeader>
+                <div className="w-48 h-8 bg-gray-200 rounded animate-pulse" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="w-full h-4 bg-gray-200 rounded animate-pulse" />
+                <div className="w-full h-4 bg-gray-200 rounded animate-pulse" />
+                <div className="w-3/4 h-4 bg-gray-200 rounded animate-pulse" />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     );
@@ -116,7 +152,7 @@ export const BuildingDetailPage: React.FC = () => {
   const nextBuilding = nextBuildingMap[building.id];
 
   return (
-    <div className="min-h-screen bg-sky-100">
+    <div className="min-h-screen bg-sky-100 animate-fadeIn">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-4">
@@ -152,26 +188,26 @@ export const BuildingDetailPage: React.FC = () => {
           {/* Building Header */}
           <div className="text-center space-y-6">
             {cmsContent.subtitle && (
-              <h2 className="text-2xl md:text-3xl font-semibold text-blue-600">
+              <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold text-blue-600 px-4 md:px-0">
                 {cmsContent.subtitle}
               </h2>
             )}
             
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 px-4 md:px-0">
                 {cmsContent.title || building.title}
               </h1>
               
               {/* Hero Quote */}
               {cmsContent.heroQuote && (
                 <div className="max-w-3xl mx-auto mt-6 mb-8">
-                  <blockquote className="text-xl md:text-2xl text-gray-700 italic font-medium leading-relaxed">
+                  <blockquote className="text-lg md:text-xl lg:text-2xl text-gray-700 italic font-medium leading-relaxed px-6 md:px-4">
                     {cmsContent.heroQuote}
                   </blockquote>
                 </div>
               )}
               
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-4 md:px-0">
                 {cmsContent.description || building.description}
               </p>
             </div>
@@ -181,21 +217,41 @@ export const BuildingDetailPage: React.FC = () => {
           {cmsContent.sections && cmsContent.sections.length > 0 ? (
             <div className="space-y-8">
               {cmsContent.sections.map((section: any, index: number) => (
-                <Card key={index} className="bg-white/90 backdrop-blur-sm shadow-xl border-0">
-                  <CardHeader>
-                    <CardTitle className="text-2xl text-gray-800">{section.title}</CardTitle>
+                <Card key={index} className="bg-white/90 backdrop-blur-sm shadow-xl border-0 hover:shadow-2xl transition-shadow duration-300">
+                  <CardHeader className="pb-4 md:pb-6">
+                    <CardTitle className="text-xl md:text-2xl text-gray-800">{section.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="prose prose-lg max-w-none">
                       <div 
-                        className="text-gray-700 leading-relaxed whitespace-pre-wrap"
+                        className="text-gray-700 leading-relaxed"
                         dangerouslySetInnerHTML={{ 
                           __html: section.content
-                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                            .replace(/\n/g, '<br />')
-                            .replace(/•/g, '<li>')
-                            .replace(/<li>(.*?)(?=<br \/>|$)/g, '<ul><li>$1</li></ul>')
-                            .replace(/<\/ul><ul>/g, '')
+                            // Headers
+                            .replace(/^### (.*?)$/gm, '<h3 class="text-xl font-bold text-gray-900 mt-6 mb-3">$1</h3>')
+                            .replace(/^## (.*?)$/gm, '<h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">$1</h2>')
+                            // Bold text
+                            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
+                            // Bullet points
+                            .replace(/^• (.*?)$/gm, '<li class="ml-6 mb-2">$1</li>')
+                            .replace(/(<li.*?<\/li>)(?=\s*<li)/g, '$1')
+                            .replace(/(<li.*?<\/li>)+/g, '<ul class="list-disc space-y-2 my-4">$&</ul>')
+                            // Numbered lists
+                            .replace(/^\d+\. (.*?)$/gm, '<li class="ml-6 mb-2">$1</li>')
+                            .replace(/(<li class="ml-6 mb-2">.*?<\/li>\s*)+/g, function(match) {
+                              if (match.includes('list-disc')) return match;
+                              return '<ol class="list-decimal space-y-2 my-4">' + match + '</ol>';
+                            })
+                            // Paragraphs
+                            .replace(/\n\n/g, '</p><p class="mb-4">')
+                            .replace(/^(?!<)/, '<p class="mb-4">')
+                            .replace(/(?!>)$/, '</p>')
+                            // Clean up
+                            .replace(/<p class="mb-4"><\/p>/g, '')
+                            .replace(/<p class="mb-4">(<h[23])/g, '$1')
+                            .replace(/(<\/h[23]>)<\/p>/g, '$1')
+                            .replace(/<p class="mb-4">(<ul|<ol)/g, '$1')
+                            .replace(/(<\/ul>|<\/ol>)<\/p>/g, '$1')
                         }}
                       />
                     </div>
@@ -224,9 +280,9 @@ export const BuildingDetailPage: React.FC = () => {
 
           {/* Call to Action */}
           {cmsContent.callToAction && (
-            <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl border-0">
-              <CardContent className="p-8">
-                <p className="text-xl text-center font-medium mb-6">
+            <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl border-0 hover:shadow-2xl transition-all duration-300">
+              <CardContent className="p-6 md:p-8">
+                <p className="text-lg md:text-xl text-center font-medium mb-4 md:mb-6">
                   {cmsContent.callToAction}
                 </p>
                 {nextBuilding && (
@@ -234,7 +290,7 @@ export const BuildingDetailPage: React.FC = () => {
                     <Link to={`/building/${nextBuilding.id}`}>
                       <Button
                         size="lg"
-                        className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="bg-white text-blue-600 hover:bg-gray-100 px-6 md:px-8 py-2.5 md:py-3 text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
                       >
                         Continue to {nextBuilding.name}
                         <ChevronRight className="w-5 h-5 ml-2" />
@@ -252,7 +308,7 @@ export const BuildingDetailPage: React.FC = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 px-6 md:px-8 py-2.5 md:py-3 text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 <MapPin className="w-5 h-5 mr-2" />
                 Explore More Buildings
