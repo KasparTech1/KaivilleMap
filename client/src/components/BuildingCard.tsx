@@ -44,10 +44,10 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
           'hover:scale-[1.02]'
         } active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group filter drop-shadow-[0_5px_15px_rgba(0,0,0,0.15)] ${
           building.id === 'heritage_center' ? '-mt-[20%] translate-x-[5px] translate-y-[5px] md:-mt-[18%] md:ml-[10%] md:translate-x-0 md:translate-y-0' : 
-          building.id === 'learning_lodge' ? 'scale-[0.748] -mt-[50%] -ml-[25%] translate-y-[-120px] md:scale-[0.748] md:mt-[10%] md:-ml-[15%] md:translate-y-[-55px]' : 
-          building.id === 'community-center' ? 'mt-[60%] translate-y-[-50px] md:mt-0 md:translate-y-[-20px]' : 
-          building.id === 'celebration_station' ? 'scale-[1.5] hover:scale-[1.575] -mt-[25%] ml-[50%] -translate-x-[25px] translate-y-[-95px] md:scale-[1.5] md:hover:scale-[1.575] md:-mt-[10%] md:ml-[40%] md:-translate-x-[220px] md:translate-y-[-55px]' : 
-          building.id === 'kasp_tower' ? 'scale-[1.05] -mt-[5%] ml-[25%] translate-y-[-70px] md:scale-[0.63] md:-mt-[85%] md:-ml-[20%] md:-translate-x-[180px] md:translate-y-[-25px]' : 
+          building.id === 'learning_lodge' ? 'scale-[0.748] -mt-[50%] -ml-[25%] translate-y-[-140px] md:scale-[0.748] md:mt-[10%] md:-ml-[15%] md:translate-y-[-55px]' : 
+          building.id === 'community-center' ? 'mt-[60%] translate-y-[-70px] md:mt-0 md:translate-y-[-20px]' : 
+          building.id === 'celebration_station' ? 'scale-[1.5] hover:scale-[1.575] -mt-[25%] ml-[50%] -translate-x-[25px] translate-y-[-115px] md:scale-[1.5] md:hover:scale-[1.575] md:-mt-[10%] md:ml-[40%] md:-translate-x-[220px] md:translate-y-[-55px]' : 
+          building.id === 'kasp_tower' ? 'scale-[1.05] -mt-[5%] ml-[25%] translate-y-[-90px] md:scale-[0.63] md:-mt-[85%] md:-ml-[20%] md:-translate-x-[180px] md:translate-y-[-25px]' : 
           building.id === 'knn_tower' ? 'scale-[1.1] md:scale-100' : ''
         }`}>
           {/* Add clouds for Kaizen Tower */}
