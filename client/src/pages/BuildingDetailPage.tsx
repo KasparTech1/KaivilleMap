@@ -130,15 +130,7 @@ export const BuildingDetailPage: React.FC = () => {
         <div className="space-y-8">
           {/* Building Header */}
           <div className="text-center space-y-4">
-            {building.id !== 'community-center' && (
-              <div className="mx-auto">
-                <img 
-                  src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
-                  alt={building.title}
-                  className="h-32 w-auto mx-auto"
-                />
-              </div>
-            )}
+            {/* SVG removed from body - now only shows in header */}
             
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
@@ -169,15 +161,7 @@ export const BuildingDetailPage: React.FC = () => {
               {/* Placeholder for future content */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 text-center">
                 <div className="space-y-4">
-                  {building.id !== 'community-center' && (
-                    <div className="mx-auto">
-                      <img 
-                        src={buildingSvgMap[building.id] || getAssetUrl('town-hall.svg')}
-                        alt={building.title}
-                        className="h-16 w-auto mx-auto opacity-50"
-                      />
-                    </div>
-                  )}
+                  {/* SVG removed from body - now only shows in header */}
                   <div>
                     <h3 className="text-xl font-semibold text-gray-800 mb-2">
                       More Content Coming Soon

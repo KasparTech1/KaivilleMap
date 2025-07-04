@@ -41,9 +41,17 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
           building.id === 'heritage_center' ? '-mt-[20%] translate-x-[15px] -translate-y-[10px] md:-mt-[18%] md:ml-[10%] md:translate-x-0 md:translate-y-0' : 
           building.id === 'learning_lodge' ? 'scale-x-[0.75] scale-y-100 -mt-[50%] -ml-[25%] translate-y-[-25px] md:scale-x-[0.75] md:scale-y-100 md:mt-[10%] md:-ml-[15%] md:translate-y-0' : 
           building.id === 'community-center' ? 'scale-x-[1.2] scale-y-[1.5] mt-[60%] translate-y-[-10px] md:mt-0 md:scale-[1.425] md:translate-y-0' : 
-          building.id === 'celebration_station' ? 'scale-x-[1.6] scale-y-[2.0] -mt-[25%] ml-[50%] -translate-x-[40px] translate-y-[-45px] md:scale-[1.2] md:-mt-[10%] md:ml-[40%] md:-translate-x-[220px] md:translate-y-0' : 
+          building.id === 'celebration_station' ? 'scale-x-[1.6] scale-y-[2.0] -mt-[25%] ml-[50%] -translate-x-[40px] translate-y-[-20px] md:scale-[1.2] md:-mt-[10%] md:ml-[40%] md:-translate-x-[220px] md:translate-y-0' : 
           building.id === 'kasp_tower' ? 'scale-100 -mt-[5%] ml-[25%] translate-y-[-10px] md:scale-[0.63] md:-mt-[85%] md:-ml-[20%] md:-translate-x-[180px] md:translate-y-0' : ''
         }`}>
+          {/* Add clouds for Kaizen Tower */}
+          {building.id === 'kasp_tower' && (
+            <>
+              <div className="absolute top-[10%] left-[5%] w-8 h-4 bg-white rounded-full opacity-60 blur-sm animate-pulse" />
+              <div className="absolute top-[15%] right-[10%] w-10 h-5 bg-white rounded-full opacity-50 blur-sm animate-pulse" style={{ animationDelay: '1s' }} />
+              <div className="absolute top-[20%] left-[15%] w-7 h-3 bg-white rounded-full opacity-40 blur-sm animate-pulse" style={{ animationDelay: '2s' }} />
+            </>
+          )}
           <img
             src={svgPath}
             alt={building.title}
