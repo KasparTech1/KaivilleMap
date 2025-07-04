@@ -3,6 +3,7 @@ import { ThemeProvider } from "./components/ui/theme-provider"
 import { Toaster } from "./components/ui/toaster"
 import { HomePage } from "./pages/HomePage"
 import { BuildingDetailPage } from "./pages/BuildingDetailPage"
+import { StewardshipHallPage } from "./pages/StewardshipHallPage"
 import { KNNFeedPage } from "./pages/KNNFeedPage"
 import { ArticlePage } from "./pages/ArticlePage"
 import { BlankPage } from "./pages/BlankPage"
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/building/knn_tower" element={<Navigate to="/news" replace />} />
+          <Route path="/building/heritage_center" element={<StewardshipHallPage />} />
           <Route path="/building/:id" element={<BuildingDetailPage />} />
           <Route path="/news" element={<KNNFeedPage />} />
           <Route path="/news/*" element={<ArticlePage />} />
