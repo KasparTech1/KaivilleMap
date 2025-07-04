@@ -31,6 +31,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
   const [isReverseAnimation, setIsReverseAnimation] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [containerSize, setContainerSize] = useState({ width: 100, height: 100 });
+  const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
   const animationRef = useRef<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -357,12 +358,13 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     // Multiple attempts to calculate paths to ensure we catch the road
     const calculateWithRetries = () => {
       calculatePaths();
-      // Retry a few times to ensure we get the road drawn
-      setTimeout(calculatePaths, 100);
-      setTimeout(calculatePaths, 500);
-      setTimeout(calculatePaths, 1000);
-      setTimeout(calculatePaths, 1500);
-      setTimeout(calculatePaths, 2000);
+      // Only do retries on initial render to avoid gyrating roads
+      if (isInitialRender) {
+        setTimeout(() => {
+          calculatePaths();
+          setIsInitialRender(false);
+        }, 500);
+      }
     };
     
     calculateWithRetries();
@@ -375,39 +377,26 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
 
     window.addEventListener('resize', handleResize);
     
-    // Also listen for DOM changes in case buildings load late
-    const observer = new MutationObserver(() => {
-      setTimeout(calculatePaths, 100);
-    });
-    
-    // Observe the single grid element
-    const gridElement = document.querySelector('.buildings-grid');
-    if (gridElement) {
-      observer.observe(gridElement, { childList: true, subtree: true, attributes: true });
-      
-      // Also observe for class changes which happen during responsive transitions
-      const classObserver = new MutationObserver(() => {
-        // console.log('Grid classes changed, recalculating paths');
-        setTimeout(calculatePaths, 100);
+    // Only observe DOM changes on initial render
+    let observer: MutationObserver | null = null;
+    if (isInitialRender) {
+      observer = new MutationObserver(() => {
+        if (isInitialRender) {
+          setTimeout(calculatePaths, 100);
+        }
       });
-      classObserver.observe(gridElement, { attributes: true, attributeFilter: ['class'] });
       
-      // Store observer for cleanup
-      (window as any).__roadClassObserver = classObserver;
-    }
-    
-    // Also observe the parent container for visibility changes
-    const parentContainer = document.querySelector('.relative.z-10');
-    if (parentContainer) {
-      observer.observe(parentContainer, { childList: true, subtree: true });
+      // Observe the single grid element with minimal options
+      const gridElement = document.querySelector('.buildings-grid');
+      if (gridElement) {
+        observer.observe(gridElement, { childList: true, subtree: false });
+      }
     }
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      observer.disconnect();
-      if ((window as any).__roadClassObserver) {
-        (window as any).__roadClassObserver.disconnect();
-        delete (window as any).__roadClassObserver;
+      if (observer) {
+        observer.disconnect();
       }
     };
   }, [calculatePaths]);
@@ -462,7 +451,14 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     <>
       <svg
         className="absolute inset-0 pointer-events-none z-0"
-        style={{ width: '100%', height: '100%', minWidth: '100%', minHeight: '100%' }}
+        style={{ 
+          width: '100%', 
+          height: '100%', 
+          minWidth: '100%', 
+          minHeight: '100%',
+          opacity: mainPath ? 1 : 0,
+          transition: 'opacity 0.5s ease-in-out'
+        }}
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         preserveAspectRatio="xMidYMid meet"
       >
