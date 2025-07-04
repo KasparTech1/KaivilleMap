@@ -174,29 +174,29 @@ export const ArticlePage: React.FC = () => {
       // If no article found, use mock data as fallback
       const mockArticle: Article = {
         id: '1',
-        headline: 'Grand Opening of Join Junction',
-        subheadline: 'A new hub for connection and growth in the heart of Kaiville',
+        headline: 'Grand Opening of Job Junction',
+        subheadline: 'A new hub for career development and professional growth in the heart of Kaiville',
         content: `
-          <p>Today marks a significant milestone for Kaiville as we celebrate the grand opening of our new state-of-the-art Join Junction. This modern facility represents our commitment to fostering connection, learning, and growth for all residents.</p>
+          <p>Today marks a significant milestone for Kaiville as we celebrate the grand opening of our new state-of-the-art Job Junction. This modern facility represents our commitment to fostering career development, professional networking, and economic growth for all residents.</p>
 
-          <p>The 25,000 square foot center features multiple activity rooms, a full gymnasium, a teaching kitchen, and dedicated spaces for arts and crafts. The building was designed with sustainability in mind, incorporating solar panels, rainwater harvesting, and energy-efficient systems throughout.</p>
+          <p>The 25,000 square foot center features multiple training rooms, computer labs, interview preparation spaces, and dedicated areas for job fairs and networking events. The building was designed with sustainability in mind, incorporating solar panels, rainwater harvesting, and energy-efficient systems throughout.</p>
 
           <h2>Programs for Everyone</h2>
 
-          <p>Join Junction will offer programs for all ages, from early childhood development classes to senior fitness programs. Some highlights include:</p>
+          <p>Job Junction will offer programs for all career stages, from entry-level job seekers to experienced professionals looking to advance. Some highlights include:</p>
 
           <ul>
-            <li>Youth after-school programs and summer camps</li>
-            <li>Adult education and skill-building workshops</li>
-            <li>Health and wellness classes</li>
-            <li>Community meeting spaces available for reservation</li>
+            <li>Resume writing and interview skills workshops</li>
+            <li>Professional certification programs</li>
+            <li>Career counseling and job placement services</li>
+            <li>Networking events and job fairs</li>
           </ul>
 
-          <p>"This center is more than just a building," said Mayor Thompson at the ribbon-cutting ceremony. "It's a place where neighbors become friends, where skills are shared, and where our community comes together to support one another."</p>
+          <p>"This center is more than just a building," said Mayor Thompson at the ribbon-cutting ceremony. "It's a place where careers are launched, where skills meet opportunities, and where our community's workforce thrives."</p>
 
           <h2>Join Us</h2>
 
-          <p>Join Junction is now open Monday through Saturday, 6 AM to 10 PM, and Sunday from 8 AM to 8 PM. Stop by for a tour, pick up a program guide, or sign up for classes at the front desk.</p>
+          <p>Job Junction is now open Monday through Saturday, 6 AM to 10 PM, and Sunday from 8 AM to 8 PM. Stop by for a tour, pick up a program guide, or sign up for career services at the front desk.</p>
 
           <p>We look forward to seeing you there!</p>
         `,

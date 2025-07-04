@@ -26,7 +26,7 @@ export const getBuildings = () => {
           },
           {
             id: "community-center",
-            title: "Join Junction",
+            title: "Job Junction",
             row: 1,
             column: 2,
             span: 1,
@@ -101,7 +101,7 @@ export const getBuildingDetails = (id: string) => {
         },
         "community-center": {
           id: "community-center",
-          title: "Join Junction",
+          title: "Job Junction",
           description: "The connection hub of Kaiville, where paths cross and community thrives.",
           details: "Join Junction serves as the central meeting point where residents connect, collaborate, and build lasting relationships throughout Kaiville."
         },
