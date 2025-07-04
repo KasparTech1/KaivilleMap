@@ -33,7 +33,7 @@ export const InnovationPlazaPage: React.FC = () => {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <Link to="/" className="no-underline">
-                <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">KAIVILLE</h1>
+                <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
               </Link>
               <nav className="ml-10 hidden md:block">
                 <ul className="flex space-x-8">
@@ -66,12 +66,6 @@ export const InnovationPlazaPage: React.FC = () => {
               </nav>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                <MapPin className="w-6 h-6" />
-              </button>
-              <button className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                <Compass className="w-6 h-6" />
-              </button>
               <Link to="/">
                 <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90">
                   Return to Map
@@ -87,20 +81,20 @@ export const InnovationPlazaPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-[#1f4e79] to-[#87CEEB]"></div>
         <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
           <div className="max-w-5xl">
+            <p className="text-lg text-white/80 mb-2">Stop 4 of 5</p>
             <h1 className="text-5xl font-serif text-white mb-4 font-bold">
               {cmsContent.title || 'Innovation Plaza'}
             </h1>
-            <h2 className="text-3xl font-serif text-[#D4AF37] mb-6">
-              {cmsContent.subtitle || 'Where Ideas Take Flight'}
-            </h2>
+            <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-6">
+              <h2 className="text-3xl font-serif text-[#D4AF37]">
+                {cmsContent.subtitle || 'Where Ideas Take Flight'}
+              </h2>
+            </div>
             <div className="bg-white bg-opacity-15 p-6 rounded-lg mb-6 backdrop-blur-sm">
               <p className="text-xl text-white italic font-serif">
                 {cmsContent.heroQuote || '"Your experience is the secret ingredient. AI has the recipes, but you know what tastes right."'}
               </p>
             </div>
-            <Button className="bg-[#D4AF37] text-[#1f4e79] hover:bg-[#D4AF37]/90 text-lg px-8 py-6">
-              <Rocket className="mr-2" /> Explore Success Stories
-            </Button>
           </div>
           <div className="hidden lg:block">
             <img 
@@ -314,7 +308,7 @@ export const InnovationPlazaPage: React.FC = () => {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl mb-4 font-serif font-bold text-[#D4AF37]">KAIVILLE</h3>
+              <h3 className="text-xl mb-4 font-serif font-bold text-[#D4AF37]">Kaiville</h3>
               <p className="text-gray-400">
                 Celebrating innovation and success through AI-powered transformation.
               </p>
