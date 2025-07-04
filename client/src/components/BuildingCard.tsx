@@ -46,7 +46,8 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
           building.id === 'learning_lodge' ? 'scale-[0.748] -mt-[50%] -ml-[25%] translate-y-[-25px] md:scale-[0.748] md:mt-[10%] md:-ml-[15%] md:translate-y-0' : 
           building.id === 'community-center' ? 'scale-x-[1.2] scale-y-[1.5] hover:scale-x-[1.26] hover:scale-y-[1.575] mt-[60%] translate-y-[-10px] md:mt-0 md:scale-[1.425] md:translate-y-0' : 
           building.id === 'celebration_station' ? 'scale-[1.5] hover:scale-[1.575] -mt-[25%] ml-[50%] -translate-x-[25px] translate-y-[-20px] md:scale-[1.5] md:hover:scale-[1.575] md:-mt-[10%] md:ml-[40%] md:-translate-x-[220px] md:translate-y-0' : 
-          building.id === 'kasp_tower' ? 'scale-[1.05] -mt-[5%] ml-[25%] translate-y-[-10px] md:scale-[0.63] md:-mt-[85%] md:-ml-[20%] md:-translate-x-[180px] md:translate-y-0' : ''
+          building.id === 'kasp_tower' ? 'scale-[1.05] -mt-[5%] ml-[25%] translate-y-[-10px] md:scale-[0.63] md:-mt-[85%] md:-ml-[20%] md:-translate-x-[180px] md:translate-y-0' : 
+          building.id === 'knn_tower' ? 'scale-[1.1] md:scale-100' : ''
         }`}>
           {/* Add clouds for Kaizen Tower */}
           {building.id === 'kasp_tower' && (

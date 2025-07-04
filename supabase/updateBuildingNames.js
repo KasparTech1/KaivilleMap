@@ -1,14 +1,17 @@
+import pg from 'pg';
 import dotenv from 'dotenv';
-import pkg from 'pg';
-const { Client } = pkg;
+const { Client } = pg;
 
 // Load environment variables
 dotenv.config({ path: '../.env' });
 
 async function updateBuildingNames() {
+  // Construct the Supabase database URL
+  const DATABASE_URL = `postgres://postgres.${process.env.SUPABASE_PROJECT_ID}:${process.env.SUPABASE_DB_PASSWORD}@aws-0-us-east-2.pooler.supabase.com:6543/postgres`;
+  
   const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    connectionString: DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
   });
 
   try {
