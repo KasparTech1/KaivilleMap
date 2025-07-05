@@ -122,8 +122,11 @@ export const StewardshipHallPage: React.FC = () => {
                 {cmsContent.subtitle || '125 Years of Heritage & Values'}
               </h2>
             </div>
-            <p className="text-xl text-white mb-8 max-w-3xl font-light">
+            <p className="text-xl text-white mb-4 max-w-3xl font-light">
               {cmsContent.description}
+            </p>
+            <p className="text-xl text-white mb-8 max-w-3xl font-light">
+              "Why begin here? Your AI journey at Kaspar isn't starting from scratch—it's the next chapter in a remarkable 125-year story. These core values and traditions aren't just our past, they're the foundation that will guide and support your success with AI."
             </p>
           </div>
           <div className="hidden lg:block">
