@@ -82,8 +82,8 @@ export const InnovationPlazaPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="h-[500px] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1f4e79] to-[#87CEEB]"></div>
+      <div className="h-[500px] relative overflow-hidden bg-gradient-to-r from-[#1f4e79] to-[#4169E1]">
+        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
         <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
           <div className="max-w-5xl">
             <p className="text-lg text-white/80 mb-2">Stop 4 of 5</p>

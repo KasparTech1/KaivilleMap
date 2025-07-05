@@ -82,7 +82,7 @@ export const JobJunctionPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="h-[500px] relative overflow-hidden">
+      <div className="h-[500px] relative overflow-hidden bg-gradient-to-br from-[#1f4e79] to-[#3d5a80]">
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
           <div className="max-w-5xl">

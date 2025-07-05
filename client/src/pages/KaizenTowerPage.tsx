@@ -82,8 +82,8 @@ export const KaizenTowerPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <div className="h-[500px] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60"></div>
+      <div className="h-[500px] relative overflow-hidden bg-gradient-to-br from-[#2d3748] to-[#4a5568]">
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
           <div className="max-w-5xl">
             <p className="text-lg text-white/80 mb-2">Stop 5 of 5</p>
