@@ -174,16 +174,16 @@ export const ArticlePage: React.FC = () => {
       // If no article found, use mock data as fallback
       const mockArticle: Article = {
         id: '1',
-        headline: 'Grand Opening of Job Junction',
+        headline: 'Grand Opening of JOB Junction',
         subheadline: 'A new hub for career development and professional growth in the heart of Kaiville',
         content: `
-          <p>Today marks a significant milestone for Kaiville as we celebrate the grand opening of our new state-of-the-art Job Junction. This modern facility represents our commitment to fostering career development, professional networking, and economic growth for all residents.</p>
+          <p>Today marks a significant milestone for Kaiville as we celebrate the grand opening of our new state-of-the-art JOB Junction. This modern facility represents our commitment to fostering career development, professional networking, and economic growth for all residents.</p>
 
           <p>The 25,000 square foot center features multiple training rooms, computer labs, interview preparation spaces, and dedicated areas for job fairs and networking events. The building was designed with sustainability in mind, incorporating solar panels, rainwater harvesting, and energy-efficient systems throughout.</p>
 
           <h2>Programs for Everyone</h2>
 
-          <p>Job Junction will offer programs for all career stages, from entry-level job seekers to experienced professionals looking to advance. Some highlights include:</p>
+          <p>JOB Junction will offer programs for all career stages, from entry-level job seekers to experienced professionals looking to advance. Some highlights include:</p>
 
           <ul>
             <li>Resume writing and interview skills workshops</li>
@@ -196,7 +196,7 @@ export const ArticlePage: React.FC = () => {
 
           <h2>Join Us</h2>
 
-          <p>Job Junction is now open Monday through Saturday, 6 AM to 10 PM, and Sunday from 8 AM to 8 PM. Stop by for a tour, pick up a program guide, or sign up for career services at the front desk.</p>
+          <p>JOB Junction is now open Monday through Saturday, 6 AM to 10 PM, and Sunday from 8 AM to 8 PM. Stop by for a tour, pick up a program guide, or sign up for career services at the front desk.</p>
 
           <p>We look forward to seeing you there!</p>
         `,

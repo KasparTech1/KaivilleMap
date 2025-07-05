@@ -49,7 +49,7 @@ export const JobJunctionPage: React.FC = () => {
                   </li>
                   <li>
                     <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      (2) Job Junction
+                      (2) JOB Junction
                     </span>
                   </li>
                   <li>
@@ -88,7 +88,7 @@ export const JobJunctionPage: React.FC = () => {
           <div className="max-w-5xl">
             <p className="text-lg text-white/80 mb-2">Stop 2 of 5</p>
             <h1 className="text-5xl font-serif text-white mb-4 font-bold">
-              {cmsContent.title || 'Job Junction'}
+              {cmsContent.title || 'JOB Junction'}
             </h1>
             <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-6">
               <h2 className="text-3xl font-serif text-[#D4AF37]">
@@ -106,7 +106,7 @@ export const JobJunctionPage: React.FC = () => {
             <img 
               className="h-[400px] w-auto drop-shadow-2xl"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg"
-              alt="Job Junction Building"
+              alt="JOB Junction Building"
             />
           </div>
         </div>
@@ -267,7 +267,7 @@ export const JobJunctionPage: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
               <Link to="/building/learning_lodge">
                 <Button className="bg-white text-[#1f4e79] hover:bg-[#F5F5DC] text-lg px-8 py-4">
-                  <School className="mr-2" /> Continue to next stop - Skills Academy
+                  <School className="mr-2" /> Continue to next stop - SKILLS Academy
                 </Button>
               </Link>
               <Link to="/">
@@ -314,7 +314,7 @@ export const JobJunctionPage: React.FC = () => {
                 </li>
                 <li>
                   <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
-                    Job Junction
+                    JOB Junction
                   </Link>
                 </li>
                 <li>
@@ -345,7 +345,7 @@ export const JobJunctionPage: React.FC = () => {
       </footer>
 
       {/* Edit Button */}
-      <EditButton editPath="/admin/building/community-center" label="Edit Job Junction" />
+      <EditButton editPath="/admin/building/community-center" label="Edit JOB Junction" />
     </div>
   );
 };

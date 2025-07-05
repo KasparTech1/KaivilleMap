@@ -30,11 +30,11 @@ const buildingSvgMap: Record<string, string> = {
 
 // Next building navigation map
 const nextBuildingMap: Record<string, { id: string, name: string }> = {
-  heritage_center: { id: 'community-center', name: 'Job Junction' },
-  'community-center': { id: 'learning_lodge', name: 'Skills Academy' },
+  heritage_center: { id: 'community-center', name: 'JOB Junction' },
+  'community-center': { id: 'learning_lodge', name: 'SKILLS Academy' },
   learning_lodge: { id: 'celebration_station', name: 'Innovation Plaza' },
   celebration_station: { id: 'kasp_tower', name: 'Kaizen Tower' },
-  kasp_tower: { id: 'community-center', name: 'Job Junction' }
+  kasp_tower: { id: 'community-center', name: 'JOB Junction' }
 };
 
 export const BuildingDetailPage: React.FC = () => {

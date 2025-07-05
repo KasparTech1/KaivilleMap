@@ -76,12 +76,12 @@ export const StewardshipHallPage: React.FC = () => {
                   </li>
                   <li>
                     <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (2) Job Junction
+                      (2) JOB Junction
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (3) Skills Academy
+                      (3) SKILLS Academy
                     </Link>
                   </li>
                   <li>
@@ -331,7 +331,7 @@ export const StewardshipHallPage: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
               <Link to="/building/community-center">
                 <Button className="bg-white text-[#1f4e79] hover:bg-[#F5F5DC] text-lg px-8 py-4">
-                  Continue to next stop - Job Junction
+                  Continue to next stop - JOB Junction
                 </Button>
               </Link>
               <Link to="/">
@@ -378,12 +378,12 @@ export const StewardshipHallPage: React.FC = () => {
                 </li>
                 <li>
                   <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
-                    Job Junction
+                    JOB Junction
                   </Link>
                 </li>
                 <li>
                   <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
-                    Skills Academy
+                    SKILLS Academy
                   </Link>
                 </li>
                 <li>

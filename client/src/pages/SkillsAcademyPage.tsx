@@ -49,12 +49,12 @@ export const SkillsAcademyPage: React.FC = () => {
                   </li>
                   <li>
                     <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (2) Job Junction
+                      (2) JOB Junction
                     </Link>
                   </li>
                   <li>
                     <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      (3) Skills Academy
+                      (3) SKILLS Academy
                     </span>
                   </li>
                   <li>
@@ -88,7 +88,7 @@ export const SkillsAcademyPage: React.FC = () => {
           <div className="max-w-5xl">
             <p className="text-lg text-white/80 mb-2">Stop 3 of 5</p>
             <h1 className="text-5xl font-serif text-white mb-4 font-bold">
-              {cmsContent.title || 'Skills Academy'}
+              {cmsContent.title || 'SKILLS Academy'}
             </h1>
             <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-6">
               <h2 className="text-3xl font-serif text-[#D4AF37]">
@@ -103,7 +103,7 @@ export const SkillsAcademyPage: React.FC = () => {
             <img 
               className="h-[400px] w-auto drop-shadow-2xl"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg"
-              alt="Skills Academy Building"
+              alt="SKILLS Academy Building"
             />
           </div>
         </div>
@@ -337,12 +337,12 @@ export const SkillsAcademyPage: React.FC = () => {
                 </li>
                 <li>
                   <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
-                    Job Junction
+                    JOB Junction
                   </Link>
                 </li>
                 <li>
                   <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
-                    Skills Academy
+                    SKILLS Academy
                   </Link>
                 </li>
                 <li>
@@ -368,7 +368,7 @@ export const SkillsAcademyPage: React.FC = () => {
       </footer>
 
       {/* Edit Button */}
-      <EditButton editPath="/admin/building/learning_lodge" label="Edit Skills Academy" />
+      <EditButton editPath="/admin/building/learning_lodge" label="Edit SKILLS Academy" />
     </div>
   );
 };

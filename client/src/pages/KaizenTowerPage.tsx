@@ -49,12 +49,12 @@ export const KaizenTowerPage: React.FC = () => {
                   </li>
                   <li>
                     <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (2) Job Junction
+                      (2) JOB Junction
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (3) Skills Academy
+                      (3) SKILLS Academy
                     </Link>
                   </li>
                   <li>
@@ -384,12 +384,12 @@ export const KaizenTowerPage: React.FC = () => {
                 </li>
                 <li>
                   <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
-                    Job Junction
+                    JOB Junction
                   </Link>
                 </li>
                 <li>
                   <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
-                    Skills Academy
+                    SKILLS Academy
                   </Link>
                 </li>
                 <li>
