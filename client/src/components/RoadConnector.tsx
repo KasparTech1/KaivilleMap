@@ -61,12 +61,35 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
           const containerRect = container.getBoundingClientRect();
           
           // Always connect to the center of buildings
-          const position = {
+          let position = {
             x: rect.left - containerRect.left + rect.width / 2,
             y: rect.top - containerRect.top + rect.height / 2,
             row: building.row,
             column: building.column
           };
+          
+          // Special offset for Kaizen Tower on desktop
+          if (building.id === 'kasp_tower' && !isMobile) {
+            position.x -= 100; // Move connection point 100px to the left
+          }
+          
+          // Special offsets for mobile to ensure roads connect properly
+          if (isMobile) {
+            if (building.id === 'heritage_center') {
+              position.x += 20; // Slight right adjustment
+            } else if (building.id === 'community-center') {
+              position.y += 30; // Move down a bit
+            } else if (building.id === 'learning_lodge') {
+              position.x -= 30; // Move left to connect better
+              position.y -= 20; // Move up slightly
+            } else if (building.id === 'celebration_station') {
+              position.x += 40; // Move right
+              position.y += 20; // Move down
+            } else if (building.id === 'kasp_tower') {
+              position.x -= 20; // Move left
+            }
+          }
+          
           buildingPositions.set(building.id, position);
           // console.log(`Building ${building.id} position:`, position, 'rect:', rect, 'container:', containerRect);
           
@@ -83,12 +106,35 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
           const container = document.querySelector('.buildings-grid');
           if (container) {
             const containerRect = container.getBoundingClientRect();
-            const position = {
+            let position = {
               x: rect.left - containerRect.left + rect.width / 2,
               y: rect.top - containerRect.top + rect.height / 2,
               row: building.row,
               column: building.column
             };
+            
+            // Special offset for Kaizen Tower on desktop
+            if (building.id === 'kasp_tower' && !isMobile) {
+              position.x -= 100; // Move connection point 100px to the left
+            }
+            
+            // Special offsets for mobile to ensure roads connect properly
+            if (isMobile) {
+              if (building.id === 'heritage_center') {
+                position.x += 20; // Slight right adjustment
+              } else if (building.id === 'community-center') {
+                position.y += 30; // Move down a bit
+              } else if (building.id === 'learning_lodge') {
+                position.x -= 30; // Move left to connect better
+                position.y -= 20; // Move up slightly
+              } else if (building.id === 'celebration_station') {
+                position.x += 40; // Move right
+                position.y += 20; // Move down
+              } else if (building.id === 'kasp_tower') {
+                position.x -= 20; // Move left
+              }
+            }
+            
             buildingPositions.set(building.id, position);
             // console.log(`Building ${building.id} alternative position:`, position);
           }
