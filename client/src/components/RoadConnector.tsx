@@ -70,23 +70,32 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
           
           // Special offset for Kaizen Tower on desktop
           if (building.id === 'kasp_tower' && !isMobile) {
-            position.x -= 100; // Move connection point 100px to the left
+            position.x -= 175; // Move connection point 175px to the left (was 100)
           }
           
           // Special offsets for mobile to ensure roads connect properly
           if (isMobile) {
+            // Based on the actual mobile grid layout and building transforms
             if (building.id === 'heritage_center') {
-              position.x += 20; // Slight right adjustment
+              // Top left - slight adjustment
+              position.x += 10;
+              position.y += 40;
             } else if (building.id === 'community-center') {
-              position.y += 30; // Move down a bit
+              // Top right - needs significant adjustment due to mt-[60%]
+              position.x -= 20;
+              position.y -= 80; // Compensate for the large margin-top
             } else if (building.id === 'learning_lodge') {
-              position.x -= 30; // Move left to connect better
-              position.y -= 20; // Move up slightly
+              // Middle left - already lifted high with -translate-y-[150px]
+              position.x += 50; // Move right to better center
+              position.y += 100; // Move down to compensate for the lift
             } else if (building.id === 'celebration_station') {
-              position.x += 40; // Move right
-              position.y += 20; // Move down
+              // Middle right - scaled large and shifted
+              position.x -= 60; // Move left due to ml-[50%] and scale
+              position.y -= 40; // Move up due to translate-y-[-115px]
             } else if (building.id === 'kasp_tower') {
-              position.x -= 20; // Move left
+              // Bottom - centered but offset
+              position.x += 30; // Adjust for ml-[25%]
+              position.y += 20; // Slight down adjustment
             }
           }
           
@@ -115,23 +124,32 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             
             // Special offset for Kaizen Tower on desktop
             if (building.id === 'kasp_tower' && !isMobile) {
-              position.x -= 100; // Move connection point 100px to the left
+              position.x -= 175; // Move connection point 175px to the left (was 100)
             }
             
             // Special offsets for mobile to ensure roads connect properly
             if (isMobile) {
+              // Based on the actual mobile grid layout and building transforms
               if (building.id === 'heritage_center') {
-                position.x += 20; // Slight right adjustment
+                // Top left - slight adjustment
+                position.x += 10;
+                position.y += 40;
               } else if (building.id === 'community-center') {
-                position.y += 30; // Move down a bit
+                // Top right - needs significant adjustment due to mt-[60%]
+                position.x -= 20;
+                position.y -= 80; // Compensate for the large margin-top
               } else if (building.id === 'learning_lodge') {
-                position.x -= 30; // Move left to connect better
-                position.y -= 20; // Move up slightly
+                // Middle left - already lifted high with -translate-y-[150px]
+                position.x += 50; // Move right to better center
+                position.y += 100; // Move down to compensate for the lift
               } else if (building.id === 'celebration_station') {
-                position.x += 40; // Move right
-                position.y += 20; // Move down
+                // Middle right - scaled large and shifted
+                position.x -= 60; // Move left due to ml-[50%] and scale
+                position.y -= 40; // Move up due to translate-y-[-115px]
               } else if (building.id === 'kasp_tower') {
-                position.x -= 20; // Move left
+                // Bottom - centered but offset
+                position.x += 30; // Adjust for ml-[25%]
+                position.y += 20; // Slight down adjustment
               }
             }
             
