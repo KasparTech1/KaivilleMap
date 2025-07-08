@@ -31,7 +31,6 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
   const [isReverseAnimation, setIsReverseAnimation] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [containerSize, setContainerSize] = useState({ width: 100, height: 100 });
-  const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
   const animationRef = useRef<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -55,33 +54,14 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       }) || elements[0];
       
       if (element) {
-        // For transformed buildings, look for the transformed inner div
-        let targetElement = element;
-        if (building.id === 'kasp_tower' || building.id === 'celebration_station' || 
-            building.id === 'learning_lodge' || building.id === 'community-center' ||
-            building.id === 'heritage_center') {
-          // Find the transformed div inside (it's inside Link > div)
-          const innerDiv = element.querySelector('a > div');
-          if (innerDiv) {
-            targetElement = innerDiv;
-          }
-        }
-        
-        const rect = targetElement.getBoundingClientRect();
+        const rect = element.getBoundingClientRect();
         const container = element.closest('.buildings-grid');
         
         if (container) {
           const containerRect = container.getBoundingClientRect();
-          
-          // Special handling for Kaizen Tower - connect at base
-          let yOffset = rect.height / 2;
-          if (building.id === 'kasp_tower' && !isMobile) {
-            yOffset = rect.height * 0.85; // Connect near the base instead of center
-          }
-          
           const position = {
             x: rect.left - containerRect.left + rect.width / 2,
-            y: rect.top - containerRect.top + yOffset,
+            y: rect.top - containerRect.top + rect.height / 2,
             row: isMobile ? Math.floor(index / 2) + 1 : building.row,
             column: isMobile ? (index % 2) + 1 : building.column
           };
@@ -185,21 +165,22 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (isMobile) {
-              // Mobile: Create smoother curves that ensure connection
+              // Mobile: Create flowing S-curves
               const isHorizontal = Math.abs(dx) > Math.abs(dy);
               
               if (isHorizontal) {
-                // Horizontal connection - create gentle S-curve
-                const cp1x = prevPos.x + dx * 0.3;
-                const cp1y = prevPos.y;
-                const cp2x = prevPos.x + dx * 0.7;
-                const cp2y = pos.y;
+                // Horizontal connection - create S-curve
+                const cp1x = prevPos.x + dx * 0.5;
+                const cp1y = prevPos.y - (distance * 0.2); // Curve up first
+                const cp2x = prevPos.x + dx * 0.5;
+                const cp2y = pos.y + (distance * 0.2); // Then curve down
                 pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
               } else {
-                // Vertical connection - create smooth curve
-                const cp1x = prevPos.x;
+                // Vertical connection - create gentle curve
+                const curveOffset = distance * 0.3;
+                const cp1x = prevPos.x + curveOffset;
                 const cp1y = prevPos.y + dy * 0.3;
-                const cp2x = pos.x;
+                const cp2x = pos.x - curveOffset;
                 const cp2y = pos.y - dy * 0.3;
                 pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
               }
@@ -361,17 +342,13 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     
     checkMobile();
     
-    // Calculate paths with a small initial delay to ensure DOM is ready
+    // Multiple attempts to calculate paths to ensure we catch the road
     const calculateWithRetries = () => {
-      if (isInitialRender) {
-        // Single delayed calculation on initial render
-        setTimeout(() => {
-          calculatePaths();
-          setIsInitialRender(false);
-        }, 200);
-      } else {
-        calculatePaths();
-      }
+      calculatePaths();
+      // Retry a few times to ensure we get the road drawn
+      setTimeout(calculatePaths, 100);
+      setTimeout(calculatePaths, 500);
+      setTimeout(calculatePaths, 1000);
     };
     
     calculateWithRetries();
@@ -384,26 +361,39 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
 
     window.addEventListener('resize', handleResize);
     
-    // Only observe DOM changes on initial render
-    let observer: MutationObserver | null = null;
-    if (isInitialRender) {
-      observer = new MutationObserver(() => {
-        if (isInitialRender) {
-          setTimeout(calculatePaths, 100);
-        }
-      });
+    // Also listen for DOM changes in case buildings load late
+    const observer = new MutationObserver(() => {
+      setTimeout(calculatePaths, 100);
+    });
+    
+    // Observe the single grid element
+    const gridElement = document.querySelector('.buildings-grid');
+    if (gridElement) {
+      observer.observe(gridElement, { childList: true, subtree: true, attributes: true });
       
-      // Observe the single grid element with minimal options
-      const gridElement = document.querySelector('.buildings-grid');
-      if (gridElement) {
-        observer.observe(gridElement, { childList: true, subtree: false });
-      }
+      // Also observe for class changes which happen during responsive transitions
+      const classObserver = new MutationObserver(() => {
+        // console.log('Grid classes changed, recalculating paths');
+        setTimeout(calculatePaths, 100);
+      });
+      classObserver.observe(gridElement, { attributes: true, attributeFilter: ['class'] });
+      
+      // Store observer for cleanup
+      (window as any).__roadClassObserver = classObserver;
+    }
+    
+    // Also observe the parent container for visibility changes
+    const parentContainer = document.querySelector('.relative.z-10');
+    if (parentContainer) {
+      observer.observe(parentContainer, { childList: true, subtree: true });
     }
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (observer) {
-        observer.disconnect();
+      observer.disconnect();
+      if ((window as any).__roadClassObserver) {
+        (window as any).__roadClassObserver.disconnect();
+        delete (window as any).__roadClassObserver;
       }
     };
   }, [calculatePaths]);
@@ -458,14 +448,7 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     <>
       <svg
         className="absolute inset-0 pointer-events-none z-0"
-        style={{ 
-          width: '100%', 
-          height: '100%', 
-          minWidth: '100%', 
-          minHeight: '100%',
-          opacity: mainPath ? 1 : 0,
-          transition: 'opacity 0.5s ease-in-out'
-        }}
+        style={{ width: '100%', height: '100%', minWidth: '100%', minHeight: '100%' }}
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         preserveAspectRatio="xMidYMid meet"
       >
