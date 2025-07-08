@@ -84,24 +84,24 @@ export const SkillsAcademyPage: React.FC = () => {
       {/* Hero Section */}
       <div className="h-[500px] relative overflow-hidden bg-gradient-to-br from-[#2c5530] to-[#3d6142]">
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-        <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
-          <div className="max-w-5xl">
+        <div className="container mx-auto px-6 h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between relative z-10">
+          <div className="max-w-5xl text-center lg:text-left">
             <p className="text-lg text-white/80 mb-2">Stop 3 of 5</p>
-            <h1 className="text-5xl font-serif text-white mb-4 font-bold">
+            <h1 className="text-4xl lg:text-5xl font-serif text-white mb-4 font-bold">
               {cmsContent.title || 'SKILLS Academy'}
             </h1>
-            <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-6">
-              <h2 className="text-3xl font-serif text-[#D4AF37]">
+            <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-4 lg:mb-6">
+              <h2 className="text-2xl lg:text-3xl font-serif text-[#D4AF37]">
                 {cmsContent.subtitle || 'Learn and Develop Your AI Skills'}
               </h2>
             </div>
-            <p className="text-xl text-white italic font-serif max-w-3xl">
+            <p className="text-lg lg:text-xl text-white italic font-serif max-w-3xl mx-auto lg:mx-0">
               {cmsContent.description || 'From Swiss Guards to Texas Aggies to AI Pioneers - we\'ve always valued learning and service'}
             </p>
           </div>
-          <div className="hidden lg:block">
+          <div className="mt-6 lg:mt-0 lg:block">
             <img 
-              className="h-[400px] w-auto drop-shadow-2xl"
+              className="h-[200px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg"
               alt="SKILLS Academy Building"
             />
