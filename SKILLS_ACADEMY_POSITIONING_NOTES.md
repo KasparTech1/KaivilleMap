@@ -1,4 +1,4 @@
-# SKILLS Academy Mobile Positioning Issues
+# SKILLS Academy Mobile Positioning Issues & Road Connection Challenges
 
 ## Problem
 The SKILLS Academy building (learning_lodge) was not responding to translate-y changes on mobile view.
@@ -27,3 +27,22 @@ The SKILLS Academy building (learning_lodge) was not responding to translate-y c
 
 ## Testing Notes
 Always test positioning changes on actual mobile viewport (or dev tools mobile view) as the calculations can differ significantly from desktop.
+
+## Road Connection Issues on Mobile
+
+### Problem
+Roads were zigzagging erratically on mobile instead of flowing naturally through buildings due to complex CSS transforms.
+
+### Why This Happened
+1. **Multiple Transform Layers**: Each building has scale, translate, and margin transforms
+2. **getBoundingClientRect() Confusion**: The container div's position doesn't match the visual position of the scaled/translated SVG inside
+3. **Grid vs Visual Position**: Buildings appear in different positions than their grid cells due to transforms
+
+### Solution
+Instead of using the container element's position, we now:
+1. Find the actual `<img>` element inside each building card
+2. Get the IMG's bounding rectangle (which accounts for all transforms)
+3. Use that position as the road connection point
+4. Add small per-building adjustments for visual appeal
+
+This ensures roads connect to where buildings visually appear, not where their containers are positioned.

@@ -73,29 +73,34 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             position.x -= 175; // Move connection point 175px to the left (was 100)
           }
           
-          // Special offsets for mobile to ensure roads connect properly
+          // For mobile, we need to find the actual visual center of the SVG image
           if (isMobile) {
-            // Based on the actual mobile grid layout and building transforms
+            // Try to find the IMG element inside the building card
+            const imgElement = element.querySelector('img');
+            if (imgElement) {
+              const imgRect = imgElement.getBoundingClientRect();
+              // Use the image's actual position instead
+              position.x = imgRect.left - containerRect.left + imgRect.width / 2;
+              position.y = imgRect.top - containerRect.top + imgRect.height / 2;
+            }
+            
+            // Fine-tune adjustments per building if needed
             if (building.id === 'heritage_center') {
-              // Top left - slight adjustment
-              position.x += 10;
-              position.y += 40;
+              // Top left building
+              position.y += 20;
             } else if (building.id === 'community-center') {
-              // Top right - needs significant adjustment due to mt-[60%]
-              position.x -= 20;
-              position.y -= 80; // Compensate for the large margin-top
+              // Top right building
+              position.y += 20;
             } else if (building.id === 'learning_lodge') {
-              // Middle left - already lifted high with -translate-y-[150px]
-              position.x += 50; // Move right to better center
-              position.y += 100; // Move down to compensate for the lift
+              // Middle left - SKILLS Academy
+              position.y += 30;
             } else if (building.id === 'celebration_station') {
-              // Middle right - scaled large and shifted
-              position.x -= 60; // Move left due to ml-[50%] and scale
-              position.y -= 40; // Move up due to translate-y-[-115px]
+              // Middle right - Innovation Plaza
+              position.x -= 30;
+              position.y += 20;
             } else if (building.id === 'kasp_tower') {
-              // Bottom - centered but offset
-              position.x += 30; // Adjust for ml-[25%]
-              position.y += 20; // Slight down adjustment
+              // Bottom - Kaizen Tower
+              position.y += 40;
             }
           }
           
@@ -127,29 +132,34 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
               position.x -= 175; // Move connection point 175px to the left (was 100)
             }
             
-            // Special offsets for mobile to ensure roads connect properly
+            // For mobile, we need to find the actual visual center of the SVG image
             if (isMobile) {
-              // Based on the actual mobile grid layout and building transforms
+              // Try to find the IMG element inside the building card
+              const imgElement = element.querySelector('img');
+              if (imgElement) {
+                const imgRect = imgElement.getBoundingClientRect();
+                // Use the image's actual position instead
+                position.x = imgRect.left - containerRect.left + imgRect.width / 2;
+                position.y = imgRect.top - containerRect.top + imgRect.height / 2;
+              }
+              
+              // Fine-tune adjustments per building if needed
               if (building.id === 'heritage_center') {
-                // Top left - slight adjustment
-                position.x += 10;
-                position.y += 40;
+                // Top left building
+                position.y += 20;
               } else if (building.id === 'community-center') {
-                // Top right - needs significant adjustment due to mt-[60%]
-                position.x -= 20;
-                position.y -= 80; // Compensate for the large margin-top
+                // Top right building
+                position.y += 20;
               } else if (building.id === 'learning_lodge') {
-                // Middle left - already lifted high with -translate-y-[150px]
-                position.x += 50; // Move right to better center
-                position.y += 100; // Move down to compensate for the lift
+                // Middle left - SKILLS Academy
+                position.y += 30;
               } else if (building.id === 'celebration_station') {
-                // Middle right - scaled large and shifted
-                position.x -= 60; // Move left due to ml-[50%] and scale
-                position.y -= 40; // Move up due to translate-y-[-115px]
+                // Middle right - Innovation Plaza
+                position.x -= 30;
+                position.y += 20;
               } else if (building.id === 'kasp_tower') {
-                // Bottom - centered but offset
-                position.x += 30; // Adjust for ml-[25%]
-                position.y += 20; // Slight down adjustment
+                // Bottom - Kaizen Tower
+                position.y += 40;
               }
             }
             
