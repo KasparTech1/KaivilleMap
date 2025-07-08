@@ -21,8 +21,9 @@ The SKILLS Academy building (learning_lodge) was not responding to translate-y c
 
 ## Solution
 - Changed from positive margin-top (`mt-[10%]`) to negative margin-top (`-mt-[5%]`) to lift the element
-- Removed the translate-y property on mobile to avoid conflicts
+- Added `-translate-y-[200px]` for mobile to move it up significantly
 - Desktop positioning remains unchanged with its translate-y
+- Note: Negative translate-y values move elements UP, positive values move DOWN
 
 ## Testing Notes
 Always test positioning changes on actual mobile viewport (or dev tools mobile view) as the calculations can differ significantly from desktop.
