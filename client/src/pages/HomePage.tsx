@@ -423,7 +423,7 @@ export const HomePage: React.FC = () => {
         {/* Interactive Map */}
         <div className="relative">
           {/* Single Responsive Grid Layout */}
-          <div className="buildings-grid relative grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-x-16 md:gap-y-12 pt-0 px-4 pb-4 md:pt-0 md:px-12 md:pb-8 min-h-[600px] md:min-h-[400px]">
+          <div className="buildings-grid relative grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-x-16 md:gap-y-12 pt-0 px-4 pb-4 md:pt-0 md:px-12 md:pb-8 min-h-[600px] md:min-h-[400px]" style={{ willChange: 'auto' }}>
             {/* Road Connections */}
             <RoadConnector buildings={buildings} connections={connections} />
 

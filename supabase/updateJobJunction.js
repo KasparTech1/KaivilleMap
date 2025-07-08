@@ -8,13 +8,13 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function updateJobJunction() {
   try {
-    console.log('Updating Job Junction content with new design...\n');
+    console.log('Updating JOB Junction content with new design...\n');
 
     const { error } = await supabase
       .from('simple_content')
       .update({ 
         content: {
-          title: 'Job Junction',
+          title: 'JOB Junction',
           subtitle: 'Where We Choose to Join, Not Judge',
           heroQuote: {
             text: '"You felt like you were a part of this family, that it wasn\'t just a work environment. This was like your second family."',
@@ -68,7 +68,7 @@ async function updateJobJunction() {
                   description: 'Look forward instead of back. Focus on solutions rather than problems'
                 },
                 {
-                  title: 'Act with Journey',
+                  title: 'Act with Urgency',
                   description: 'Act swiftly with purpose and intention to aggressively achieve your goals'
                 }
               ]
@@ -112,7 +112,7 @@ async function updateJobJunction() {
             },
             {
               question: 'What if AI changes my job?',
-              answer: 'We practice can-if thinking and act with journey to find solutions together'
+              answer: 'We practice can-if thinking and act with urgency to find solutions together'
             },
             {
               question: 'What if I can\'t keep up?',
@@ -144,9 +144,9 @@ async function updateJobJunction() {
       .eq('page_id', 'community-center');
     
     if (error) {
-      console.error('Error updating Job Junction:', error);
+      console.error('Error updating JOB Junction:', error);
     } else {
-      console.log('✅ Successfully updated Job Junction content!');
+      console.log('✅ Successfully updated JOB Junction content!');
     }
 
   } catch (error) {
