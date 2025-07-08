@@ -59,11 +59,13 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
         
         if (container) {
           const containerRect = container.getBoundingClientRect();
+          
+          // Always connect to the center of buildings
           const position = {
             x: rect.left - containerRect.left + rect.width / 2,
             y: rect.top - containerRect.top + rect.height / 2,
-            row: isMobile ? Math.floor(index / 2) + 1 : building.row,
-            column: isMobile ? (index % 2) + 1 : building.column
+            row: building.row,
+            column: building.column
           };
           buildingPositions.set(building.id, position);
           // console.log(`Building ${building.id} position:`, position, 'rect:', rect, 'container:', containerRect);
@@ -84,8 +86,8 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             const position = {
               x: rect.left - containerRect.left + rect.width / 2,
               y: rect.top - containerRect.top + rect.height / 2,
-              row: isMobile ? Math.floor(index / 2) + 1 : building.row,
-              column: isMobile ? (index % 2) + 1 : building.column
+              row: building.row,
+              column: building.column
             };
             buildingPositions.set(building.id, position);
             // console.log(`Building ${building.id} alternative position:`, position);
@@ -96,54 +98,19 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
       }
     });
 
-    // Create a single continuous path connecting buildings in a logical order
-    let sortedBuildings;
+    // Create a single continuous path connecting buildings in the specified order
+    // Always follow: Stewardship Hall → JOB Junction → SKILLS Academy → Innovation Plaza → Kaizen Tower
+    const buildingOrder = [
+      'heritage_center',      // Stewardship Hall
+      'community-center',     // JOB Junction
+      'learning_lodge',       // SKILLS Academy
+      'celebration_station',  // Innovation Plaza
+      'kasp_tower'           // Kaizen Tower
+    ];
     
-    if (isMobile) {
-      // For mobile, create a zig-zag pattern for more natural flow
-      sortedBuildings = [...buildings].sort((a, b) => {
-        // Heritage Center should always be first
-        if (a.id === 'heritage_center') return -1;
-        if (b.id === 'heritage_center') return 1;
-        
-        const aIndex = buildings.indexOf(a);
-        const bIndex = buildings.indexOf(b);
-        // KASP Tower should always be last
-        if (a.id === 'kasp_tower') return 1;
-        if (b.id === 'kasp_tower') return -1;
-        
-        // Calculate row and column for mobile layout
-        const aRow = Math.floor(aIndex / 2);
-        const aCol = aIndex % 2;
-        const bRow = Math.floor(bIndex / 2);
-        const bCol = bIndex % 2;
-        
-        if (aRow !== bRow) return aRow - bRow;
-        // Alternate direction on each row for snake pattern
-        if (aRow % 2 === 0) {
-          return aCol - bCol; // Even rows: left to right
-        }
-        return bCol - aCol; // Odd rows: right to left
-      });
-    } else {
-      // Desktop sorting logic
-      sortedBuildings = [...buildings].sort((a, b) => {
-        // Heritage Center should always be first
-        if (a.id === 'heritage_center') return -1;
-        if (b.id === 'heritage_center') return 1;
-        
-        // KASP Tower should always be last
-        if (a.id === 'kasp_tower') return 1;
-        if (b.id === 'kasp_tower') return -1;
-        
-        if (a.row !== b.row) return a.row - b.row;
-        // Alternate direction on each row for snake pattern
-        if (a.row % 2 === 0) {
-          return b.column - a.column; // Even rows: right to left
-        }
-        return a.column - b.column; // Odd rows: left to right
-      });
-    }
+    const sortedBuildings = buildingOrder
+      .map(id => buildings.find(b => b.id === id))
+      .filter(b => b !== undefined) as Building[];
 
     // Create the main road path
     let pathString = '';
