@@ -178,25 +178,15 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (isMobile) {
-              // Mobile: Create flowing S-curves
-              const isHorizontal = Math.abs(dx) > Math.abs(dy);
+              // Mobile: Simple curved connections
+              const midX = prevPos.x + dx * 0.5;
+              const midY = prevPos.y + dy * 0.5;
               
-              if (isHorizontal) {
-                // Horizontal connection - create S-curve
-                const cp1x = prevPos.x + dx * 0.5;
-                const cp1y = prevPos.y - (distance * 0.2); // Curve up first
-                const cp2x = prevPos.x + dx * 0.5;
-                const cp2y = pos.y + (distance * 0.2); // Then curve down
-                pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
-              } else {
-                // Vertical connection - create gentle curve
-                const curveOffset = distance * 0.3;
-                const cp1x = prevPos.x + curveOffset;
-                const cp1y = prevPos.y + dy * 0.3;
-                const cp2x = pos.x - curveOffset;
-                const cp2y = pos.y - dy * 0.3;
-                pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
-              }
+              // Use quadratic bezier for simpler, more predictable curves
+              const controlX = midX;
+              const controlY = midY + (Math.abs(dx) > Math.abs(dy) ? 30 : -30);
+              
+              pathString += ` Q ${controlX} ${controlY}, ${pos.x} ${pos.y}`;
             } else {
               // Desktop: Keep existing behavior but enhance curves
               if (pos.row !== prevPos.row) {
@@ -355,49 +345,29 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     
     checkMobile();
     
-    // Multiple attempts to calculate paths to ensure we catch the road
-    const calculateWithRetries = () => {
-      calculatePaths();
-      // Only do retries on initial render to avoid gyrating roads
-      if (isInitialRender) {
-        setTimeout(() => {
-          calculatePaths();
-          setIsInitialRender(false);
-        }, 500);
-      }
+    // Single calculation with a delay to ensure DOM is ready
+    const calculateWithDelay = () => {
+      setTimeout(() => {
+        calculatePaths();
+        setIsInitialRender(false);
+      }, 100);
     };
     
-    calculateWithRetries();
+    calculateWithDelay();
 
     // Recalculate on window resize
     const handleResize = () => {
       checkMobile();
-      calculateWithRetries();
+      calculatePaths();
     };
 
     window.addEventListener('resize', handleResize);
     
-    // Only observe DOM changes on initial render
-    let observer: MutationObserver | null = null;
-    if (isInitialRender) {
-      observer = new MutationObserver(() => {
-        if (isInitialRender) {
-          setTimeout(calculatePaths, 100);
-        }
-      });
-      
-      // Observe the single grid element with minimal options
-      const gridElement = document.querySelector('.buildings-grid');
-      if (gridElement) {
-        observer.observe(gridElement, { childList: true, subtree: false });
-      }
-    }
+    // Remove MutationObserver to prevent multiple recalculations
+    // The single delayed calculation should be sufficient
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (observer) {
-        observer.disconnect();
-      }
     };
   }, [calculatePaths]);
 
