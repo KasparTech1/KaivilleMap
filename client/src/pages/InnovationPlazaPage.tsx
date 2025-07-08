@@ -84,24 +84,24 @@ export const InnovationPlazaPage: React.FC = () => {
       {/* Hero Section */}
       <div className="h-[500px] relative overflow-hidden bg-gradient-to-r from-[#1f4e79] to-[#4169E1]">
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-        <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
-          <div className="max-w-5xl">
+        <div className="container mx-auto px-6 h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between relative z-10">
+          <div className="max-w-5xl text-center lg:text-left">
             <p className="text-lg text-white/80 mb-2">Stop 4 of 5</p>
-            <h1 className="text-5xl font-serif text-white mb-4 font-bold">
+            <h1 className="text-4xl lg:text-5xl font-serif text-white mb-4 font-bold">
               {cmsContent.title || 'Innovation Plaza'}
             </h1>
-            <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-6">
-              <h2 className="text-3xl font-serif text-[#D4AF37]">
+            <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-4 lg:mb-6">
+              <h2 className="text-2xl lg:text-3xl font-serif text-[#D4AF37]">
                 {cmsContent.subtitle || 'Where Ideas Take Flight'}
               </h2>
             </div>
-            <p className="text-xl text-white italic font-serif max-w-3xl">
+            <p className="text-lg lg:text-xl text-white italic font-serif max-w-3xl mx-auto lg:mx-0">
               {cmsContent.heroQuote || '"Your experience is the secret ingredient. AI has the recipes, but you know what tastes right."'}
             </p>
           </div>
-          <div className="hidden lg:block">
+          <div className="mt-6 lg:mt-0 lg:block">
             <img 
-              className="h-[400px] w-auto drop-shadow-2xl"
+              className="h-[250px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto scale-125 lg:scale-100"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/innovation_plaza_01.svg"
               alt="Innovation Plaza Building"
             />

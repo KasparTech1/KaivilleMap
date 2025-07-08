@@ -84,27 +84,27 @@ export const JobJunctionPage: React.FC = () => {
       {/* Hero Section */}
       <div className="h-[500px] relative overflow-hidden bg-gradient-to-br from-[#1f4e79] to-[#3d5a80]">
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-        <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
-          <div className="max-w-5xl">
+        <div className="container mx-auto px-6 h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between relative z-10">
+          <div className="max-w-5xl text-center lg:text-left">
             <p className="text-lg text-white/80 mb-2">Stop 2 of 5</p>
-            <h1 className="text-5xl font-serif text-white mb-4 font-bold">
+            <h1 className="text-4xl lg:text-5xl font-serif text-white mb-4 font-bold">
               {cmsContent.title || 'JOB Junction'}
             </h1>
-            <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-6">
-              <h2 className="text-3xl font-serif text-[#D4AF37]">
+            <div className="bg-black bg-opacity-20 rounded-lg px-4 py-2 inline-block mb-4 lg:mb-6">
+              <h2 className="text-2xl lg:text-3xl font-serif text-[#D4AF37]">
                 {cmsContent.subtitle || 'Where We Choose to Join, Not Judge'}
               </h2>
             </div>
-            <p className="text-xl text-white italic font-serif mb-2 max-w-3xl">
+            <p className="text-lg lg:text-xl text-white italic font-serif mb-2 max-w-3xl mx-auto lg:mx-0">
               {cmsContent.heroQuote?.text || '"You felt like you were a part of this family, that it wasn\'t just a work environment. This was like your second family."'}
             </p>
             <p className="text-lg text-[#D4AF37]">
               {cmsContent.heroQuote?.author || '- Arthur Kaspar'}
             </p>
           </div>
-          <div className="hidden lg:block">
+          <div className="mt-6 lg:mt-0 lg:block">
             <img 
-              className="h-[400px] w-auto drop-shadow-2xl"
+              className="h-[250px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto scale-125 lg:scale-100"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg"
               alt="JOB Junction Building"
             />

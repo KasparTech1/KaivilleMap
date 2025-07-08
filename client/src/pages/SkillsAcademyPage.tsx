@@ -101,7 +101,7 @@ export const SkillsAcademyPage: React.FC = () => {
           </div>
           <div className="mt-6 lg:mt-0 lg:block">
             <img 
-              className="h-[200px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto"
+              className="h-[200px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto translate-y-[100px] lg:translate-y-0"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg"
               alt="SKILLS Academy Building"
             />
