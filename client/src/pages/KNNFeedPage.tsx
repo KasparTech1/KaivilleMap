@@ -290,25 +290,69 @@ export const KNNFeedPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100/50 to-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
-        <div className="px-4 py-3 flex items-center justify-between">
-          <Link to="/" className="text-gray-600 hover:text-gray-900">
-            <ArrowLeft className="w-6 h-6" />
-          </Link>
-          <div className="flex items-center gap-2">
-            <img 
-              src={getAssetUrl('knn-tower.svg')} 
-              alt="KNN" 
-              className="h-8 w-auto"
-            />
-            <h1 className="text-xl font-semibold">Kaiville News Network</h1>
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition mr-4">
+                <ArrowLeft className="w-6 h-6" />
+              </Link>
+              <div className="flex items-center gap-2">
+                <img 
+                  src={getAssetUrl('knn-tower.svg')} 
+                  alt="KNN" 
+                  className="h-8 w-auto"
+                />
+                <h1 className="text-2xl text-[#1f4e79] font-serif font-bold">Kaiville News Network</h1>
+              </div>
+              <nav className="ml-10 hidden md:block">
+                <ul className="flex space-x-8">
+                  <li>
+                    <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      Map
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/heritage_center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (1) Stewardship Hall
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (2) JOB Junction
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (3) SKILLS Academy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/celebration_station" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (4) Innovation Plaza
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (5) Kaizen Tower
+                    </Link>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link to="/">
+                <button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90 px-4 py-2 rounded-md transition">
+                  Return to Map
+                </button>
+              </Link>
+            </div>
           </div>
-          <div className="w-6" /> {/* Spacer for centering */}
         </div>
       </header>
 
       {/* Filter Buttons */}
-      <div className="sticky top-[57px] z-30 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
+      <div className="sticky top-[73px] z-30 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
         <div className="px-4 py-3">
           <div className="flex gap-2 max-w-md mx-auto">
             <button
