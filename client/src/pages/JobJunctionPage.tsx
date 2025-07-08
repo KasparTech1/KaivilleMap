@@ -104,7 +104,7 @@ export const JobJunctionPage: React.FC = () => {
           </div>
           <div className="mt-6 lg:mt-0 lg:block">
             <img 
-              className="h-[250px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto scale-125 lg:scale-100"
+              className="h-[250px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto scale-[1.4] lg:scale-100"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg"
               alt="JOB Junction Building"
             />

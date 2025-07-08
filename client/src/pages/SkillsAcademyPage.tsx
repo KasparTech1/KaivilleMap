@@ -99,9 +99,9 @@ export const SkillsAcademyPage: React.FC = () => {
               {cmsContent.description || 'From Swiss Guards to Texas Aggies to AI Pioneers - we\'ve always valued learning and service'}
             </p>
           </div>
-          <div className="mt-6 lg:mt-0 lg:block">
+          <div className="mt-6 lg:mt-0 lg:block relative">
             <img 
-              className="h-[200px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto translate-y-[100px] lg:translate-y-0"
+              className="h-[200px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto translate-y-[200px] lg:translate-y-0"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg"
               alt="SKILLS Academy Building"
             />
