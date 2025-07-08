@@ -72,9 +72,16 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
         
         if (container) {
           const containerRect = container.getBoundingClientRect();
+          
+          // Special handling for Kaizen Tower - connect at base
+          let yOffset = rect.height / 2;
+          if (building.id === 'kasp_tower' && !isMobile) {
+            yOffset = rect.height * 0.85; // Connect near the base instead of center
+          }
+          
           const position = {
             x: rect.left - containerRect.left + rect.width / 2,
-            y: rect.top - containerRect.top + rect.height / 2,
+            y: rect.top - containerRect.top + yOffset,
             row: isMobile ? Math.floor(index / 2) + 1 : building.row,
             column: isMobile ? (index % 2) + 1 : building.column
           };
@@ -178,22 +185,21 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (isMobile) {
-              // Mobile: Create flowing S-curves
+              // Mobile: Create smoother curves that ensure connection
               const isHorizontal = Math.abs(dx) > Math.abs(dy);
               
               if (isHorizontal) {
-                // Horizontal connection - create S-curve
-                const cp1x = prevPos.x + dx * 0.5;
-                const cp1y = prevPos.y - (distance * 0.2); // Curve up first
-                const cp2x = prevPos.x + dx * 0.5;
-                const cp2y = pos.y + (distance * 0.2); // Then curve down
+                // Horizontal connection - create gentle S-curve
+                const cp1x = prevPos.x + dx * 0.3;
+                const cp1y = prevPos.y;
+                const cp2x = prevPos.x + dx * 0.7;
+                const cp2y = pos.y;
                 pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
               } else {
-                // Vertical connection - create gentle curve
-                const curveOffset = distance * 0.3;
-                const cp1x = prevPos.x + curveOffset;
+                // Vertical connection - create smooth curve
+                const cp1x = prevPos.x;
                 const cp1y = prevPos.y + dy * 0.3;
-                const cp2x = pos.x - curveOffset;
+                const cp2x = pos.x;
                 const cp2y = pos.y - dy * 0.3;
                 pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${pos.x} ${pos.y}`;
               }
@@ -355,15 +361,16 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     
     checkMobile();
     
-    // Multiple attempts to calculate paths to ensure we catch the road
+    // Calculate paths with a small initial delay to ensure DOM is ready
     const calculateWithRetries = () => {
-      calculatePaths();
-      // Only do retries on initial render to avoid gyrating roads
       if (isInitialRender) {
+        // Single delayed calculation on initial render
         setTimeout(() => {
           calculatePaths();
           setIsInitialRender(false);
-        }, 500);
+        }, 200);
+      } else {
+        calculatePaths();
       }
     };
     
