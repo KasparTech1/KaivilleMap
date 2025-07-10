@@ -92,20 +92,18 @@ export const KNNFeedPage: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // First, try to fetch articles with a simpler query
+      // Fetch articles directly from articles table with pages
       const { data: articlesData, error: fetchError } = await supabase
-        .from('article_cards')
+        .from('articles')
         .select(`
           *,
-          articles!inner (
-            *,
-            pages!inner (
-              *
-            )
+          pages!inner (
+            *
           )
         `)
-        .eq('articles.pages.is_published', true)
-        .eq('articles.pages.status', 'published')
+        .eq('pages.is_published', true)
+        .eq('pages.status', 'published')
+        .order('created_at', { ascending: false })
         .limit(20);
 
       if (fetchError) {
@@ -113,113 +111,52 @@ export const KNNFeedPage: React.FC = () => {
         throw fetchError;
       }
 
-      // Transform the data to match our interface
-      const transformedArticles: ArticleCard[] = articlesData?.map(item => {
-        // Extract YouTube thumbnail if no card image
+      // Transform the data to match our interface, building cards from article data
+      const transformedArticles: ArticleCard[] = articlesData?.map(article => {
+        // Extract YouTube thumbnail if no featured image
         let cardImageUrl = null;
-        if (!item.card_image_id) {
-          cardImageUrl = getYouTubeThumbnail(item.articles?.pages);
+        if (!article.featured_image_id) {
+          cardImageUrl = getYouTubeThumbnail(article.pages);
+        }
+
+        // Generate card description from article content or use subheadline
+        let cardDescription = article.subheadline || '';
+        if (!cardDescription && article.content_blocks) {
+          try {
+            // Try to extract description from content blocks
+            const blocks = Array.isArray(article.content_blocks) ? article.content_blocks : JSON.parse(article.content_blocks);
+            const textBlock = blocks.find(block => block.type === 'text' || block.type === 'paragraph');
+            if (textBlock && textBlock.content) {
+              cardDescription = textBlock.content.substring(0, 200) + '...';
+            }
+          } catch (e) {
+            // If content parsing fails, use a default description
+            cardDescription = `Read about ${article.headline}`;
+          }
         }
 
         return {
-          id: item.id,
-          article_id: item.article_id,
-          card_title: item.card_title,
-          card_description: item.card_description,
-          card_image_id: item.card_image_id,
+          id: article.id,
+          article_id: article.id,
+          card_title: article.headline,
+          card_description: cardDescription,
+          card_image_id: article.featured_image_id,
           card_image_url: cardImageUrl,
-          card_style: item.card_style || 'default',
-          published_at: item.articles?.pages?.published_at || new Date().toISOString(),
-          reading_time: item.articles?.reading_time || 5,
-          author_name: item.articles?.author_name || 'Kaiville Team',
+          card_style: 'default',
+          published_at: article.pages?.published_at || article.created_at || new Date().toISOString(),
+          reading_time: article.reading_time || 5,
+          author_name: article.author_name || 'Kaiville Team',
           category_name: 'News', // Simplified for now
           // Determine news type based on tags or author
-          news_type: item.articles?.tags?.includes('world') || 
-                     item.articles?.author_name === 'KNN AI' ? 'world' : 'local',
-          slug: item.articles?.pages?.slug || `article-${item.id}`
+          news_type: article.tags?.includes('world') || 
+                     article.author_name === 'KNN AI' || 
+                     article.author_name === 'KNN Analysis' ? 'world' : 'local',
+          slug: article.pages?.slug || `article-${article.id}`
         };
       }).filter(article => article.card_title && article.card_description) || [];
 
-      // If no articles in database, use mock data
-      if (transformedArticles.length === 0) {
-        const mockArticles: ArticleCard[] = [
-        // Local News articles
-        {
-          id: '1',
-          article_id: '1',
-          card_title: 'Grand Opening of Job Junction',
-          card_description: 'Kaiville celebrates the opening of our state-of-the-art Job Junction with career services for all residents...',
-          card_image_id: null,
-          card_style: 'default',
-          published_at: new Date().toISOString(),
-          reading_time: 3,
-          author_name: 'Kaiville Team',
-          category_name: 'Community',
-          news_type: 'local',
-          slug: 'grand-opening-community-center'
-        },
-        {
-          id: '2',
-          article_id: '2',
-          card_title: 'Local Artist Wins National Recognition',
-          card_description: 'Craft Works resident artist Jane Smith receives prestigious award for innovative sculpture series...',
-          card_image_id: null,
-          card_style: 'default',
-          published_at: new Date(Date.now() - 86400000).toISOString(),
-          reading_time: 5,
-          author_name: 'Kaiville Team',
-          category_name: 'Arts',
-          news_type: 'local',
-          slug: 'local-artist-national-recognition'
-        },
-        {
-          id: '3',
-          article_id: '3',
-          card_title: 'Tech Innovation Hub Coming to Skills University',
-          card_description: 'New partnership brings cutting-edge technology programs and resources to our education center...',
-          card_image_id: null,
-          card_style: 'default',
-          published_at: new Date(Date.now() - 172800000).toISOString(),
-          reading_time: 4,
-          author_name: 'Kaiville Team',
-          category_name: 'Technology',
-          news_type: 'local',
-          slug: 'tech-hub-learning-lodge'
-        },
-        // World News articles (from YouTube analysis)
-        {
-          id: '4',
-          article_id: '4',
-          card_title: 'AI Breakthrough: New Language Model Achieves Human-Level Understanding',
-          card_description: 'Researchers announce a revolutionary AI system that demonstrates unprecedented language comprehension...',
-          card_image_id: null,
-          card_style: 'default',
-          published_at: new Date(Date.now() - 3600000).toISOString(),
-          reading_time: 6,
-          author_name: 'KNN Analysis',
-          category_name: 'Technology',
-          news_type: 'world',
-          slug: 'ai-breakthrough-language-model'
-        },
-        {
-          id: '5',
-          article_id: '5',
-          card_title: 'Global Climate Summit Reaches Historic Agreement',
-          card_description: 'World leaders commit to ambitious new targets for carbon reduction and renewable energy adoption...',
-          card_image_id: null,
-          card_style: 'default',
-          published_at: new Date(Date.now() - 7200000).toISOString(),
-          reading_time: 7,
-          author_name: 'KNN Analysis',
-          category_name: 'Environment',
-          news_type: 'world',
-          slug: 'climate-summit-agreement'
-        }
-        ];
-        setArticles(mockArticles);
-      } else {
-        setArticles(transformedArticles);
-      }
+      // Set articles from database (no mock data fallback)
+      setArticles(transformedArticles);
     } catch (err) {
       console.error('Error fetching articles:', err);
       setError('Failed to load news articles');
