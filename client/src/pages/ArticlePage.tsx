@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Clock, Share2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clock, Share2, Loader2, Edit2 } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
 import { EditButton } from '../components/cms/EditButton';
+import { EditArticleModal } from '../components/cms/EditArticleModal';
 import { supabase } from '../config/supabase';
+import { ArticleService } from '../services/articleService';
 
 interface Article {
   id: string;
@@ -15,8 +17,13 @@ interface Article {
   published_at: string;
   reading_time: number;
   featured_image_id: string | null;
+  featured_video_url?: string | null;
   category_name?: string;
   news_type?: 'local' | 'world';
+  tags?: string[];
+  primary_category?: string;
+  section_title?: string;
+  card_description?: string;
 }
 
 export const ArticlePage: React.FC = () => {
@@ -25,6 +32,7 @@ export const ArticlePage: React.FC = () => {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     fetchArticle();
@@ -162,9 +170,14 @@ export const ArticlePage: React.FC = () => {
           published_at: pageData.published_at || pageData.created_at,
           reading_time: article.reading_time || 5,
           featured_image_id: article.featured_image_id,
+          featured_video_url: article.featured_video_url,
           category_name: 'News',
           news_type: article.tags?.includes('world') || 
-                     article.author_name === 'KNN AI' ? 'world' : 'local'
+                     article.author_name === 'KNN AI' ? 'world' : 'local',
+          tags: article.tags,
+          primary_category: article.primary_category,
+          section_title: article.section_title,
+          card_description: article.card_description
         };
 
         setArticle(transformedArticle);
@@ -224,6 +237,83 @@ export const ArticlePage: React.FC = () => {
     });
   };
 
+  // Helper function to extract YouTube video ID and get thumbnail URL
+  const getYouTubeThumbnail = (article: Article): string | null => {
+    try {
+      // Check featured_video_url first
+      if (article.featured_video_url && article.featured_video_url.includes('youtube.com')) {
+        const match = article.featured_video_url.match(/[?&]v=([^&]+)/);
+        if (match) {
+          return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+        }
+      }
+
+      // Check content_blocks for video blocks
+      if (Array.isArray(article.content_blocks)) {
+        const videoBlock = article.content_blocks.find((block: any) => 
+          block.block_type === 'video' && block.content?.video_url?.includes('youtube.com')
+        );
+        if (videoBlock?.content?.video_url) {
+          const match = videoBlock.content.video_url.match(/[?&]v=([^&]+)/);
+          if (match) {
+            return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+          }
+        }
+      }
+
+      // Check content string for video URLs
+      if (article.content) {
+        const videoMatch = article.content.match(/youtube\.com\/watch\?v=([^&"]+)/);
+        if (videoMatch) {
+          return `https://img.youtube.com/vi/${videoMatch[1]}/maxresdefault.jpg`;
+        }
+      }
+    } catch (error) {
+      console.error('Error extracting YouTube thumbnail:', error);
+    }
+    return null;
+  };
+
+  const handleSaveArticle = async (updatedData: any) => {
+    if (!article) return;
+
+    try {
+      // Validate the data first
+      const validation = ArticleService.validateArticleData(updatedData);
+      if (!validation.valid) {
+        throw new Error(validation.errors.join(', '));
+      }
+
+      // Check permissions
+      const canEdit = await ArticleService.canUserEdit();
+      if (!canEdit) {
+        throw new Error('You do not have permission to edit this article');
+      }
+
+      // Update the article using the service
+      const { data: updatedArticle, error } = await ArticleService.updateArticle(
+        article.id,
+        updatedData
+      );
+
+      if (error) throw error;
+
+      // Update the local state with the returned data
+      if (updatedArticle) {
+        setArticle({
+          ...article,
+          ...updatedArticle
+        });
+      }
+
+      // Refresh the article data to ensure consistency
+      await fetchArticle();
+    } catch (error) {
+      console.error('Error saving article:', error);
+      throw error;
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -267,32 +357,77 @@ export const ArticlePage: React.FC = () => {
             />
             <span className="text-sm font-medium">KNN</span>
           </div>
-          <button className="text-gray-600 hover:text-gray-900">
-            <Share2 className="w-6 h-6" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setShowEditModal(true)}
+              className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              title="Edit Article"
+            >
+              <Edit2 className="w-5 h-5" />
+            </button>
+            <button className="text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </header>
 
       {/* Article Content */}
       <article className="pb-20">
-        {/* Hero Image */}
+        {/* Hero Image - Prioritize YouTube thumbnail */}
         <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
           <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
-            {article.featured_image_id ? (
+            {(() => {
+              const youtubeThumbnail = getYouTubeThumbnail(article);
+              
+              if (youtubeThumbnail) {
+                return (
+                  <img 
+                    src={youtubeThumbnail} 
+                    alt={article.headline}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback to featured image if YouTube thumbnail fails
+                      if (article.featured_image_id) {
+                        e.currentTarget.src = `/api/assets/${article.featured_image_id}`;
+                      } else {
+                        e.currentTarget.style.display = 'none';
+                        const placeholder = e.currentTarget.nextElementSibling;
+                        if (placeholder) {
+                          (placeholder as HTMLElement).style.display = 'flex';
+                        }
+                      }
+                    }}
+                  />
+                );
+              } else if (article.featured_image_id) {
+                return (
+                  <img 
+                    src={`/api/assets/${article.featured_image_id}`} 
+                    alt={article.headline}
+                    className="w-full h-full object-cover"
+                  />
+                );
+              } else {
+                return (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <img 
+                      src={getAssetUrl('knn-tower.svg')} 
+                      alt="KNN Placeholder"
+                      className="w-24 h-24 opacity-20"
+                    />
+                  </div>
+                );
+              }
+            })()}
+            {/* Hidden placeholder for error handling */}
+            <div className="w-full h-full items-center justify-center hidden">
               <img 
-                src={`/api/assets/${article.featured_image_id}`} 
-                alt={article.headline}
-                className="w-full h-full object-cover"
+                src={getAssetUrl('knn-tower.svg')} 
+                alt="KNN Placeholder"
+                className="w-24 h-24 opacity-20"
               />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <img 
-                  src={getAssetUrl('knn-tower.svg')} 
-                  alt="KNN Placeholder"
-                  className="w-24 h-24 opacity-20"
-                />
-              </div>
-            )}
+            </div>
           </div>
         </div>
 
@@ -350,6 +485,16 @@ export const ArticlePage: React.FC = () => {
 
       {/* Edit Button */}
       <EditButton editPath={`/admin/article/${article.id}`} label="Edit Article" />
+
+      {/* Edit Modal */}
+      {showEditModal && article && (
+        <EditArticleModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          article={article}
+          onSave={handleSaveArticle}
+        />
+      )}
     </div>
   );
 };

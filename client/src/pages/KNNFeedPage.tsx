@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Clock, Loader2, GripVertical } from 'lucide-react';
+import { ArrowLeft, Clock, Loader2, GripVertical, Edit2 } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
 import { EditButton } from '../components/cms/EditButton';
 import { supabase } from '../config/supabase';
@@ -417,35 +417,31 @@ export const KNNFeedPage: React.FC = () => {
                 <article className={`bg-white/70 backdrop-blur-xl border border-gray-200/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col transform hover:-translate-y-1 ${
                   draggedOver === article.id ? 'ring-2 ring-blue-500 ring-opacity-50' : ''
                 } ${draggedItem === article.id ? 'opacity-50' : ''}`}>
-                {/* Image */}
-                <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
-                  {article.card_image_id ? (
-                    <img 
-                      src={`/api/assets/${article.card_image_id}`} 
-                      alt={article.card_title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : article.card_image_url ? (
-                    <img 
-                      src={article.card_image_url} 
-                      alt={article.card_title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                      }}
-                    />
-                  ) : null}
-                  {(!article.card_image_id && !article.card_image_url) || (
-                    <div className="w-full h-full flex items-center justify-center hidden">
+                {/* Image - Only show if we have an image */}
+                {(article.card_image_id || article.card_image_url) && (
+                  <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
+                    {article.card_image_id ? (
                       <img 
-                        src={getAssetUrl('knn-tower.svg')} 
-                        alt="KNN Placeholder"
-                        className="w-16 h-16 opacity-20"
+                        src={`/api/assets/${article.card_image_id}`} 
+                        alt={article.card_title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
-                    </div>
-                  )}
-                </div>
+                    ) : (
+                      <img 
+                        src={article.card_image_url} 
+                        alt={article.card_title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          // Hide the entire image container on error
+                          const imageContainer = e.currentTarget.parentElement;
+                          if (imageContainer) {
+                            imageContainer.style.display = 'none';
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
 
                 {/* Content */}
                 <div className="p-5 flex-1 flex flex-col">
@@ -489,6 +485,19 @@ export const KNNFeedPage: React.FC = () => {
                 </div>
               </article>
               </Link>
+              {/* Edit Button */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // TODO: Open edit modal for this article
+                  console.log('Edit article:', article.id);
+                }}
+                className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-gray-600 hover:text-gray-900 p-2 rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-white"
+                title="Edit Article"
+              >
+                <Edit2 className="w-4 h-4" />
+              </button>
             </div>
           ))}
         </div>
@@ -520,35 +529,31 @@ export const KNNFeedPage: React.FC = () => {
                   draggedOver === article.id ? 'ring-2 ring-blue-500 ring-opacity-50' : ''
                 } ${draggedItem === article.id ? 'opacity-50' : ''}`}>
                 <div className="p-4">
-                {/* Large Image */}
-                <div className="aspect-[16/9] bg-gray-200 rounded-lg mb-3 overflow-hidden">
-                  {article.card_image_id ? (
-                    <img 
-                      src={`/api/assets/${article.card_image_id}`} 
-                      alt={article.card_title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : article.card_image_url ? (
-                    <img 
-                      src={article.card_image_url} 
-                      alt={article.card_title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                      }}
-                    />
-                  ) : null}
-                  {(!article.card_image_id && !article.card_image_url) || (
-                    <div className="w-full h-full flex items-center justify-center hidden">
+                {/* Large Image - Only show if we have an image */}
+                {(article.card_image_id || article.card_image_url) && (
+                  <div className="aspect-[16/9] bg-gray-200 rounded-lg mb-3 overflow-hidden">
+                    {article.card_image_id ? (
                       <img 
-                        src={getAssetUrl('knn-tower.svg')} 
-                        alt="KNN Placeholder"
-                        className="w-20 h-20 opacity-20"
+                        src={`/api/assets/${article.card_image_id}`} 
+                        alt={article.card_title}
+                        className="w-full h-full object-cover"
                       />
-                    </div>
-                  )}
-                </div>
+                    ) : (
+                      <img 
+                        src={article.card_image_url} 
+                        alt={article.card_title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          // Hide the entire image container on error
+                          const imageContainer = e.currentTarget.parentElement;
+                          if (imageContainer) {
+                            imageContainer.style.display = 'none';
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
 
                 {/* Content */}
                 <div className="space-y-2">
