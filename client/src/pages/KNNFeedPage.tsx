@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Clock, Loader2, GripVertical, Edit2 } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
 import { EditButton } from '../components/cms/EditButton';
 import { supabase } from '../config/supabase';
+import { FilterPanel } from '../components/news/FilterPanel';
+import { ActiveFilters } from '../components/news/ActiveFilters';
 
 interface ArticleCard {
   id: string;
@@ -17,6 +19,8 @@ interface ArticleCard {
   reading_time: number;
   author_name: string;
   category_name?: string;
+  primary_category?: string;
+  tags?: string[];
   news_type: 'local' | 'world';
   slug: string;
   display_order?: number;
@@ -27,21 +31,71 @@ export const KNNFeedPage: React.FC = () => {
   const [filteredArticles, setFilteredArticles] = useState<ArticleCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'local' | 'world'>('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'local' | 'world'>(() => {
+    const type = searchParams.get('type');
+    return (type === 'local' || type === 'world') ? type : 'all';
+  });
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [draggedOver, setDraggedOver] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedTags, setSelectedTags] = useState<string[]>(() => {
+    const tags = searchParams.get('tags');
+    return tags ? tags.split(',').filter(Boolean) : [];
+  });
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
+    const categories = searchParams.get('categories');
+    return categories ? categories.split(',').filter(Boolean) : [];
+  });
 
   useEffect(() => {
     fetchArticles();
   }, []);
+  
+  // Update URL params when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    
+    if (selectedTags.length > 0) {
+      params.set('tags', selectedTags.join(','));
+    }
+    
+    if (selectedCategories.length > 0) {
+      params.set('categories', selectedCategories.join(','));
+    }
+    
+    if (activeFilter !== 'all') {
+      params.set('type', activeFilter);
+    }
+    
+    setSearchParams(params);
+  }, [selectedTags, selectedCategories, activeFilter, setSearchParams]);
 
   useEffect(() => {
-    if (activeFilter === 'all') {
-      setFilteredArticles(articles);
-    } else {
-      setFilteredArticles(articles.filter(article => article.news_type === activeFilter));
+    let filtered = articles;
+    
+    // Filter by news type
+    if (activeFilter !== 'all') {
+      filtered = filtered.filter(article => article.news_type === activeFilter);
     }
-  }, [articles, activeFilter]);
+    
+    // Filter by categories
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter(article => 
+        article.primary_category && selectedCategories.includes(article.primary_category)
+      );
+    }
+    
+    // Filter by tags
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(article => {
+        if (!article.tags || article.tags.length === 0) return false;
+        const articleTagsLower = article.tags.map(t => t.toLowerCase());
+        return selectedTags.some(tag => articleTagsLower.includes(tag.toLowerCase()));
+      });
+    }
+    
+    setFilteredArticles(filtered);
+  }, [articles, activeFilter, selectedTags, selectedCategories]);
 
   // Drag and drop handlers
   const handleDragStart = (e: React.DragEvent, articleId: string) => {
@@ -223,7 +277,9 @@ export const KNNFeedPage: React.FC = () => {
           published_at: article.pages?.published_at || article.created_at || new Date().toISOString(),
           reading_time: article.reading_time || 5,
           author_name: article.author_name || 'Kaiville Team',
-          category_name: 'News', // Simplified for now
+          category_name: article.primary_category || 'News',
+          primary_category: article.primary_category || 'News',
+          tags: article.tags || [],
           // Determine news type based on tags or author
           news_type: article.tags?.includes('world') || 
                      article.author_name === 'KNN AI' || 
@@ -351,8 +407,30 @@ export const KNNFeedPage: React.FC = () => {
         </div>
       </header>
 
+      {/* Filter Panel */}
+      <FilterPanel
+        selectedTags={selectedTags}
+        selectedCategories={selectedCategories}
+        onTagsChange={setSelectedTags}
+        onCategoriesChange={setSelectedCategories}
+        className="sticky top-[73px] z-30"
+      />
+
+      {/* Active Filters */}
+      <ActiveFilters
+        selectedTags={selectedTags}
+        selectedCategories={selectedCategories}
+        onRemoveTag={(tag) => setSelectedTags(selectedTags.filter(t => t !== tag))}
+        onRemoveCategory={(cat) => setSelectedCategories(selectedCategories.filter(c => c !== cat))}
+        onClearAll={() => {
+          setSelectedTags([]);
+          setSelectedCategories([]);
+        }}
+        className="sticky top-[120px] z-30"
+      />
+
       {/* Filter Buttons */}
-      <div className="sticky top-[73px] z-30 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
+      <div className="sticky top-[169px] z-30 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
         <div className="px-4 py-3">
           <div className="flex gap-2 max-w-md mx-auto">
             <button
@@ -472,6 +550,25 @@ export const KNNFeedPage: React.FC = () => {
                     {article.card_description}
                   </p>
 
+                  {/* Tags */}
+                  {article.tags && article.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-3">
+                      {article.tags.slice(0, 3).map((tag, index) => (
+                        <span
+                          key={`${tag}-${index}`}
+                          className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {article.tags.length > 3 && (
+                        <span className="px-2 py-0.5 text-xs font-medium text-gray-500">
+                          +{article.tags.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                   {/* Footer */}
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200/50">
                     <span className="text-xs text-gray-500 flex items-center gap-1">
@@ -588,6 +685,25 @@ export const KNNFeedPage: React.FC = () => {
                   <p className="text-gray-600 line-clamp-2">
                     {article.card_description}
                   </p>
+
+                  {/* Tags */}
+                  {article.tags && article.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {article.tags.slice(0, 3).map((tag, index) => (
+                        <span
+                          key={`${tag}-${index}`}
+                          className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {article.tags.length > 3 && (
+                        <span className="px-2 py-0.5 text-xs font-medium text-gray-500">
+                          +{article.tags.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   {/* Read More */}
                   <span className="text-blue-600 text-sm font-medium">

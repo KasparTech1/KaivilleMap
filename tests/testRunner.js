@@ -78,6 +78,10 @@ export class AutomatedTestRunner {
       const { runEditArticleTests } = await import('./components/editArticleTests.js');
       const componentResults = await runEditArticleTests();
       results.push(...componentResults);
+      
+      const { runFilterTests } = await import('./components/filterTests.js');
+      const filterResults = await runFilterTests();
+      results.push(...filterResults);
     } catch (error) {
       results.push({
         name: 'Component Tests',
