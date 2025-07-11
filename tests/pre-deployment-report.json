@@ -1,0 +1,471 @@
+{
+  "timestamp": "2025-07-11T20:05:52.776Z",
+  "errors": [
+    {
+      "file": "api.ts",
+      "line": 36,
+      "message": "Possible hook usage before declaration: apiInstance",
+      "severity": "critical"
+    },
+    {
+      "file": "buildings.ts",
+      "line": 69,
+      "message": "Possible hook usage before declaration: api",
+      "severity": "critical"
+    },
+    {
+      "file": "buildings.ts",
+      "line": 146,
+      "message": "Possible hook usage before declaration: api",
+      "severity": "critical"
+    },
+    {
+      "file": "AdminAuth.jsx",
+      "line": 96,
+      "message": "Possible hook usage before declaration: localStorage",
+      "severity": "critical"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "line": 52,
+      "message": "Possible hook usage before declaration: el",
+      "severity": "critical"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "line": 57,
+      "message": "Possible hook usage before declaration: element",
+      "severity": "critical"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "line": 61,
+      "message": "Possible hook usage before declaration: container",
+      "severity": "critical"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "line": 81,
+      "message": "Possible hook usage before declaration: imgElement",
+      "severity": "critical"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "line": 122,
+      "message": "Possible hook usage before declaration: container",
+      "severity": "critical"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "line": 140,
+      "message": "Possible hook usage before declaration: imgElement",
+      "severity": "critical"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "line": 195,
+      "message": "Possible hook usage before declaration: buildingPositions",
+      "severity": "critical"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "line": 201,
+      "message": "Possible hook usage before declaration: buildingPositions",
+      "severity": "critical"
+    },
+    {
+      "file": "EditButton.tsx",
+      "line": 20,
+      "message": "Possible hook usage before declaration: localStorage",
+      "severity": "critical"
+    },
+    {
+      "file": "FilterPanel.tsx",
+      "line": 36,
+      "message": "Possible hook usage before declaration: TagService",
+      "severity": "critical"
+    },
+    {
+      "file": "FilterPanel.tsx",
+      "line": 37,
+      "message": "Possible hook usage before declaration: TagService",
+      "severity": "critical"
+    },
+    {
+      "file": "theme-provider.tsx",
+      "line": 30,
+      "message": "Possible hook usage before declaration: localStorage",
+      "severity": "critical"
+    },
+    {
+      "file": "toast.tsx",
+      "line": 58,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 12,
+      "message": "Possible hook usage before declaration: grid",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 13,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 17,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 18,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 28,
+      "message": "Possible hook usage before declaration: svg",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 29,
+      "message": "Possible hook usage before declaration: svg",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 36,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 37,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 38,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 44,
+      "message": "Possible hook usage before declaration: path",
+      "severity": "critical"
+    },
+    {
+      "file": "roadDebug.js",
+      "line": 64,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "useToast.ts",
+      "line": 159,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "main.tsx",
+      "line": 7,
+      "message": "Possible hook usage before declaration: document",
+      "severity": "critical"
+    },
+    {
+      "file": "AdminPage.tsx",
+      "line": 18,
+      "message": "Possible hook usage before declaration: localStorage",
+      "severity": "critical"
+    },
+    {
+      "file": "HomePage.tsx",
+      "line": 65,
+      "message": "Possible hook usage before declaration: document",
+      "severity": "critical"
+    },
+    {
+      "file": "HomePage.tsx",
+      "line": 81,
+      "message": "Possible hook usage before declaration: welcomeSignImg",
+      "severity": "critical"
+    },
+    {
+      "file": "HomePage.tsx",
+      "line": 91,
+      "message": "Possible hook usage before declaration: topSection",
+      "severity": "critical"
+    },
+    {
+      "file": "HomePage.tsx",
+      "line": 106,
+      "message": "Possible hook usage before declaration: targetElement",
+      "severity": "critical"
+    },
+    {
+      "file": "HomePage.tsx",
+      "line": 111,
+      "message": "Possible hook usage before declaration: window",
+      "severity": "critical"
+    },
+    {
+      "file": "InnovationPlazaPage.tsx",
+      "line": 223,
+      "message": "Possible hook usage before declaration: cmsContent",
+      "severity": "critical"
+    },
+    {
+      "file": "InnovationPlazaPage.tsx",
+      "line": 227,
+      "message": "Possible hook usage before declaration: cmsContent",
+      "severity": "critical"
+    },
+    {
+      "file": "InnovationPlazaPage.tsx",
+      "line": 230,
+      "message": "Possible hook usage before declaration: cmsContent",
+      "severity": "critical"
+    },
+    {
+      "file": "KNNFeedPage.tsx",
+      "line": 242,
+      "message": "Possible hook usage before declaration: TagService",
+      "severity": "critical"
+    },
+    {
+      "file": "KNNFeedPage.tsx",
+      "line": 243,
+      "message": "Possible hook usage before declaration: TagService",
+      "severity": "critical"
+    },
+    {
+      "file": "KNNFeedPage.tsx",
+      "line": 350,
+      "message": "Possible hook usage before declaration: now",
+      "severity": "critical"
+    },
+    {
+      "file": "KNNFeedPage.tsx",
+      "line": 350,
+      "message": "Possible hook usage before declaration: date",
+      "severity": "critical"
+    },
+    {
+      "file": "TestPage.tsx",
+      "line": 14,
+      "message": "Possible hook usage before declaration: localStorage",
+      "severity": "critical"
+    },
+    {
+      "file": "BuildingEditor.tsx",
+      "line": 51,
+      "message": "Possible hook usage before declaration: localStorage",
+      "severity": "critical"
+    },
+    {
+      "file": "HomeEditor.tsx",
+      "line": 37,
+      "message": "Possible hook usage before declaration: localStorage",
+      "severity": "critical"
+    },
+    {
+      "file": "tagService.ts",
+      "line": 36,
+      "message": "Possible hook usage before declaration: tagCounts",
+      "severity": "critical"
+    },
+    {
+      "file": "tagService.ts",
+      "line": 36,
+      "message": "Possible hook usage before declaration: tagCounts",
+      "severity": "critical"
+    },
+    {
+      "file": "tagService.ts",
+      "line": 73,
+      "message": "Possible hook usage before declaration: categoryCounts",
+      "severity": "critical"
+    },
+    {
+      "file": "tagService.ts",
+      "line": 73,
+      "message": "Possible hook usage before declaration: categoryCounts",
+      "severity": "critical"
+    },
+    {
+      "file": "tagService.ts",
+      "line": 83,
+      "message": "Possible hook usage before declaration: categoryCounts",
+      "severity": "critical"
+    },
+    {
+      "file": "AdminAuth.jsx",
+      "message": "Conditional hook usage detected",
+      "severity": "critical"
+    },
+    {
+      "file": "BottomSheet.tsx",
+      "message": "Conditional hook usage detected",
+      "severity": "critical"
+    },
+    {
+      "file": "carousel.tsx",
+      "message": "Conditional hook usage detected",
+      "severity": "critical"
+    },
+    {
+      "file": "chart.tsx",
+      "message": "Conditional hook usage detected",
+      "severity": "critical"
+    },
+    {
+      "file": "form.tsx",
+      "message": "Conditional hook usage detected",
+      "severity": "critical"
+    },
+    {
+      "file": "sidebar.tsx",
+      "message": "Conditional hook usage detected",
+      "severity": "critical"
+    }
+  ],
+  "warnings": [
+    {
+      "file": "AdminAuth.jsx",
+      "message": "Import not found: ../../config/supabase",
+      "severity": "warning"
+    },
+    {
+      "file": "Header.tsx",
+      "message": "Import not found: ./ui/button",
+      "severity": "warning"
+    },
+    {
+      "file": "Header.tsx",
+      "message": "Import not found: ./ui/theme-toggle",
+      "severity": "warning"
+    },
+    {
+      "file": "App.tsx",
+      "message": "Found 1 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "message": "Found 22 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "EditButton.tsx",
+      "message": "Found 1 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "FilterPanel.tsx",
+      "message": "Found 1 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "toaster.tsx",
+      "message": "Found 1 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "supabase.ts",
+      "message": "Found 1 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "roadDebug.js",
+      "message": "Found 10 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "useCMSContent.ts",
+      "message": "Found 1 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "ArticlePage.tsx",
+      "message": "Found 8 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "BuildingDetailPage.tsx",
+      "message": "Found 2 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "HomePage.tsx",
+      "message": "Found 8 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "KNNFeedPage.tsx",
+      "message": "Found 7 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "BuildingEditor.tsx",
+      "message": "Found 2 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "HomeEditor.tsx",
+      "message": "Found 2 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "articleService.ts",
+      "message": "Found 4 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "tagService.ts",
+      "message": "Found 3 console statements",
+      "severity": "low"
+    },
+    {
+      "file": "AnimatedOrb.tsx",
+      "message": "Possible missing key prop in list rendering",
+      "severity": "medium"
+    },
+    {
+      "file": "RoadConnector.tsx",
+      "message": "Possible missing key prop in list rendering",
+      "severity": "medium"
+    },
+    {
+      "file": "useToast.ts",
+      "message": "Possible missing key prop in list rendering",
+      "severity": "medium"
+    },
+    {
+      "file": "ArticlePage.tsx",
+      "message": "Possible missing key prop in list rendering",
+      "severity": "medium"
+    },
+    {
+      "file": "tagService.ts",
+      "message": "Possible missing key prop in list rendering",
+      "severity": "medium"
+    },
+    {
+      "check": "mobileResponsiveness",
+      "message": "46 components may need mobile optimization",
+      "severity": "medium"
+    }
+  ],
+  "hasCriticalErrors": true,
+  "totalIssues": 82,
+  "canDeploy": false
+}

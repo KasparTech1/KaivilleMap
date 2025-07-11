@@ -6,6 +6,10 @@ import { EditButton } from '../components/cms/EditButton';
 import { supabase } from '../config/supabase';
 import { FilterPanel } from '../components/news/FilterPanel';
 import { ActiveFilters } from '../components/news/ActiveFilters';
+import { BottomSheet } from '../components/news/BottomSheet';
+import { FloatingFilterButton } from '../components/news/FloatingFilterButton';
+import { MobileFilterPanel } from '../components/news/MobileFilterPanel';
+import { TagService } from '../services/tagService';
 
 interface ArticleCard {
   id: string;
@@ -46,9 +50,22 @@ export const KNNFeedPage: React.FC = () => {
     const categories = searchParams.get('categories');
     return categories ? categories.split(',').filter(Boolean) : [];
   });
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  const [filterData, setFilterData] = useState<{
+    tags: any[];
+    categories: any[];
+    loading: boolean;
+    error: string | null;
+  }>({
+    tags: [],
+    categories: [],
+    loading: true,
+    error: null
+  });
 
   useEffect(() => {
     fetchArticles();
+    fetchFilterData();
   }, []);
   
   // Update URL params when filters change
@@ -215,6 +232,34 @@ export const KNNFeedPage: React.FC = () => {
       console.error('Error extracting YouTube thumbnail:', error);
     }
     return null;
+  };
+
+  const fetchFilterData = async () => {
+    try {
+      setFilterData(prev => ({ ...prev, loading: true, error: null }));
+      
+      const [tagsResult, categoriesResult] = await Promise.all([
+        TagService.getUniqueTags(),
+        TagService.getUniqueCategories()
+      ]);
+
+      if (tagsResult.error) throw tagsResult.error;
+      if (categoriesResult.error) throw categoriesResult.error;
+
+      setFilterData({
+        tags: tagsResult.data || [],
+        categories: categoriesResult.data || [],
+        loading: false,
+        error: null
+      });
+    } catch (err) {
+      console.error('Error fetching filter data:', err);
+      setFilterData(prev => ({
+        ...prev,
+        loading: false,
+        error: 'Failed to load filters'
+      }));
+    }
   };
 
   const fetchArticles = async () => {
@@ -407,16 +452,18 @@ export const KNNFeedPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Filter Panel */}
-      <FilterPanel
-        selectedTags={selectedTags}
-        selectedCategories={selectedCategories}
-        onTagsChange={setSelectedTags}
-        onCategoriesChange={setSelectedCategories}
-        className="sticky top-[73px] z-30"
-      />
+      {/* Desktop Filter Panel */}
+      <div className="hidden md:block">
+        <FilterPanel
+          selectedTags={selectedTags}
+          selectedCategories={selectedCategories}
+          onTagsChange={setSelectedTags}
+          onCategoriesChange={setSelectedCategories}
+          className="sticky top-[73px] z-30"
+        />
+      </div>
 
-      {/* Active Filters */}
+      {/* Active Filters - Show on both mobile and desktop */}
       <ActiveFilters
         selectedTags={selectedTags}
         selectedCategories={selectedCategories}
@@ -426,11 +473,11 @@ export const KNNFeedPage: React.FC = () => {
           setSelectedTags([]);
           setSelectedCategories([]);
         }}
-        className="sticky top-[120px] z-30"
+        className="sticky top-[73px] md:top-[120px] z-30"
       />
 
       {/* Filter Buttons */}
-      <div className="sticky top-[169px] z-30 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
+      <div className="sticky top-[120px] md:top-[169px] z-30 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
         <div className="px-4 py-3">
           <div className="flex gap-2 max-w-md mx-auto">
             <button
@@ -739,6 +786,37 @@ export const KNNFeedPage: React.FC = () => {
 
       {/* Edit Button */}
       <EditButton editPath="/admin/news" label="Edit News Feed" />
+      
+      {/* Mobile Filter Button */}
+      <div className="md:hidden">
+        <FloatingFilterButton
+          onClick={() => setFilterSheetOpen(true)}
+          activeCount={selectedTags.length + selectedCategories.length}
+        />
+      </div>
+      
+      {/* Mobile Filter Bottom Sheet */}
+      <BottomSheet
+        isOpen={filterSheetOpen}
+        onClose={() => setFilterSheetOpen(false)}
+        snapPoints={[0.5, 0.9]}
+        defaultSnapPoint={0}
+      >
+        <MobileFilterPanel
+          tags={filterData.tags}
+          categories={filterData.categories}
+          selectedTags={selectedTags}
+          selectedCategories={selectedCategories}
+          onTagsChange={setSelectedTags}
+          onCategoriesChange={setSelectedCategories}
+          onClearAll={() => {
+            setSelectedTags([]);
+            setSelectedCategories([]);
+          }}
+          loading={filterData.loading}
+          error={filterData.error}
+        />
+      </BottomSheet>
     </div>
   );
 };

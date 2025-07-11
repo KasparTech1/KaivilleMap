@@ -1,0 +1,48 @@
+{
+  "summary": {
+    "total": 35,
+    "passed": 33,
+    "failed": 2,
+    "autoFixed": 0,
+    "duration": "8.79s"
+  },
+  "phases": {
+    "database": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "component": {
+      "total": 20,
+      "passed": 18,
+      "failed": 2
+    },
+    "integration": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "performance": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    }
+  },
+  "failures": [
+    {
+      "name": "BottomSheet - Mobile Responsiveness",
+      "phase": "component",
+      "passed": false,
+      "error": "window is not defined",
+      "duration": 0
+    },
+    {
+      "name": "BottomSheet - Body Scroll Prevention",
+      "phase": "component",
+      "passed": false,
+      "error": "document is not defined",
+      "duration": 0
+    }
+  ],
+  "timestamp": "2025-07-11T20:07:48.394Z"
+}

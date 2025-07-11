@@ -1,0 +1,153 @@
+{"timestamp":"2025-07-11T14:48:09.600Z","test":"Articles table has all new columns","phase":"database","status":"FAIL","duration":387,"error":"Cannot verify columns: column articles.primary_category does not exist","autoFixed":false}
+{"timestamp":"2025-07-11T14:48:09.712Z","test":"Column data types are correct","phase":"database","status":"PASS","duration":109,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:48:09.804Z","test":"Required indexes exist","phase":"database","status":"FAIL","duration":89,"error":"Category index test failed: column articles.primary_category does not exist","autoFixed":false}
+{"timestamp":"2025-07-11T14:48:10.082Z","test":"Category constraint is enforced","phase":"database","status":"PASS","duration":273,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:48:10.185Z","test":"Default values are applied correctly","phase":"database","status":"PASS","duration":99,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:55:00.676Z","test":"Edit button renders on article page","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:55:00.682Z","test":"Edit modal opens on button click","phase":"component","status":"PASS","duration":1,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:55:00.687Z","test":"Form fields populate with article data","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:55:00.691Z","test":"Tag parsing handles comma separation","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:55:00.698Z","test":"Category selection validates correctly","phase":"component","status":"PASS","duration":1,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:55:00.702Z","test":"Form validation prevents empty headline","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:55:00.707Z","test":"Save button shows loading state","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:58:10.659Z","test":"Complete article edit flow","phase":"integration","status":"FAIL","duration":384,"error":"Could not find the 'card_description' column of 'articles' in the schema cache","autoFixed":false}
+{"timestamp":"2025-07-11T14:58:10.901Z","test":"Validation errors are handled","phase":"integration","status":"PASS","duration":237,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:58:11.963Z","test":"Tag updates work correctly","phase":"integration","status":"PASS","duration":1058,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:58:12.137Z","test":"Edit history is tracked","phase":"integration","status":"PASS","duration":171,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T14:58:12.303Z","test":"Card description syncs with article","phase":"integration","status":"FAIL","duration":163,"error":"Could not find the 'card_description' column of 'articles' in the schema cache","autoFixed":false}
+{"timestamp":"2025-07-11T14:58:12.459Z","test":"Category constraints are enforced","phase":"integration","status":"PASS","duration":152,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:17.344Z","test":"Articles table has all new columns","phase":"database","status":"FAIL","duration":552,"error":"Cannot verify columns: column articles.primary_category does not exist","autoFixed":false}
+{"timestamp":"2025-07-11T15:02:17.532Z","test":"Column data types are correct","phase":"database","status":"PASS","duration":184,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:17.706Z","test":"Required indexes exist","phase":"database","status":"FAIL","duration":171,"error":"Category index test failed: column articles.primary_category does not exist","autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.061Z","test":"Category constraint is enforced","phase":"database","status":"PASS","duration":352,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.231Z","test":"Default values are applied correctly","phase":"database","status":"PASS","duration":167,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.247Z","test":"Edit button renders on article page","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.250Z","test":"Edit modal opens on button click","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.253Z","test":"Form fields populate with article data","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.256Z","test":"Tag parsing handles comma separation","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.258Z","test":"Category selection validates correctly","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.261Z","test":"Form validation prevents empty headline","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.264Z","test":"Save button shows loading state","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.612Z","test":"Complete article edit flow","phase":"integration","status":"FAIL","duration":307,"error":"Could not find the 'card_description' column of 'articles' in the schema cache","autoFixed":false}
+{"timestamp":"2025-07-11T15:02:18.856Z","test":"Validation errors are handled","phase":"integration","status":"PASS","duration":241,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:19.937Z","test":"Tag updates work correctly","phase":"integration","status":"PASS","duration":1077,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:20.011Z","test":"Edit history is tracked","phase":"integration","status":"PASS","duration":71,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:20.257Z","test":"Card description syncs with article","phase":"integration","status":"FAIL","duration":243,"error":"Could not find the 'card_description' column of 'articles' in the schema cache","autoFixed":false}
+{"timestamp":"2025-07-11T15:02:20.423Z","test":"Category constraints are enforced","phase":"integration","status":"PASS","duration":162,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:20.489Z","test":"Modal opens within 200ms","phase":"performance","status":"PASS","duration":50,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:20.795Z","test":"Form saves within 1000ms","phase":"performance","status":"PASS","duration":302,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:21.504Z","test":"Page loads with edits within 2000ms","phase":"performance","status":"PASS","duration":705,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:02:21.559Z","test":"Database queries complete within 100ms","phase":"performance","status":"PASS","duration":51,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:44.995Z","test":"Articles table has all new columns","phase":"database","status":"PASS","duration":473,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:45.180Z","test":"Column data types are correct","phase":"database","status":"PASS","duration":182,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:45.538Z","test":"Required indexes exist","phase":"database","status":"PASS","duration":355,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:45.985Z","test":"Category constraint is enforced","phase":"database","status":"PASS","duration":443,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.207Z","test":"Default values are applied correctly","phase":"database","status":"PASS","duration":219,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.224Z","test":"Edit button renders on article page","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.227Z","test":"Edit modal opens on button click","phase":"component","status":"PASS","duration":1,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.229Z","test":"Form fields populate with article data","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.232Z","test":"Tag parsing handles comma separation","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.235Z","test":"Category selection validates correctly","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.237Z","test":"Form validation prevents empty headline","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.240Z","test":"Save button shows loading state","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:46.921Z","test":"Complete article edit flow","phase":"integration","status":"PASS","duration":642,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:47.187Z","test":"Validation errors are handled","phase":"integration","status":"PASS","duration":261,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:48.354Z","test":"Tag updates work correctly","phase":"integration","status":"PASS","duration":1163,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:48.967Z","test":"Edit history is tracked","phase":"integration","status":"PASS","duration":610,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:49.541Z","test":"Card description syncs with article","phase":"integration","status":"PASS","duration":570,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:50.605Z","test":"Category constraints are enforced","phase":"integration","status":"PASS","duration":1061,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:50.670Z","test":"Modal opens within 200ms","phase":"performance","status":"PASS","duration":49,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:50.982Z","test":"Form saves within 1000ms","phase":"performance","status":"PASS","duration":307,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:51.703Z","test":"Page loads with edits within 2000ms","phase":"performance","status":"PASS","duration":718,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T15:26:51.757Z","test":"Database queries complete within 100ms","phase":"performance","status":"PASS","duration":50,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:52.307Z","test":"Articles table has all new columns","phase":"database","status":"PASS","duration":716,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:52.502Z","test":"Column data types are correct","phase":"database","status":"PASS","duration":190,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:52.749Z","test":"Required indexes exist","phase":"database","status":"PASS","duration":243,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.178Z","test":"Category constraint is enforced","phase":"database","status":"PASS","duration":425,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.471Z","test":"Default values are applied correctly","phase":"database","status":"PASS","duration":290,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.494Z","test":"Edit button renders on article page","phase":"component","status":"PASS","duration":1,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.497Z","test":"Edit modal opens on button click","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.500Z","test":"Form fields populate with article data","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.503Z","test":"Tag parsing handles comma separation","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.507Z","test":"Category selection validates correctly","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.510Z","test":"Form validation prevents empty headline","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.514Z","test":"Save button shows loading state","phase":"component","status":"PASS","duration":1,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.531Z","test":"TagService - Fetch Unique Tags","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.534Z","test":"FilterPanel - Component Rendering","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.536Z","test":"ActiveFilters - Display Selected Filters","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.539Z","test":"KNNFeedPage - Article Filter Logic","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.542Z","test":"Filter URL Parameter Persistence","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:53.545Z","test":"FilterPanel - Mobile Responsiveness","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:54.078Z","test":"Complete article edit flow","phase":"integration","status":"PASS","duration":467,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:54.338Z","test":"Validation errors are handled","phase":"integration","status":"PASS","duration":256,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:55.589Z","test":"Tag updates work correctly","phase":"integration","status":"PASS","duration":1247,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:55.981Z","test":"Edit history is tracked","phase":"integration","status":"PASS","duration":389,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:56.718Z","test":"Card description syncs with article","phase":"integration","status":"PASS","duration":733,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:57.735Z","test":"Category constraints are enforced","phase":"integration","status":"PASS","duration":1014,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:57.804Z","test":"Modal opens within 200ms","phase":"performance","status":"PASS","duration":51,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:58.110Z","test":"Form saves within 1000ms","phase":"performance","status":"PASS","duration":303,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:58.817Z","test":"Page loads with edits within 2000ms","phase":"performance","status":"PASS","duration":703,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:06:58.870Z","test":"Database queries complete within 100ms","phase":"performance","status":"PASS","duration":50,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:19.402Z","test":"Articles table has all new columns","phase":"database","status":"PASS","duration":417,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:19.572Z","test":"Column data types are correct","phase":"database","status":"PASS","duration":167,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:19.734Z","test":"Required indexes exist","phase":"database","status":"PASS","duration":159,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.024Z","test":"Category constraint is enforced","phase":"database","status":"PASS","duration":287,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.244Z","test":"Default values are applied correctly","phase":"database","status":"PASS","duration":217,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.260Z","test":"Edit button renders on article page","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.262Z","test":"Edit modal opens on button click","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.265Z","test":"Form fields populate with article data","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.268Z","test":"Tag parsing handles comma separation","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.271Z","test":"Category selection validates correctly","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.273Z","test":"Form validation prevents empty headline","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.276Z","test":"Save button shows loading state","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.289Z","test":"TagService - Fetch Unique Tags","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.292Z","test":"FilterPanel - Component Rendering","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.294Z","test":"ActiveFilters - Display Selected Filters","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.296Z","test":"KNNFeedPage - Article Filter Logic","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.299Z","test":"Filter URL Parameter Persistence","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.301Z","test":"FilterPanel - Mobile Responsiveness","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.716Z","test":"Complete article edit flow","phase":"integration","status":"PASS","duration":357,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:20.882Z","test":"Validation errors are handled","phase":"integration","status":"PASS","duration":163,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:21.776Z","test":"Tag updates work correctly","phase":"integration","status":"PASS","duration":891,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:22.176Z","test":"Edit history is tracked","phase":"integration","status":"PASS","duration":396,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:22.814Z","test":"Card description syncs with article","phase":"integration","status":"PASS","duration":634,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:23.726Z","test":"Category constraints are enforced","phase":"integration","status":"PASS","duration":908,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:23.796Z","test":"Modal opens within 200ms","phase":"performance","status":"PASS","duration":50,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:24.104Z","test":"Form saves within 1000ms","phase":"performance","status":"PASS","duration":304,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:24.817Z","test":"Page loads with edits within 2000ms","phase":"performance","status":"PASS","duration":710,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:24.872Z","test":"Database queries complete within 100ms","phase":"performance","status":"PASS","duration":51,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:42.192Z","test":"Articles table has all new columns","phase":"database","status":"PASS","duration":595,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:42.368Z","test":"Column data types are correct","phase":"database","status":"PASS","duration":172,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:42.671Z","test":"Required indexes exist","phase":"database","status":"PASS","duration":299,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.117Z","test":"Category constraint is enforced","phase":"database","status":"PASS","duration":443,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.322Z","test":"Default values are applied correctly","phase":"database","status":"PASS","duration":200,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.339Z","test":"Edit button renders on article page","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.342Z","test":"Edit modal opens on button click","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.345Z","test":"Form fields populate with article data","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.347Z","test":"Tag parsing handles comma separation","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.350Z","test":"Category selection validates correctly","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.353Z","test":"Form validation prevents empty headline","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.355Z","test":"Save button shows loading state","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.368Z","test":"TagService - Fetch Unique Tags","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.370Z","test":"FilterPanel - Component Rendering","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.372Z","test":"ActiveFilters - Display Selected Filters","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.375Z","test":"KNNFeedPage - Article Filter Logic","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.377Z","test":"Filter URL Parameter Persistence","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.379Z","test":"FilterPanel - Mobile Responsiveness","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.393Z","test":"BottomSheet - Component Initialization","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.395Z","test":"BottomSheet - Swipe Gesture Handling","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.398Z","test":"BottomSheet - Snap Point Transitions","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.400Z","test":"FloatingFilterButton - Component Props","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.403Z","test":"MobileFilterPanel - Toggle Functionality","phase":"component","status":"PASS","duration":0,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.405Z","test":"BottomSheet - Mobile Responsiveness","phase":"component","status":"FAIL","duration":0,"error":"window is not defined","autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.407Z","test":"BottomSheet - Body Scroll Prevention","phase":"component","status":"FAIL","duration":0,"error":"document is not defined","autoFixed":false}
+{"timestamp":"2025-07-11T20:07:43.893Z","test":"Complete article edit flow","phase":"integration","status":"PASS","duration":444,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:44.074Z","test":"Validation errors are handled","phase":"integration","status":"PASS","duration":178,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:45.181Z","test":"Tag updates work correctly","phase":"integration","status":"PASS","duration":1097,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:45.612Z","test":"Edit history is tracked","phase":"integration","status":"PASS","duration":428,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:46.244Z","test":"Card description syncs with article","phase":"integration","status":"PASS","duration":629,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:47.238Z","test":"Category constraints are enforced","phase":"integration","status":"PASS","duration":990,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:47.304Z","test":"Modal opens within 200ms","phase":"performance","status":"PASS","duration":50,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:47.614Z","test":"Form saves within 1000ms","phase":"performance","status":"PASS","duration":306,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:48.330Z","test":"Page loads with edits within 2000ms","phase":"performance","status":"PASS","duration":713,"error":null,"autoFixed":false}
+{"timestamp":"2025-07-11T20:07:48.385Z","test":"Database queries complete within 100ms","phase":"performance","status":"PASS","duration":50,"error":null,"autoFixed":false}

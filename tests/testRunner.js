@@ -82,6 +82,10 @@ export class AutomatedTestRunner {
       const { runFilterTests } = await import('./components/filterTests.js');
       const filterResults = await runFilterTests();
       results.push(...filterResults);
+      
+      const { runBottomSheetTests } = await import('./components/bottomSheetTests.js');
+      const bottomSheetResults = await runBottomSheetTests();
+      results.push(...bottomSheetResults);
     } catch (error) {
       results.push({
         name: 'Component Tests',
