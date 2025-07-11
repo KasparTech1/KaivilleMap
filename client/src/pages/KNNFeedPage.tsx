@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Clock, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clock, Loader2, GripVertical } from 'lucide-react';
 import { getAssetUrl } from '../config/assetUrls';
 import { EditButton } from '../components/cms/EditButton';
 import { supabase } from '../config/supabase';
@@ -19,6 +19,7 @@ interface ArticleCard {
   category_name?: string;
   news_type: 'local' | 'world';
   slug: string;
+  display_order?: number;
 }
 
 export const KNNFeedPage: React.FC = () => {
@@ -27,6 +28,8 @@ export const KNNFeedPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'local' | 'world'>('all');
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [draggedOver, setDraggedOver] = useState<string | null>(null);
 
   useEffect(() => {
     fetchArticles();
@@ -39,6 +42,79 @@ export const KNNFeedPage: React.FC = () => {
       setFilteredArticles(articles.filter(article => article.news_type === activeFilter));
     }
   }, [articles, activeFilter]);
+
+  // Drag and drop handlers
+  const handleDragStart = (e: React.DragEvent, articleId: string) => {
+    setDraggedItem(articleId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', articleId);
+  };
+
+  const handleDragOver = (e: React.DragEvent, articleId: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDraggedOver(articleId);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDraggedOver(null);
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    
+    if (!draggedItem || draggedItem === targetId) {
+      setDraggedItem(null);
+      setDraggedOver(null);
+      return;
+    }
+
+    // Reorder the articles
+    const newArticles = [...articles];
+    const draggedIndex = newArticles.findIndex(article => article.id === draggedItem);
+    const targetIndex = newArticles.findIndex(article => article.id === targetId);
+    
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+      const [draggedArticle] = newArticles.splice(draggedIndex, 1);
+      newArticles.splice(targetIndex, 0, draggedArticle);
+      
+      // Update display_order for all articles
+      const updatedArticles = newArticles.map((article, index) => ({
+        ...article,
+        display_order: index + 1
+      }));
+      
+      setArticles(updatedArticles);
+      
+      // Save the new order to database
+      await saveArticleOrder(updatedArticles);
+    }
+    
+    setDraggedItem(null);
+    setDraggedOver(null);
+  };
+
+  const saveArticleOrder = async (orderedArticles: ArticleCard[]) => {
+    try {
+      // Update each article's display_order in the database
+      const updates = orderedArticles.map((article, index) => ({
+        id: article.id,
+        display_order: index + 1
+      }));
+
+      for (const update of updates) {
+        await supabase
+          .from('articles')
+          .update({ display_order: update.display_order })
+          .eq('id', update.id);
+      }
+      
+      console.log('Article order saved successfully');
+    } catch (error) {
+      console.error('Error saving article order:', error);
+    }
+  };
 
   // Helper function to extract YouTube video ID and get thumbnail URL
   const getYouTubeThumbnail = (pageData: any): string | null => {
@@ -103,6 +179,7 @@ export const KNNFeedPage: React.FC = () => {
         `)
         .eq('pages.is_published', true)
         .eq('pages.status', 'published')
+        .order('display_order', { ascending: true, nullsFirst: false })
         .order('created_at', { ascending: false })
         .limit(20);
 
@@ -151,7 +228,8 @@ export const KNNFeedPage: React.FC = () => {
           news_type: article.tags?.includes('world') || 
                      article.author_name === 'KNN AI' || 
                      article.author_name === 'KNN Analysis' ? 'world' : 'local',
-          slug: article.pages?.slug || `article-${article.id}`
+          slug: article.pages?.slug || `article-${article.id}`,
+          display_order: article.display_order || 999
         };
       }).filter(article => article.card_title && article.card_description) || [];
 
@@ -272,12 +350,29 @@ export const KNNFeedPage: React.FC = () => {
         {/* Desktop Grid */}
         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto">
           {filteredArticles.map((article) => (
-            <Link 
-              key={article.id} 
-              to={`/news/${article.slug}`}
-              className="block group"
+            <div
+              key={article.id}
+              className="block group relative"
+              draggable
+              onDragStart={(e) => handleDragStart(e, article.id)}
+              onDragOver={(e) => handleDragOver(e, article.id)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, article.id)}
             >
-              <article className="bg-white/70 backdrop-blur-xl border border-gray-200/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col transform hover:-translate-y-1">
+              {/* Drag Handle */}
+              <div className="absolute top-4 left-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-move">
+                <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg border border-gray-200/50">
+                  <GripVertical className="w-4 h-4 text-gray-600" />
+                </div>
+              </div>
+              
+              <Link 
+                to={`/news/${article.slug}`}
+                className="block"
+              >
+                <article className={`bg-white/70 backdrop-blur-xl border border-gray-200/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col transform hover:-translate-y-1 ${
+                  draggedOver === article.id ? 'ring-2 ring-blue-500 ring-opacity-50' : ''
+                } ${draggedItem === article.id ? 'opacity-50' : ''}`}>
                 {/* Image */}
                 <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
                   {article.card_image_id ? (
@@ -349,19 +444,37 @@ export const KNNFeedPage: React.FC = () => {
                   </div>
                 </div>
               </article>
-            </Link>
+              </Link>
+            </div>
           ))}
         </div>
 
         {/* Mobile Feed */}
         <div className="md:hidden px-4 py-4 space-y-4">
           {filteredArticles.map((article) => (
-            <Link 
-              key={article.id} 
-              to={`/news/${article.slug}`}
-              className="block"
+            <div
+              key={article.id}
+              className="block group relative"
+              draggable
+              onDragStart={(e) => handleDragStart(e, article.id)}
+              onDragOver={(e) => handleDragOver(e, article.id)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, article.id)}
             >
-              <article className="bg-white/80 backdrop-blur-lg border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+              {/* Drag Handle */}
+              <div className="absolute top-4 left-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-move">
+                <div className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-lg border border-gray-200/50">
+                  <GripVertical className="w-4 h-4 text-gray-600" />
+                </div>
+              </div>
+              
+              <Link 
+                to={`/news/${article.slug}`}
+                className="block"
+              >
+                <article className={`bg-white/80 backdrop-blur-lg border border-gray-200/50 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
+                  draggedOver === article.id ? 'ring-2 ring-blue-500 ring-opacity-50' : ''
+                } ${draggedItem === article.id ? 'opacity-50' : ''}`}>
                 <div className="p-4">
                 {/* Large Image */}
                 <div className="aspect-[16/9] bg-gray-200 rounded-lg mb-3 overflow-hidden">
@@ -434,7 +547,8 @@ export const KNNFeedPage: React.FC = () => {
                 </div>
               </div>
             </article>
-          </Link>
+            </Link>
+            </div>
           ))}
         </div>
 
