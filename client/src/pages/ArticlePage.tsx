@@ -374,63 +374,6 @@ export const ArticlePage: React.FC = () => {
 
       {/* Article Content */}
       <article className="pb-20">
-        {/* Hero Image - Prioritize YouTube thumbnail */}
-        <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-          <div className="aspect-[16/9] bg-gray-200 overflow-hidden">
-            {(() => {
-              const youtubeThumbnail = getYouTubeThumbnail(article);
-              
-              if (youtubeThumbnail) {
-                return (
-                  <img 
-                    src={youtubeThumbnail} 
-                    alt={article.headline}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      // Fallback to featured image if YouTube thumbnail fails
-                      if (article.featured_image_id) {
-                        e.currentTarget.src = `/api/assets/${article.featured_image_id}`;
-                      } else {
-                        e.currentTarget.style.display = 'none';
-                        const placeholder = e.currentTarget.nextElementSibling;
-                        if (placeholder) {
-                          (placeholder as HTMLElement).style.display = 'flex';
-                        }
-                      }
-                    }}
-                  />
-                );
-              } else if (article.featured_image_id) {
-                return (
-                  <img 
-                    src={`/api/assets/${article.featured_image_id}`} 
-                    alt={article.headline}
-                    className="w-full h-full object-cover"
-                  />
-                );
-              } else {
-                return (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <img 
-                      src={getAssetUrl('knn-tower.svg')} 
-                      alt="KNN Placeholder"
-                      className="w-24 h-24 opacity-20"
-                    />
-                  </div>
-                );
-              }
-            })()}
-            {/* Hidden placeholder for error handling */}
-            <div className="w-full h-full items-center justify-center hidden">
-              <img 
-                src={getAssetUrl('knn-tower.svg')} 
-                alt="KNN Placeholder"
-                className="w-24 h-24 opacity-20"
-              />
-            </div>
-          </div>
-        </div>
-
         {/* Article Header */}
         <div className="px-4 py-6 space-y-3 md:max-w-3xl lg:max-w-4xl mx-auto">
           <div className="flex items-center gap-3">
