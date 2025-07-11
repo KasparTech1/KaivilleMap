@@ -186,24 +186,15 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
         {/* Handle */}
         {showHandle && (
           <div
-            className="absolute top-0 left-0 right-0 flex justify-center p-3 cursor-grab active:cursor-grabbing"
+            className="absolute top-0 left-0 right-0 flex justify-center p-3 cursor-grab active:cursor-grabbing z-10"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
             onMouseDown={handleMouseDown}
           >
-            <div className="w-12 h-1 bg-gray-300 rounded-full" />
+            <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
           </div>
         )}
-        
-        {/* Close button for accessibility */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 transition-colors"
-          aria-label="Close filters"
-        >
-          <X className="w-5 h-5" />
-        </button>
         
         {/* Content */}
         <div 

@@ -813,6 +813,7 @@ export const KNNFeedPage: React.FC = () => {
             setSelectedTags([]);
             setSelectedCategories([]);
           }}
+          onClose={() => setFilterSheetOpen(false)}
           loading={filterData.loading}
           error={filterData.error}
         />

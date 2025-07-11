@@ -9,6 +9,7 @@ interface MobileFilterPanelProps {
   onTagsChange: (tags: string[]) => void;
   onCategoriesChange: (categories: string[]) => void;
   onClearAll: () => void;
+  onClose: () => void;
   loading?: boolean;
   error?: string | null;
 }
@@ -21,6 +22,7 @@ export const MobileFilterPanel: React.FC<MobileFilterPanelProps> = ({
   onTagsChange,
   onCategoriesChange,
   onClearAll,
+  onClose,
   loading = false,
   error = null
 }) => {
@@ -44,35 +46,80 @@ export const MobileFilterPanel: React.FC<MobileFilterPanelProps> = ({
 
   if (loading) {
     return (
-      <div className="p-6 text-center text-gray-500">
-        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#1f4e79]"></div>
-        <p className="mt-4">Loading filters...</p>
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div className="w-16" />
+          <h2 className="text-lg font-semibold text-gray-900">Filter Articles</h2>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-[#1f4e79] text-white rounded-lg font-medium hover:bg-[#1f4e79]/90 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#1f4e79]"></div>
+            <p className="mt-4 text-gray-500">Loading filters...</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6 text-center text-red-500">
-        <p>{error}</p>
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div className="w-16" />
+          <h2 className="text-lg font-semibold text-gray-900">Filter Articles</h2>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-[#1f4e79] text-white rounded-lg font-medium hover:bg-[#1f4e79]/90 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-red-500">{error}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="px-6 pb-6 pt-2">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Filter Articles</h2>
-        {hasActiveFilters && (
-          <button
-            onClick={onClearAll}
-            className="text-sm text-[#1f4e79] font-medium"
-          >
-            Clear all
-          </button>
-        )}
+    <div className="flex flex-col h-full">
+      {/* Fixed Header */}
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        {/* Clear all button - left side */}
+        <button
+          onClick={onClearAll}
+          className={`text-sm font-medium transition-colors ${
+            hasActiveFilters 
+              ? 'text-[#1f4e79] hover:text-[#1f4e79]/80' 
+              : 'text-gray-400 cursor-not-allowed'
+          }`}
+          disabled={!hasActiveFilters}
+        >
+          Clear all
+        </button>
+        
+        {/* Title - center */}
+        <h2 className="text-lg font-semibold text-gray-900 absolute left-1/2 transform -translate-x-1/2">
+          Filter Articles
+        </h2>
+        
+        {/* Close button - right side */}
+        <button
+          onClick={onClose}
+          className="px-4 py-2 bg-[#1f4e79] text-white rounded-lg font-medium hover:bg-[#1f4e79]/90 transition-colors"
+        >
+          Close
+        </button>
       </div>
+      
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto px-6 py-6">
 
       {/* Categories Section */}
       {categories.length > 0 && (
@@ -128,14 +175,15 @@ export const MobileFilterPanel: React.FC<MobileFilterPanelProps> = ({
         </div>
       )}
 
-      {/* Active Filters Summary */}
-      {hasActiveFilters && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">{selectedTags.length + selectedCategories.length}</span> filters active
-          </p>
-        </div>
-      )}
+        {/* Active Filters Summary */}
+        {hasActiveFilters && (
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">{selectedTags.length + selectedCategories.length}</span> filters active
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
