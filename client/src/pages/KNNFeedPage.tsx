@@ -27,6 +27,7 @@ interface ArticleCard {
 }
 
 export const KNNFeedPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [articles, setArticles] = useState<ArticleCard[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<ArticleCard[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,6 @@ export const KNNFeedPage: React.FC = () => {
   });
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [draggedOver, setDraggedOver] = useState<string | null>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTags, setSelectedTags] = useState<string[]>(() => {
     const tags = searchParams.get('tags');
     return tags ? tags.split(',').filter(Boolean) : [];
