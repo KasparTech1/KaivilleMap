@@ -278,9 +278,8 @@ export const KNNFeedPage: React.FC = () => {
         `)
         .eq('pages.is_published', true)
         .eq('pages.status', 'published')
-        .order('display_order', { ascending: true, nullsFirst: false })
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(100);
 
       if (fetchError) {
         console.error('Error fetching articles:', fetchError);
