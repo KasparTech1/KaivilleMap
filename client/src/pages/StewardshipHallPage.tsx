@@ -85,18 +85,13 @@ export const StewardshipHallPage: React.FC = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (4) JOB Junction
-                    </Link>
-                  </li>
-                  <li>
                     <Link to="/building/celebration_station" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (5) Innovation Plaza
+                      (4) Innovation Plaza
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (6) Kaizen Tower
+                      (5) Kaizen Tower
                     </Link>
                   </li>
                 </ul>
