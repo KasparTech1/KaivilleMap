@@ -63,8 +63,8 @@ export const InnovationPlazaPage: React.FC = () => {
                     </span>
                   </li>
                   <li>
-                    <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (5) Kaizen Tower
+                    <Link to="/building/trading_post" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (5) Trading Post
                     </Link>
                   </li>
                 </ul>

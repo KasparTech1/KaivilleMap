@@ -9,6 +9,7 @@ import { SkillsAcademyPage } from "./pages/SkillsAcademyPage"
 import { KaizenTowerPage } from "./pages/KaizenTowerPage"
 import { JobJunctionPage } from "./pages/JobJunctionPage"
 import { CityHallPage } from "./pages/CityHallPage"
+import { TradingPostPage } from "./pages/TradingPostPage"
 import { KNNFeedPage } from "./pages/KNNFeedPage"
 import { ArticlePage } from "./pages/ArticlePage"
 import { BlankPage } from "./pages/BlankPage"
@@ -30,6 +31,7 @@ function App() {
           <Route path="/building/celebration_station" element={<InnovationPlazaPage />} />
           <Route path="/building/learning_lodge" element={<SkillsAcademyPage />} />
           <Route path="/building/kasp_tower" element={<KaizenTowerPage />} />
+          <Route path="/building/trading_post" element={<TradingPostPage />} />
           <Route path="/building/community-center" element={<JobJunctionPage />} />
           <Route path="/building/city_hall" element={<CityHallPage />} />
           <Route path="/city-hall" element={<CityHallPage />} />

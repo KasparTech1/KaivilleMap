@@ -38,8 +38,8 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
     svgPath = 'https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/knn-tower-ticker.svg';
   }
 
-  // Special rendering for heritage_center, learning_lodge, craft_works, knn_tower, community-center, city_hall, celebration_station, safety_station, and kasp_tower - SVG becomes the card
-  if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'city_hall' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'kasp_tower') {
+  // Special rendering for heritage_center, learning_lodge, craft_works, knn_tower, community-center, city_hall, celebration_station, safety_station, trading_post, and kasp_tower - SVG becomes the card
+  if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'city_hall' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'trading_post' || building.id === 'kasp_tower') {
     return (
       <Link to={`/building/${building.id}`} className="block" style={style}>
         <div className={`relative ${
@@ -47,6 +47,7 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
           building.id === 'learning_lodge' ? 'hover:scale-[1.01]' : 
           building.id === 'community-center' ? 'hover:scale-[1.02]' :
           building.id === 'city_hall' ? 'hover:scale-[1.02]' :
+          building.id === 'trading_post' ? 'hover:scale-[1.02]' :
           'hover:scale-[1.02]'
         } active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group filter drop-shadow-[0_5px_15px_rgba(0,0,0,0.15)] ${
           building.id === 'heritage_center' ? '-mt-[20%] translate-x-[5px] translate-y-[5px] md:-mt-[18%] md:ml-[10%] md:translate-x-0 md:translate-y-[25px]' : 
@@ -54,6 +55,7 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
           building.id === 'city_hall' ? '-mt-[10%] translate-y-[10px] md:-mt-[5%] md:translate-y-[15px]' :
           building.id === 'community-center' ? 'mt-[60%] translate-y-[-70px] md:mt-0 md:translate-y-[-20px]' : 
           building.id === 'celebration_station' ? 'scale-[1.575] hover:scale-[1.65] -mt-[25%] ml-[50%] -translate-x-[25px] translate-y-[-115px] md:scale-[1.575] md:hover:scale-[1.65] md:-mt-[10%] md:ml-[40%] md:-translate-x-[220px] md:translate-y-[-55px]' : 
+          building.id === 'trading_post' ? 'scale-[1.05] -mt-[5%] ml-[25%] translate-y-[-90px] md:scale-[0.63] md:-mt-[85%] md:-ml-[20%] md:-translate-x-[180px] md:translate-y-[-25px]' :
           building.id === 'kasp_tower' ? 'scale-[1.05] -mt-[5%] ml-[25%] translate-y-[-90px] md:scale-[0.63] md:-mt-[85%] md:-ml-[20%] md:-translate-x-[180px] md:translate-y-[-25px]' : 
           building.id === 'knn_tower' ? 'scale-[1.1] md:scale-100' : ''
         }`}>

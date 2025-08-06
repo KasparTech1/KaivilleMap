@@ -173,14 +173,14 @@ export const RoadConnector: React.FC<RoadConnectorProps> = React.memo(({ buildin
     });
 
     // Create a single continuous path connecting buildings in the specified order
-    // Always follow: Stewardship Hall → SKILLS Academy → City Hall → JOB Junction → Innovation Plaza → Kaizen Tower
+    // Always follow: Stewardship Hall → SKILLS Academy → City Hall → JOB Junction → Innovation Plaza → Trading Post
     const buildingOrder = [
       'heritage_center',      // Stewardship Hall
       'learning_lodge',       // SKILLS Academy
       'city_hall',            // City Hall
       'community-center',     // JOB Junction
       'celebration_station',  // Innovation Plaza
-      'kasp_tower'           // Kaizen Tower
+      'trading_post'         // Trading Post
     ];
     
     const sortedBuildings = buildingOrder

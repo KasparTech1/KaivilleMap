@@ -58,11 +58,11 @@ export const getBuildings = () => {
             column: 3,
             span: 1,
             illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/innovation_plaza_01.svg?t=${Date.now()}`,
-            connections: ["community-center", "kasp_tower"]
+            connections: ["community-center", "trading_post"]
           },
           {
-            id: "kasp_tower",
-            title: "Kaizen Tower",
+            id: "trading_post",
+            title: "Trading Post",
             row: 2,
             column: 2,
             span: 1,
@@ -131,6 +131,12 @@ export const getBuildingDetails = (id: string) => {
           title: "Innovation Plaza",
           description: "Where groundbreaking ideas come to life and entrepreneurial dreams take flight.",
           details: "Innovation Plaza is Kaiville's hub for startups, tech innovation, and creative collaboration. This dynamic space features co-working areas, maker spaces, and incubator programs that foster entrepreneurship and technological advancement."
+        },
+        "trading_post": {
+          id: "trading_post",
+          title: "Trading Post",
+          description: "Your one-stop shop for AI tools and solutions, outfitting innovation since 1898.",
+          details: "The Trading Post is Kaiville's marketplace for tested and approved AI tools. From career navigation to process optimization, every tool has been vetted by the Kaspar community. Our experienced shopkeepers guide residents to the perfect solutions for their challenges."
         },
         "kasp_tower": {
           id: "kasp_tower",
