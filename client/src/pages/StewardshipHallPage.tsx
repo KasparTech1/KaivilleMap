@@ -75,23 +75,28 @@ export const StewardshipHallPage: React.FC = () => {
                     </span>
                   </li>
                   <li>
-                    <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (2) JOB Junction
+                    <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (2) SKILLS Academy
                     </Link>
                   </li>
                   <li>
-                    <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (3) SKILLS Academy
+                    <Link to="/building/city_hall" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (3) City Hall
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (4) JOB Junction
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/celebration_station" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (4) Innovation Plaza
+                      (5) Innovation Plaza
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (5) Kaizen Tower
+                      (6) Kaizen Tower
                     </Link>
                   </li>
                 </ul>
@@ -329,9 +334,9 @@ export const StewardshipHallPage: React.FC = () => {
               {cmsContent.callToAction}
             </p>
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
-              <Link to="/building/community-center">
+              <Link to="/building/learning_lodge">
                 <Button className="bg-white text-[#1f4e79] hover:bg-[#F5F5DC] text-lg px-8 py-4">
-                  Continue to next stop - JOB Junction
+                  Continue to next stop - SKILLS Academy
                 </Button>
               </Link>
               <Link to="/">

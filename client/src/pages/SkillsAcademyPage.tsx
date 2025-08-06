@@ -91,7 +91,7 @@ export const SkillsAcademyPage: React.FC = () => {
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="container mx-auto px-6 h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between relative z-10">
           <div className="max-w-5xl text-center lg:text-left">
-            <p className="text-lg text-white/80 mb-2">Stop 3 of 5</p>
+            <p className="text-lg text-white/80 mb-2">Stop 2 of 6</p>
             <h1 className="text-4xl lg:text-5xl font-serif text-white mb-4 font-bold">
               {cmsContent.title || 'SKILLS Academy'}
             </h1>
@@ -290,12 +290,12 @@ export const SkillsAcademyPage: React.FC = () => {
           <div className="relative max-w-4xl mx-auto">
             <h2 className="text-4xl mb-6 font-serif">Ready to see learning in action?</h2>
             <p className="text-xl text-gray-200 mb-10 max-w-3xl mx-auto">
-              {cmsContent.callToAction || 'Innovation Plaza showcases real success stories from team members who started just like you.'}
+              {cmsContent.callToAction || 'City Hall is where you can submit permits and applications for your new skills and tools.'}
             </p>
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
-              <Link to="/building/celebration_station">
+              <Link to="/building/city_hall">
                 <Button className="bg-white text-[#1f4e79] hover:bg-[#F5F5DC] text-lg px-8 py-4">
-                  Continue to next stop - Innovation Plaza
+                  Continue to next stop - City Hall
                 </Button>
               </Link>
               <Link to="/">

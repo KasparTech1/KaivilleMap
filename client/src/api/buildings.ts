@@ -39,7 +39,7 @@ export const getBuildings = () => {
             row: 1,
             column: 3,
             span: 1,
-            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
+            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/town-hall.svg?t=${Date.now()}`,
             connections: ["learning_lodge", "community-center"]
           },
           {
