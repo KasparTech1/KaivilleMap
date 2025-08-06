@@ -15,15 +15,21 @@ export const MapLegend: React.FC = () => {
 
   return (
     <>
-      {/* Help Button */}
-      <Button
+      {/* ElevenLabs ConvAI Widget - positioned in bottom right */}
+      <div className="fixed bottom-6 right-6 z-40">
+        <elevenlabs-convai agent-id="agent_01jxss2x07fvda3f2e504bkhq6"></elevenlabs-convai>
+      </div>
+      
+      {/* Optional: Keep legend functionality accessible via other means if needed */}
+      {/* You can uncomment this if you want to add a secondary legend button elsewhere */}
+      {/* <Button
         onClick={() => setShowLegend(true)}
-        className="fixed bottom-6 right-6 bg-[#1f4e79] text-white rounded-full w-12 h-12 p-0 shadow-lg hover:bg-[#1f4e79]/90 z-40"
-        aria-label="Show map help and legend"
-        title="Need help navigating the map?"
+        className="fixed bottom-20 right-6 bg-[#1f4e79] text-white rounded-full w-10 h-10 p-0 shadow-lg hover:bg-[#1f4e79]/90 z-40"
+        aria-label="Show map legend"
+        title="View map legend"
       >
-        <HelpCircle className="w-6 h-6" />
-      </Button>
+        <HelpCircle className="w-4 h-4" />
+      </Button> */}
 
       {/* Legend Modal */}
       {showLegend && (
