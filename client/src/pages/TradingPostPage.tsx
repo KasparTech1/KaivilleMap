@@ -22,11 +22,33 @@ interface Tool {
 export const TradingPostPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSkillFilter, setSelectedSkillFilter] = useState<string>('');
+  const [showLegendModal, setShowLegendModal] = useState(false);
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  // Handle keyboard events for legend modal
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showLegendModal) {
+        setShowLegendModal(false);
+      }
+    };
+
+    if (showLegendModal) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [showLegendModal]);
 
   const tools: Tool[] = [
     {
@@ -184,9 +206,7 @@ export const TradingPostPage: React.FC = () => {
                   className="bg-white/20 text-white border border-white/20 rounded-md px-4 py-3 backdrop-blur-sm hover:bg-white/30 transition-colors"
                   title="View skill abbreviations legend"
                   aria-label="Show legend explaining skill abbreviations (S, K, L, D, I)"
-                  onClick={() => {
-                    alert(`Skill Abbreviations:\nS = Safety: ${skillLegend.S.description}\nK = Kaizen: ${skillLegend.K.description}\nL = Leadership: ${skillLegend.L.description}\nI = Innovation: ${skillLegend.I.description}\nD = Data: ${skillLegend.D.description}`);
-                  }}
+                  onClick={() => setShowLegendModal(true)}
                 >
                   📖 Legend
                 </button>
@@ -237,17 +257,62 @@ export const TradingPostPage: React.FC = () => {
                       </div>
                       
                       <div className="flex gap-4">
-                        <Button 
-                          onClick={() => window.open(featuredTool.chatGptLink, '_blank')}
-                          className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90 px-8 py-3"
-                        >
-                          Launch Tool
-                        </Button>
+                        {featuredTool.chatGptLink && featuredTool.chatGptLink !== 'https://chatgpt.com' ? (
+                          <Button 
+                            onClick={() => window.open(featuredTool.chatGptLink, '_blank')}
+                            className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90 px-8 py-3"
+                          >
+                            Launch Tool
+                          </Button>
+                        ) : (
+                          <div className="text-center">
+                            <Button 
+                              disabled
+                              className="bg-gray-400 text-gray-600 cursor-not-allowed px-8 py-3 mb-2"
+                              title="Tool configuration in progress"
+                            >
+                              🚧 Coming Soon
+                            </Button>
+                            <p className="text-sm text-gray-600">This tool is being configured for your organization. Stay tuned for updates!</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* No Results Message */}
+      {filteredTools.length === 0 && (searchTerm || selectedSkillFilter) && (
+        <div className="py-16 bg-white">
+          <div className="container mx-auto px-6 text-center">
+            <div className="max-w-2xl mx-auto">
+              <div className="text-6xl mb-4">🔍</div>
+              <h2 className="text-3xl font-serif text-[#1f4e79] mb-4">No Tools Found</h2>
+              <p className="text-xl text-gray-600 mb-6">
+                No tools match your search "{searchTerm}" {selectedSkillFilter && `with skill "${skillLegend[selectedSkillFilter]?.name}"`}.
+              </p>
+              <div className="space-y-2 text-gray-600">
+                <p>Try:</p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Using different keywords</li>
+                  <li>Selecting "All Skills" to broaden your search</li>
+                  <li>Browsing all available tools below</li>
+                </ul>
+              </div>
+              <Button 
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedSkillFilter('');
+                }}
+                className="mt-6 bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90"
+              >
+                Clear Filters
+              </Button>
             </div>
           </div>
         </div>
@@ -413,6 +478,57 @@ export const TradingPostPage: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Accessible Legend Modal */}
+      {showLegendModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="legend-title"
+          onClick={(e) => e.target === e.currentTarget && setShowLegendModal(false)}
+        >
+          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-2xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 id="legend-title" className="text-xl font-bold text-[#1f4e79]">Skill Categories Legend</h3>
+              <Button 
+                onClick={() => setShowLegendModal(false)}
+                variant="ghost"
+                size="sm"
+                className="text-gray-400 hover:text-gray-600"
+                aria-label="Close legend modal"
+              >
+                ✕
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-gray-600 text-sm">Each tool requires specific skills. Here's what the abbreviations mean:</p>
+              
+              {Object.entries(skillLegend).map(([key, skill]) => (
+                <div key={key} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="w-8 h-8 bg-[#1f4e79] rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-bold text-sm">{key}</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-[#1f4e79]">{skill.name}</h4>
+                    <p className="text-sm text-gray-600">{skill.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 text-center">
+              <Button 
+                onClick={() => setShowLegendModal(false)}
+                className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90"
+              >
+                Got it!
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
