@@ -173,13 +173,23 @@ export const TradingPostPage: React.FC = () => {
                   value={selectedSkillFilter}
                   onChange={(e) => setSelectedSkillFilter(e.target.value)}
                   className="bg-white/20 text-white border border-white/20 rounded-md px-4 py-3 backdrop-blur-sm"
-                  aria-label="Filter by skill category"
+                  aria-label="Filter tools by skill category"
                 >
                   <option value="" className="text-gray-800">All Skills</option>
                   {Object.entries(skillLegend).map(([key, skill]) => (
                     <option key={key} value={key} className="text-gray-800">{key} - {skill.name}</option>
                   ))}
                 </select>
+                <button 
+                  className="bg-white/20 text-white border border-white/20 rounded-md px-4 py-3 backdrop-blur-sm hover:bg-white/30 transition-colors"
+                  title="View skill abbreviations legend"
+                  aria-label="Show legend explaining skill abbreviations (S, K, L, D, I)"
+                  onClick={() => {
+                    alert(`Skill Abbreviations:\nS = Safety: ${skillLegend.S.description}\nK = Kaizen: ${skillLegend.K.description}\nL = Leadership: ${skillLegend.L.description}\nI = Innovation: ${skillLegend.I.description}\nD = Data: ${skillLegend.D.description}`);
+                  }}
+                >
+                  📖 Legend
+                </button>
               </div>
             </div>
           </div>
@@ -208,7 +218,9 @@ export const TradingPostPage: React.FC = () => {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <div className="flex items-center text-gray-600">
                           <Tag className="w-4 h-4 mr-2 text-[#B87333]" />
-                          <span className="text-sm">SKILLS: {featuredTool.skills.join(', ')}</span>
+                          <span className="text-sm" title={`Skills required: ${featuredTool.skills.map(s => skillLegend[s]?.name).join(', ')}`}>
+                            SKILLS: {featuredTool.skills.join(', ')}
+                          </span>
                         </div>
                         <div className="flex items-center text-gray-600">
                           <Clock className="w-4 h-4 mr-2 text-[#B87333]" />
@@ -270,7 +282,9 @@ export const TradingPostPage: React.FC = () => {
                       <div className="flex-1 space-y-3 mb-4">
                         <div className="flex items-center text-xs text-gray-500">
                           <Tag className="w-3 h-3 mr-2 text-gray-400" />
-                          <span>{tool.skills.join(', ')}</span>
+                          <span title={`Skills required: ${tool.skills.map(s => skillLegend[s]?.name).join(', ')}`}>
+                            {tool.skills.join(', ')}
+                          </span>
                         </div>
                         <div className="flex items-center text-xs text-gray-500">
                           <Clock className="w-3 h-3 mr-2 text-gray-400" />
@@ -295,6 +309,20 @@ export const TradingPostPage: React.FC = () => {
               Every tool in our Trading Post has been tested and approved by Kaspar employees. 
               Our digital shopkeepers are here to guide you through implementation and provide ongoing support.
             </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="bg-white/10 p-4 rounded-lg">
+                <h3 className="font-semibold mb-2">🔧 Implementation Help</h3>
+                <p className="text-sm text-gray-200">Step-by-step guides and troubleshooting for each tool</p>
+              </div>
+              <div className="bg-white/10 p-4 rounded-lg">
+                <h3 className="font-semibold mb-2">💬 Expert Consultation</h3>
+                <p className="text-sm text-gray-200">Talk to employees who've successfully used these tools</p>
+              </div>
+              <div className="bg-white/10 p-4 rounded-lg">
+                <h3 className="font-semibold mb-2">📋 Custom Requests</h3>
+                <p className="text-sm text-gray-200">Can't find what you need? Request a custom tool evaluation</p>
+              </div>
+            </div>
             <div className="flex flex-col md:flex-row justify-center gap-4">
               <Button 
                 className="bg-[#D4AF37] text-[#1f4e79] hover:bg-[#D4AF37]/90"

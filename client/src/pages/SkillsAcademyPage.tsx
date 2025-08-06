@@ -158,10 +158,12 @@ export const SkillsAcademyPage: React.FC = () => {
                     <Card key={index} className="bg-white p-6 hover:shadow-xl transition">
                       <div className="text-center mb-4">
                         <div 
-                          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 cursor-help"
                           style={{ backgroundColor: colors[item.color] || '#1f4e79' }}
+                          title={`${item.title}: ${item.description}`}
+                          aria-label={`${item.title} framework component`}
                         >
-                          <Icon className="w-8 h-8 text-white" />
+                          <Icon className="w-8 h-8 text-white" aria-hidden="true" />
                         </div>
                         <h3 className="text-xl text-[#1f4e79] font-bold mb-2">{item.title}</h3>
                       </div>
