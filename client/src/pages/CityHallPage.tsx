@@ -150,9 +150,34 @@ export const CityHallPage: React.FC = () => {
                     </Link>
                   </li>
                   <li>
+                    <Link to="/building/heritage_center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (1) Stewardship Hall
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (2) SKILLS Academy
+                    </Link>
+                  </li>
+                  <li>
                     <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      City Hall
+                      (3) City Hall
                     </span>
+                  </li>
+                  <li>
+                    <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (4) JOB Junction
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/celebration_station" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (5) Innovation Plaza
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (6) Kaizen Tower
+                    </Link>
                   </li>
                 </ul>
               </nav>
@@ -426,7 +451,7 @@ export const CityHallPage: React.FC = () => {
               <ul className="space-y-2">
                 <li>
                   <Link to="/" className="text-gray-400 hover:text-white transition">
-                    Return to Map
+                    Map
                   </Link>
                 </li>
                 <li>
@@ -436,7 +461,27 @@ export const CityHallPage: React.FC = () => {
                 </li>
                 <li>
                   <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
-                    Skills Academy
+                    SKILLS Academy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/city_hall" className="text-gray-400 hover:text-white transition">
+                    City Hall
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
+                    JOB Junction
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/celebration_station" className="text-gray-400 hover:text-white transition">
+                    Innovation Plaza
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/kasp_tower" className="text-gray-400 hover:text-white transition">
+                    Kaizen Tower
                   </Link>
                 </li>
               </ul>
