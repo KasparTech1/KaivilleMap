@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Star, Users, Clock, Tag, Mail, FileText, Target } from 'lucide-react';
+import { Search, Filter, ChevronDown, Star, Users, Clock, Tag, Rocket, BookOpen, Mail, Phone, FileText, Target, ExternalLink, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
@@ -20,13 +20,43 @@ interface Tool {
 }
 
 export const TradingPostPage: React.FC = () => {
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
+  const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
+  const [email, setEmail] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSkillFilter, setSelectedSkillFilter] = useState<string>('');
+  const [showLegend, setShowLegend] = useState(false);
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  // Handle keyboard events for modal
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showComingSoonModal) {
+        setShowComingSoonModal(false);
+        setSelectedTool(null);
+        setEmail('');
+      }
+    };
+
+    if (showComingSoonModal) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Focus first input when modal opens
+      setTimeout(() => {
+        const emailInput = document.querySelector('input[type="email"]');
+        if (emailInput) {
+          (emailInput as HTMLElement).focus();
+        }
+      }, 100);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showComingSoonModal]);
 
   const tools: Tool[] = [
     {
@@ -62,10 +92,55 @@ export const TradingPostPage: React.FC = () => {
       users: 34,
       successStories: 11,
       comingSoon: true
+    },
+    {
+      id: 'process-ai',
+      name: 'Process AI',
+      description: 'Optimize workflows with smart suggestions',
+      icon: '🔧',
+      skills: ['K', 'I'],
+      setupTime: '1 hour',
+      users: 18,
+      successStories: 7,
+      comingSoon: true
+    },
+    {
+      id: 'idea-generator',
+      name: 'Idea Generator',
+      description: 'Brainstorm better solutions with AI assistance',
+      icon: '💡',
+      skills: ['K', 'L'],
+      setupTime: '15 mins',
+      users: 41,
+      successStories: 14,
+      comingSoon: true
+    },
+    {
+      id: 'roi-calculator',
+      name: 'ROI Calculator',
+      description: 'Measure your AI investment impact',
+      icon: '📈',
+      skills: ['I', 'S'],
+      setupTime: '30 mins',
+      users: 28,
+      successStories: 9,
+      comingSoon: true
+    },
+    {
+      id: 'team-insights',
+      name: 'Team Insights',
+      description: 'Understand team dynamics with behavioral data',
+      icon: '👥',
+      skills: ['L', 'D'],
+      setupTime: '2 hours',
+      users: 15,
+      successStories: 6,
+      comingSoon: true
     }
   ];
 
-  const skillLegend: {[key: string]: {name: string, description: string}} = {
+  // Skill abbreviations legend
+  const skillLegend = {
     'S': { name: 'Safety', description: 'Safety-focused tools and protocols' },
     'K': { name: 'Kaizen', description: 'Continuous improvement and optimization' },
     'L': { name: 'Leadership', description: 'Team management and guidance' },
@@ -73,7 +148,7 @@ export const TradingPostPage: React.FC = () => {
     'D': { name: 'Data', description: 'Analytics and insights' }
   };
 
-  // Filter tools
+  // Filter tools based on search and skill filter
   const filteredTools = tools.filter(tool => {
     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          tool.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -85,6 +160,24 @@ export const TradingPostPage: React.FC = () => {
   const availableTools = filteredTools.filter(tool => !tool.featured && !tool.comingSoon);
   const comingSoonTools = filteredTools.filter(tool => tool.comingSoon);
 
+  const handleToolClick = (tool: Tool) => {
+    if (tool.featured && tool.chatGptLink) {
+      window.open(tool.chatGptLink, '_blank');
+    } else {
+      setSelectedTool(tool);
+      setShowComingSoonModal(true);
+    }
+  };
+
+  const handleNotifyMe = () => {
+    // In a real app, this would save the email to a notification list
+    console.log(`Notify ${email} about ${selectedTool?.name}`);
+    setEmail('');
+    setShowComingSoonModal(false);
+    setSelectedTool(null);
+    // Show success message or toast
+  };
+
   return (
     <div className="min-h-screen bg-[#FEFEFE]">
       {/* Header */}
@@ -95,7 +188,7 @@ export const TradingPostPage: React.FC = () => {
               <Link to="/" className="no-underline">
                 <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
               </Link>
-              <nav className="ml-10 hidden lg:block">
+              <nav className="ml-10 hidden md:block">
                 <ul className="flex space-x-8">
                   <li>
                     <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
@@ -154,7 +247,7 @@ export const TradingPostPage: React.FC = () => {
             </div>
           </div>
           
-          {/* Search Controls */}
+          {/* Search and Filter Controls */}
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-col md:flex-row gap-4 mb-4">
               <div className="relative flex-1">
@@ -180,9 +273,48 @@ export const TradingPostPage: React.FC = () => {
                     <option key={key} value={key} className="text-gray-800">{key} - {skill.name}</option>
                   ))}
                 </select>
+                <Button 
+                  onClick={() => setShowLegend(!showLegend)}
+                  className="bg-white/20 text-white border-white hover:bg-white/30 px-4"
+                  aria-label="Toggle skill legend"
+                >
+                  <Tag className="w-4 h-4 mr-2" />
+                  Legend
+                </Button>
               </div>
             </div>
+            
+            {/* Skill Legend */}
+            {showLegend && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4">
+                <h3 className="text-lg font-semibold mb-3 text-white">Skill Categories</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {Object.entries(skillLegend).map(([key, skill]) => (
+                    <div key={key} className="flex items-start space-x-2">
+                      <span className="bg-[#D4AF37] text-[#1f4e79] font-bold px-2 py-1 rounded text-sm">{key}</span>
+                      <div>
+                        <div className="text-white font-medium">{skill.name}</div>
+                        <div className="text-white/80 text-sm">{skill.description}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+        </div>
+      </div>
+
+      {/* Search Results Summary */}
+      <div className="py-4 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <p className="text-gray-600 text-center">
+            {searchTerm || selectedSkillFilter ? (
+              <span>Found {filteredTools.length} tool{filteredTools.length !== 1 ? 's' : ''} {searchTerm && `matching "${searchTerm}"`} {selectedSkillFilter && `in ${skillLegend[selectedSkillFilter]?.name} category`}</span>
+            ) : (
+              <span>Showing all {tools.length} available tools</span>
+            )}
+          </p>
         </div>
       </div>
 
@@ -190,11 +322,11 @@ export const TradingPostPage: React.FC = () => {
       {featuredTool && (
         <div className="py-16 bg-gradient-to-r from-[#1f4e79] to-[#2c5530]">
           <div className="container mx-auto px-6">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-4xl mx-auto">
               <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
                 <div className="bg-gradient-to-r from-[#D4AF37] to-[#B87333] text-white p-4">
                   <div className="flex items-center">
-                    <Star className="w-6 h-6 mr-2" />
+                    <Rocket className="w-6 h-6 mr-2" />
                     <span className="text-lg font-bold">FEATURED SOLUTION</span>
                   </div>
                 </div>
@@ -226,10 +358,18 @@ export const TradingPostPage: React.FC = () => {
                       
                       <div className="flex gap-4">
                         <Button 
-                          onClick={() => window.open(featuredTool.chatGptLink, '_blank')}
+                          onClick={() => handleToolClick(featuredTool)}
                           className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90 px-8 py-3"
                         >
+                          <Rocket className="w-4 h-4 mr-2" />
                           Launch Tool
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="border-[#1f4e79] text-[#1f4e79] hover:bg-[#1f4e79] hover:text-white px-8 py-3"
+                        >
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          Learn More
                         </Button>
                       </div>
                     </div>
@@ -241,79 +381,77 @@ export const TradingPostPage: React.FC = () => {
         </div>
       )}
 
-      {/* Coming Soon Tools */}
-      {comingSoonTools.length > 0 && (
-        <div className="py-16 bg-white">
-          <div className="container mx-auto px-6">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-4xl font-serif text-[#1f4e79] text-center mb-4">Coming Soon</h2>
-              <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
-                These tools are currently in development. Stay tuned for updates!
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {comingSoonTools.map((tool) => (
-                  <Card 
-                    key={tool.id} 
-                    className="bg-gradient-to-b from-gray-50 to-gray-100 border border-gray-300 relative overflow-hidden"
-                  >
-                    <div className="absolute top-4 right-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                      COMING SOON
+      {/* Tool Grid */}
+      <div className="py-16 bg-[#F8F9FA]">
+        <div className="container mx-auto px-6">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-4xl font-serif text-[#1f4e79] text-center mb-12">Available Tools</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {regularTools.map((tool) => (
+                <Card 
+                  key={tool.id} 
+                  className="bg-gradient-to-b from-white to-gray-50 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 border border-gray-200"
+                  onClick={() => handleToolClick(tool)}
+                >
+                  <div className="p-6 h-full flex flex-col">
+                    <div className="text-center mb-4">
+                      <div className="text-4xl mb-3">{tool.icon}</div>
+                      <h3 className="text-xl font-bold text-[#1f4e79] mb-2">{tool.name}</h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">{tool.description}</p>
                     </div>
-                    <div className="p-6 h-full flex flex-col opacity-75">
-                      <div className="text-center mb-4">
-                        <div className="text-4xl mb-3 grayscale" role="img" aria-label={tool.name}>{tool.icon}</div>
-                        <h3 className="text-xl font-bold text-[#1f4e79] mb-2">{tool.name}</h3>
-                        <p className="text-gray-600 text-sm leading-relaxed">{tool.description}</p>
+                    
+                    <div className="flex-1 space-y-3 mb-4">
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Tag className="w-3 h-3 mr-2 text-[#B87333]" />
+                        <span>{tool.skills.join(', ')}</span>
                       </div>
-                      
-                      <div className="flex-1 space-y-3 mb-4">
-                        <div className="flex items-center text-xs text-gray-500">
-                          <Tag className="w-3 h-3 mr-2 text-gray-400" />
-                          <span>{tool.skills.join(', ')}</span>
-                        </div>
-                        <div className="flex items-center text-xs text-gray-500">
-                          <Clock className="w-3 h-3 mr-2 text-gray-400" />
-                          <span>Est. {tool.setupTime}</span>
-                        </div>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Clock className="w-3 h-3 mr-2 text-[#B87333]" />
+                        <span>{tool.setupTime}</span>
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Users className="w-3 h-3 mr-2 text-[#B87333]" />
+                        <span>{tool.users} users</span>
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Star className="w-3 h-3 mr-2 text-[#B87333]" />
+                        <span>{tool.successStories} stories</span>
                       </div>
                     </div>
-                  </Card>
-                ))}
-              </div>
+                    
+                    <Button 
+                      className="w-full bg-[#B87333] text-white hover:bg-[#A0622D] mt-auto"
+                      size="sm"
+                    >
+                      View Details
+                    </Button>
+                  </div>
+                </Card>
+              ))}
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Help Banner */}
+      {/* Footer Quote */}
       <div className="bg-[#1f4e79] text-white py-12">
         <div className="container mx-auto px-6 text-center">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-serif mb-4">Need Help Choosing the Right Tool?</h2>
-            <p className="text-xl mb-8 leading-relaxed">
-              Every tool in our Trading Post has been tested and approved by Kaspar employees. 
-              Our digital shopkeepers are here to guide you through implementation and provide ongoing support.
+            <p className="text-xl italic mb-8 leading-relaxed">
+              "Every tool in our Trading Post has been tested and approved by Kaspar employees. 
+              Need help choosing? Our shopkeepers are here to guide you."
             </p>
             <div className="flex flex-col md:flex-row justify-center gap-4">
-              <Button 
-                className="bg-[#D4AF37] text-[#1f4e79] hover:bg-[#D4AF37]/90"
-                aria-label="Contact shopkeeper for help choosing tools"
-              >
+              <Button className="bg-[#D4AF37] text-[#1f4e79] hover:bg-[#D4AF37]/90">
                 <Mail className="w-4 h-4 mr-2" />
                 Contact Shopkeeper
               </Button>
-              <Button 
-                className="bg-white/20 text-white border-white hover:bg-white/30"
-                aria-label="View implementation guides for tools"
-              >
+              <Button className="bg-white/20 text-white border-white hover:bg-white/30">
                 <FileText className="w-4 h-4 mr-2" />
                 Implementation Guides
               </Button>
-              <Button 
-                className="bg-white/20 text-white border-white hover:bg-white/30"
-                aria-label="Request a new tool not in catalog"
-              >
+              <Button className="bg-white/20 text-white border-white hover:bg-white/30">
                 <Target className="w-4 h-4 mr-2" />
                 Request New Tool
               </Button>
@@ -322,7 +460,7 @@ export const TradingPostPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Regular Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -385,6 +523,76 @@ export const TradingPostPage: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Coming Soon Modal */}
+      {showComingSoonModal && selectedTool && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="coming-soon-title"
+          onClick={(e) => e.target === e.currentTarget && setShowComingSoonModal(false)}
+        >
+          <div className="bg-white rounded-lg max-w-md w-full">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center">
+                  <span className="text-3xl mr-3">{selectedTool.icon}</span>
+                  <div>
+                    <h3 id="coming-soon-title" className="text-xl font-bold text-[#1f4e79]">{selectedTool.name}</h3>
+                    <p className="text-sm text-gray-600">Coming Soon!</p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => setShowComingSoonModal(false)}
+                  variant="ghost" 
+                  size="sm"
+                  aria-label="Close notification modal"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              <div className="text-center mb-6">
+                <div className="text-4xl mb-4">🚧</div>
+                <p className="text-gray-700 mb-4">
+                  This tool is on the way. Check back soon for updates!
+                </p>
+                <p className="text-sm text-gray-600 mb-4">
+                  Want to be notified when it's ready? Leave your email below:
+                </p>
+                
+                <Input
+                  type="email"
+                  placeholder="your.email@kaspar.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mb-4"
+                  aria-label="Email address for notifications"
+                  required
+                />
+                
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={handleNotifyMe}
+                    className="flex-1 bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90"
+                    disabled={!email}
+                  >
+                    Notify Me
+                  </Button>
+                  <Button 
+                    onClick={() => setShowComingSoonModal(false)}
+                    variant="outline" 
+                    className="flex-1"
+                  >
+                    Browse More Tools
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
