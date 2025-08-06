@@ -20,6 +20,11 @@ interface BuildingCardProps {
 }
 
 export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building, style, isDayMode = true }) => {
+  // Hide Job Junction from the map
+  if (building.id === 'community-center') {
+    return null;
+  }
+
   // Use the illustration property from the building data if available
   let svgPath = building.illustration || '';
   
