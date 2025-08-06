@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from './ui/card';
 import { getAssetUrl } from '../config/assetUrls';
+import { BuildingTooltip } from './BuildingTooltip';
 
 interface Building {
   id: string;
@@ -41,21 +42,22 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
   // Special rendering for heritage_center, learning_lodge, craft_works, knn_tower, community-center, city_hall, celebration_station, safety_station, trading_post, and kasp_tower - SVG becomes the card
   if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'city_hall' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'trading_post' || building.id === 'kasp_tower') {
     return (
-      <Link 
-        to={`/building/${building.id}`} 
-        className="block" 
-        style={style}
-        aria-label={`Visit ${building.title}`}
-        title={`Click to explore ${building.title}`}
-      >
+      <BuildingTooltip building={building}>
+        <Link 
+          to={`/building/${building.id}`} 
+          className="block" 
+          style={style}
+          aria-label={`Visit ${building.title}`}
+          title={`Click to explore ${building.title}`}
+        >
         <div className={`relative ${
-          building.id === 'celebration_station' ? '' : 
+          building.id === 'celebration_station' ? 'hover:scale-[1.02]' : 
           building.id === 'learning_lodge' ? 'hover:scale-[1.01]' : 
           building.id === 'community-center' ? 'hover:scale-[1.02]' :
           building.id === 'city_hall' ? 'hover:scale-[1.02]' :
           building.id === 'trading_post' ? 'hover:scale-[1.02]' :
           'hover:scale-[1.02]'
-        } active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group filter drop-shadow-[0_5px_15px_rgba(0,0,0,0.15)] ${
+        } active:scale-[0.98] transition-all duration-300 ease-in-out cursor-pointer group filter drop-shadow-[0_5px_15px_rgba(0,0,0,0.15)] hover:drop-shadow-[0_15px_35px_rgba(212,175,55,0.4)] focus-within:drop-shadow-[0_15px_35px_rgba(212,175,55,0.6)] ${
           building.id === 'heritage_center' ? '-mt-[20%] translate-x-[5px] translate-y-[5px] md:-mt-[18%] md:ml-[10%] md:translate-x-0 md:translate-y-[25px]' : 
           building.id === 'learning_lodge' ? 'scale-[0.748] -mt-[5%] -ml-[25%] -translate-y-[150px] md:scale-[0.748] md:mt-[10%] md:-ml-[15%] md:translate-y-[-70px]' : 
           building.id === 'city_hall' ? '-mt-[10%] translate-y-[10px] md:-mt-[5%] md:translate-y-[15px]' :
@@ -103,7 +105,8 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
             </div>
           </Card>
         </div>
-      </Link>
+        </Link>
+      </BuildingTooltip>
     );
   }
 

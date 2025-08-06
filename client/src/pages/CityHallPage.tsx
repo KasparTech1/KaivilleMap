@@ -31,6 +31,9 @@ export const CityHallPage: React.FC = () => {
   const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [sortBy, setSortBy] = useState<'date' | 'priority' | 'status'>('date');
+  const [filterBy, setFilterBy] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // Keyboard event handler for modal
   useEffect(() => {
@@ -170,24 +173,24 @@ export const CityHallPage: React.FC = () => {
   const getStatusColor = (status: PermitApplication['status']) => {
     switch (status) {
       case 'approved':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-600 text-white font-medium';
       case 'denied':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-600 text-white font-medium';
       case 'under_review':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-600 text-white font-medium';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-600 text-white font-medium';
     }
   };
 
   const getPriorityColor = (priority: PermitApplication['priority']) => {
     switch (priority) {
       case 'high':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-600 text-white font-medium';
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-600 text-white font-medium';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500 text-white font-medium';
     }
   };
 
@@ -513,21 +516,85 @@ export const CityHallPage: React.FC = () => {
       <div className="py-16 bg-[#F5F5DC]">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl text-[#1f4e79] text-center mb-12 font-serif">Recent Applications</h2>
+            <h2 className="text-4xl text-[#1f4e79] text-center mb-8 font-serif">Recent Applications</h2>
+            
+            {/* Sorting and Filtering Controls */}
+            <div className="flex flex-col md:flex-row gap-4 mb-8 p-4 bg-white rounded-lg shadow-sm">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Sort by</label>
+                <select 
+                  value={sortBy} 
+                  onChange={(e) => setSortBy(e.target.value as 'date' | 'priority' | 'status')}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                >
+                  <option value="date">Date</option>
+                  <option value="priority">Priority</option>
+                  <option value="status">Status</option>
+                </select>
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Order</label>
+                <select 
+                  value={sortOrder} 
+                  onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                >
+                  <option value="desc">Newest First</option>
+                  <option value="asc">Oldest First</option>
+                </select>
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Filter by type</label>
+                <select 
+                  value={filterBy} 
+                  onChange={(e) => setFilterBy(e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                >
+                  <option value="">All Types</option>
+                  {permitTypes.map((permit) => (
+                    <option key={permit.value} value={permit.value}>{permit.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
             
             <div className="space-y-4">
-              {applications.map((app) => (
+              {applications
+                .filter(app => filterBy === '' || app.type === filterBy)
+                .sort((a, b) => {
+                  let comparison = 0;
+                  switch (sortBy) {
+                    case 'date':
+                      comparison = new Date(a.requestDate).getTime() - new Date(b.requestDate).getTime();
+                      break;
+                    case 'priority':
+                      const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
+                      comparison = priorityOrder[b.priority] - priorityOrder[a.priority];
+                      break;
+                    case 'status':
+                      comparison = a.status.localeCompare(b.status);
+                      break;
+                  }
+                  return sortOrder === 'asc' ? comparison : -comparison;
+                })
+                .map((app) => (
                 <Card key={app.id} className="bg-white p-6 hover:shadow-lg transition">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         {getStatusIcon(app.status)}
                         <h3 className="text-lg font-semibold text-[#1f4e79]">{app.title}</h3>
-                        <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(app.status)}`}>
+                        <span 
+                          className={`px-3 py-1 text-xs rounded-full ${getStatusColor(app.status)}`}
+                          aria-label={`Status: ${app.status.replace('_', ' ')}`}
+                        >
                           {app.status.replace('_', ' ').toUpperCase()}
                         </span>
-                        <span className={`px-2 py-1 text-xs rounded-full ${getPriorityColor(app.priority)}`}>
-                          {app.priority.toUpperCase()}
+                        <span 
+                          className={`px-3 py-1 text-xs rounded-full ${getPriorityColor(app.priority)}`}
+                          aria-label={`Priority: ${app.priority}`}
+                        >
+                          {app.priority.toUpperCase()} PRIORITY
                         </span>
                       </div>
                       <p className="text-gray-700 mb-2">{app.description}</p>

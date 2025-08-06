@@ -182,13 +182,13 @@ export const SkillsAcademyPage: React.FC = () => {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-4xl text-[#1f4e79] text-center mb-12 font-serif">How We Learn Together</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="max-w-4xl mx-auto space-y-6">
                 {cmsContent.approach.map((item: string, index: number) => (
-                  <div key={index} className="flex items-start">
-                    <div className="w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
-                      <span className="text-[#1f4e79] font-bold">{index + 1}</span>
+                  <div key={index} className="flex items-start bg-gray-50 p-6 rounded-lg">
+                    <div className="w-10 h-10 bg-[#D4AF37] rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                      <span className="text-[#1f4e79] font-bold text-lg">{index + 1}</span>
                     </div>
-                    <p className="text-gray-700">{item}</p>
+                    <p className="text-gray-700 text-lg leading-relaxed">{item}</p>
                   </div>
                 ))}
               </div>
@@ -283,7 +283,7 @@ export const SkillsAcademyPage: React.FC = () => {
       <div className="py-16 bg-[#1f4e79] text-white">
         <div className="container mx-auto px-6 text-center">
           <div className="relative max-w-4xl mx-auto">
-            <h2 className="text-4xl mb-6 font-serif">Ready to see learning in action?</h2>
+            <h2 className="text-4xl mb-6 font-serif">Ready to put your skills to work?</h2>
             <p className="text-xl text-gray-200 mb-10 max-w-3xl mx-auto">
               {cmsContent.callToAction || 'City Hall is where you can submit permits and applications for your new skills and tools.'}
             </p>

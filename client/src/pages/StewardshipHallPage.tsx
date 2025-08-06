@@ -12,6 +12,8 @@ import { SkipToContent } from '../components/SkipToContent';
 export const StewardshipHallPage: React.FC = () => {
   const { content: cmsContent, loading } = useCMSContent('building', 'heritage_center', {});
   const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false]);
+  const [pledgeSubmitted, setPledgeSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const timelineRef = useRef<HTMLDivElement>(null);
 
   // Scroll to top on mount
@@ -338,13 +340,42 @@ export const StewardshipHallPage: React.FC = () => {
                 ))}
               </div>
               
+              {pledgeSubmitted && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg text-center mt-8">
+                  <div className="flex items-center justify-center mb-2">
+                    <span className="text-2xl mr-2">✓</span>
+                    <h3 className="text-lg font-semibold">Thank You!</h3>
+                  </div>
+                  <p>Your stewardship pledge has been recorded. You are now committed to responsible AI use guided by our heritage values.</p>
+                </div>
+              )}
+              
               <div className="text-center mt-12">
                 <Button 
                   className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90 text-lg px-8 py-4"
-                  disabled={!checkedItems.every(item => item)}
+                  disabled={!checkedItems.every(item => item) || isSubmitting}
                   aria-label="Submit stewardship pledge after agreeing to all items"
+                  onClick={async () => {
+                    setIsSubmitting(true);
+                    // Simulate submission
+                    setTimeout(() => {
+                      setPledgeSubmitted(true);
+                      setIsSubmitting(false);
+                      // Reset form after showing success
+                      setTimeout(() => {
+                        setCheckedItems([false, false, false, false, false]);
+                      }, 3000);
+                    }, 1000);
+                  }}
                 >
-                  Submit My Pledge
+                  {isSubmitting ? (
+                    <>
+                      <span className="loading-spinner mr-2"></span>
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit My Pledge'
+                  )}
                 </Button>
               </div>
             </div>
