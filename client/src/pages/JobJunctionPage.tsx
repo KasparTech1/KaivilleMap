@@ -48,13 +48,13 @@ export const JobJunctionPage: React.FC = () => {
                     </Link>
                   </li>
                   <li>
-                    <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      (2) JOB Junction
-                    </span>
+                    <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (2) SKILLS Academy
+                    </Link>
                   </li>
                   <li>
-                    <Link to="/building/learning_lodge" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (3) Skills Academy
+                    <Link to="/building/city_hall" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (3) City Hall
                     </Link>
                   </li>
                   <li>
