@@ -22,7 +22,7 @@ export const getBuildings = () => {
             column: 1,
             span: 1,
             illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/stewardship_hall_01.svg?t=${Date.now()}`,
-            connections: ["community-center"]
+            connections: ["learning_lodge"]
           },
           {
             id: "learning_lodge",
@@ -31,16 +31,25 @@ export const getBuildings = () => {
             column: 2,
             span: 1,
             illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg?t=${Date.now()}`,
-            connections: ["heritage_center", "community-center", "celebration_station"]
+            connections: ["heritage_center", "city_hall"]
           },
           {
-            id: "community-center",
-            title: "JOB Junction",
+            id: "city_hall",
+            title: "City Hall",
             row: 1,
             column: 3,
             span: 1,
             illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
-            connections: ["learning_lodge", "celebration_station"]
+            connections: ["learning_lodge", "community-center"]
+          },
+          {
+            id: "community-center",
+            title: "JOB Junction",
+            row: 2,
+            column: 1,
+            span: 1,
+            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
+            connections: ["city_hall", "celebration_station"]
           },
           {
             id: "celebration_station",
@@ -49,7 +58,7 @@ export const getBuildings = () => {
             column: 3,
             span: 1,
             illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/innovation_plaza_01.svg?t=${Date.now()}`,
-            connections: ["learning_lodge", "kasp_tower"]
+            connections: ["community-center", "kasp_tower"]
           },
           {
             id: "kasp_tower",
@@ -98,6 +107,12 @@ export const getBuildingDetails = (id: string) => {
           title: "Craft Works",
           description: "A creative workshop space where artisans and makers bring their ideas to life.",
           details: "Craft Works provides tools, materials, and expert guidance for woodworking, pottery, textiles, and other traditional and modern crafts."
+        },
+        "city_hall": {
+          id: "city_hall",
+          title: "City Hall",
+          description: "The administrative center where residents submit permits and applications for community services.",
+          details: "City Hall serves as the official permit and approval center for Kaiville. Residents come here to submit applications for custom tool deployments, unvetted tool usage, building modifications, and various permits required for community projects and innovations."
         },
         "community-center": {
           id: "community-center",

@@ -31,6 +31,7 @@ function App() {
           <Route path="/building/learning_lodge" element={<SkillsAcademyPage />} />
           <Route path="/building/kasp_tower" element={<KaizenTowerPage />} />
           <Route path="/building/community-center" element={<JobJunctionPage />} />
+          <Route path="/building/city_hall" element={<CityHallPage />} />
           <Route path="/city-hall" element={<CityHallPage />} />
           <Route path="/building/:id" element={<BuildingDetailPage />} />
           <Route path="/news" element={<KNNFeedPage />} />

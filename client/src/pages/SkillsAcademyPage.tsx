@@ -48,28 +48,28 @@ export const SkillsAcademyPage: React.FC = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (2) JOB Junction
-                    </Link>
-                  </li>
-                  <li>
                     <span className="text-[#1f4e79] font-bold border-b-2 border-[#D4AF37] pb-1">
-                      (3) SKILLS Academy
+                      (2) SKILLS Academy
                     </span>
                   </li>
                   <li>
+                    <Link to="/building/city_hall" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (3) City Hall
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/building/community-center" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      (4) JOB Junction
+                    </Link>
+                  </li>
+                  <li>
                     <Link to="/building/celebration_station" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (4) Innovation Plaza
+                      (5) Innovation Plaza
                     </Link>
                   </li>
                   <li>
                     <Link to="/building/kasp_tower" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      (5) Kaizen Tower
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/city-hall" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
-                      City Hall
+                      (6) Kaizen Tower
                     </Link>
                   </li>
                 </ul>
@@ -341,13 +341,18 @@ export const SkillsAcademyPage: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
-                    JOB Junction
+                  <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
+                    SKILLS Academy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
-                    SKILLS Academy
+                  <Link to="/building/city_hall" className="text-gray-400 hover:text-white transition">
+                    City Hall
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
+                    JOB Junction
                   </Link>
                 </li>
                 <li>
@@ -358,11 +363,6 @@ export const SkillsAcademyPage: React.FC = () => {
                 <li>
                   <Link to="/building/kasp_tower" className="text-gray-400 hover:text-white transition">
                     Kaizen Tower
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/city-hall" className="text-gray-400 hover:text-white transition">
-                    City Hall
                   </Link>
                 </li>
               </ul>
