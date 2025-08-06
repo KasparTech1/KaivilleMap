@@ -202,29 +202,29 @@ export const StewardshipHallPage: React.FC = () => {
       {cmsContent.timeline && (
         <div className="py-16 bg-white">
           <div className="container mx-auto px-6">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-7xl mx-auto">
               <h2 className="text-4xl text-[#1f4e79] text-center mb-12 font-serif">Our Heritage Timeline</h2>
               
               <div className="relative">
                 <div className="absolute top-1/2 left-0 right-0 h-2 bg-[#1f4e79] bg-opacity-20 transform -translate-y-1/2 z-0"></div>
                 
                 <div ref={timelineRef} className="overflow-x-auto pb-10 scrollbar-hide">
-                  <div className="flex space-x-6 relative z-10 min-w-max px-4">
+                  <div className="flex space-x-3 relative z-10 min-w-max px-4 lg:justify-center">
                     {cmsContent.timeline.map((item: any, index: number) => (
                       <div 
                         key={index} 
-                        className={`${item.highlight ? 'bg-[#1f4e79] text-white' : 'bg-white border-2 border-[#1f4e79]'} rounded-lg p-6 w-64 shadow-lg relative`}
+                        className={`${item.highlight ? 'bg-[#1f4e79] text-white' : 'bg-white border-2 border-[#1f4e79]'} rounded-lg p-4 w-48 lg:w-56 shadow-lg relative flex-shrink-0`}
                       >
                         <div className={`absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 ${item.highlight ? 'bg-[#D4AF37]' : 'bg-[#1f4e79]'} rounded-full flex items-center justify-center text-white`}>
                           {getIcon(item.icon)}
                         </div>
-                        <h3 className={`text-xl ${item.highlight ? 'text-[#D4AF37]' : 'text-[#1f4e79]'} mb-2 font-serif mt-4`}>
+                        <h3 className={`text-lg lg:text-xl ${item.highlight ? 'text-[#D4AF37]' : 'text-[#1f4e79]'} mb-2 font-serif mt-4`}>
                           {item.year}
                         </h3>
-                        <h4 className={`text-lg ${item.highlight ? 'text-white' : 'text-[#8B6914]'} mb-2 font-medium`}>
+                        <h4 className={`text-sm lg:text-base ${item.highlight ? 'text-white' : 'text-[#8B6914]'} mb-2 font-medium`}>
                           {item.title}
                         </h4>
-                        <p className={item.highlight ? 'text-gray-200' : 'text-gray-700'}>
+                        <p className={`text-xs lg:text-sm ${item.highlight ? 'text-gray-200' : 'text-gray-700'}`}>
                           {item.description}
                         </p>
                       </div>
@@ -232,7 +232,7 @@ export const StewardshipHallPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-center mt-8 space-x-4">
+                <div className="flex justify-center mt-8 space-x-4 lg:hidden">
                   <button 
                     onClick={() => handleScroll('left')}
                     className="w-14 h-14 rounded-full border-2 border-[#1f4e79] flex items-center justify-center text-[#1f4e79] hover:bg-[#1f4e79] hover:text-white transition-all duration-200 focus:outline-4 focus:outline-[#D4AF37] focus:outline-offset-2"
@@ -259,6 +259,10 @@ export const StewardshipHallPage: React.FC = () => {
                   >
                     <ChevronRight className="w-8 h-8" />
                   </button>
+                </div>
+                
+                <div className="hidden lg:block text-center mt-8">
+                  <p className="text-gray-600 text-sm">All timeline events are visible above</p>
                 </div>
 
                 {/* Heritage Stats */}
