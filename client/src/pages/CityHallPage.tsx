@@ -28,6 +28,33 @@ export const CityHallPage: React.FC = () => {
     requesterName: '',
     priority: 'medium' as const
   });
+  const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Keyboard event handler for modal
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showForm) {
+        setShowForm(false);
+        setFormErrors({});
+        setSubmitSuccess(false);
+      }
+    };
+
+    if (showForm) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Focus trap - focus first input when modal opens
+      const firstInput = document.querySelector('#permit-form-title')?.nextElementSibling?.querySelector('input, select, textarea');
+      if (firstInput) {
+        (firstInput as HTMLElement).focus();
+      }
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showForm]);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -68,22 +95,63 @@ export const CityHallPage: React.FC = () => {
     ]);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newApplication: PermitApplication = {
-      id: Date.now().toString(),
-      type: formData.type,
-      title: formData.title,
-      description: formData.description,
-      requesterName: formData.requesterName,
-      requestDate: new Date().toISOString().split('T')[0],
-      status: 'pending',
-      priority: formData.priority
-    };
+  const validateForm = () => {
+    const errors: {[key: string]: string} = {};
     
-    setApplications(prev => [newApplication, ...prev]);
-    setFormData({ type: '', title: '', description: '', requesterName: '', priority: 'medium' });
-    setShowForm(false);
+    if (!formData.type) {
+      errors.type = 'Please select a permit type';
+    }
+    if (!formData.requesterName.trim()) {
+      errors.requesterName = 'Please enter your name';
+    }
+    if (!formData.title.trim()) {
+      errors.title = 'Please enter a request title';
+    }
+    if (!formData.description.trim()) {
+      errors.description = 'Please provide a detailed description';
+    } else if (formData.description.trim().length < 20) {
+      errors.description = 'Description must be at least 20 characters';
+    }
+    
+    return errors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const errors = validateForm();
+    setFormErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      const newApplication: PermitApplication = {
+        id: Date.now().toString(),
+        type: formData.type,
+        title: formData.title,
+        description: formData.description,
+        requesterName: formData.requesterName,
+        requestDate: new Date().toISOString().split('T')[0],
+        status: 'pending',
+        priority: formData.priority
+      };
+      
+      setApplications(prev => [newApplication, ...prev]);
+      setFormData({ type: '', title: '', description: '', requesterName: '', priority: 'medium' });
+      setFormErrors({});
+      setIsSubmitting(false);
+      setSubmitSuccess(true);
+      
+      setTimeout(() => {
+        setShowForm(false);
+        setSubmitSuccess(false);
+      }, 2000);
+    }, 1000);
   };
 
   const getStatusIcon = (status: PermitApplication['status']) => {
@@ -247,12 +315,29 @@ export const CityHallPage: React.FC = () => {
 
       {/* Application Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="permit-form-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowForm(false);
+              setFormErrors({});
+              setSubmitSuccess(false);
+            }
+          }}
+        >
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-serif text-[#1f4e79]">New Permit Application</h3>
-                <Button onClick={() => setShowForm(false)} variant="outline" size="sm">
+                <h3 id="permit-form-title" className="text-2xl font-serif text-[#1f4e79]">New Permit Application</h3>
+                <Button 
+                  onClick={() => setShowForm(false)} 
+                  variant="outline" 
+                  size="sm"
+                  aria-label="Close permit application form"
+                >
                   ✕
                 </Button>
               </div>
@@ -260,10 +345,19 @@ export const CityHallPage: React.FC = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Permit Type
+                    Permit Type *
                   </label>
-                  <Select value={formData.type} onValueChange={(value) => setFormData({...formData, type: value})}>
-                    <SelectTrigger>
+                  <Select 
+                    value={formData.type} 
+                    onValueChange={(value) => {
+                      setFormData({...formData, type: value});
+                      if (formErrors.type) {
+                        setFormErrors({...formErrors, type: ''});
+                      }
+                    }}
+                    aria-label="Select permit type"
+                  >
+                    <SelectTrigger className={formErrors.type ? 'form-field-error' : ''}>
                       <SelectValue placeholder="Select permit type..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -274,45 +368,89 @@ export const CityHallPage: React.FC = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                  {formErrors.type && (
+                    <div className="error-message">
+                      <span>⚠</span> {formErrors.type}
+                    </div>
+                  )}
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Requester Name
+                    Requester Name *
                   </label>
                   <Input
                     type="text"
                     value={formData.requesterName}
-                    onChange={(e) => setFormData({...formData, requesterName: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, requesterName: e.target.value});
+                      if (formErrors.requesterName) {
+                        setFormErrors({...formErrors, requesterName: ''});
+                      }
+                    }}
                     placeholder="Your full name"
+                    aria-label="Requester name"
+                    className={formErrors.requesterName ? 'form-field-error' : ''}
                     required
                   />
+                  {formErrors.requesterName && (
+                    <div className="error-message">
+                      <span>⚠</span> {formErrors.requesterName}
+                    </div>
+                  )}
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Request Title
+                    Request Title *
                   </label>
                   <Input
                     type="text"
                     value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, title: e.target.value});
+                      if (formErrors.title) {
+                        setFormErrors({...formErrors, title: ''});
+                      }
+                    }}
                     placeholder="Brief title describing your request"
+                    aria-label="Request title"
+                    className={formErrors.title ? 'form-field-error' : ''}
                     required
                   />
+                  {formErrors.title && (
+                    <div className="error-message">
+                      <span>⚠</span> {formErrors.title}
+                    </div>
+                  )}
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Detailed Description
+                    Detailed Description * <span className="text-xs text-gray-500">(min. 20 characters)</span>
                   </label>
                   <Textarea
                     value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, description: e.target.value});
+                      if (formErrors.description) {
+                        setFormErrors({...formErrors, description: ''});
+                      }
+                    }}
                     placeholder="Provide detailed information about your request, including purpose, benefits, and any technical requirements..."
+                    aria-label="Detailed description"
+                    className={formErrors.description ? 'form-field-error' : ''}
                     rows={6}
                     required
                   />
+                  <div className="text-xs text-gray-500 mt-1">
+                    {formData.description.length}/20 minimum characters
+                  </div>
+                  {formErrors.description && (
+                    <div className="error-message">
+                      <span>⚠</span> {formErrors.description}
+                    </div>
+                  )}
                 </div>
                 
                 <div>
@@ -331,12 +469,38 @@ export const CityHallPage: React.FC = () => {
                   </Select>
                 </div>
                 
+                {submitSuccess && (
+                  <div className="success-message bg-green-50 p-4 rounded-lg border border-green-200">
+                    <span>✓</span> Application submitted successfully!
+                  </div>
+                )}
+                
                 <div className="flex justify-end space-x-4">
-                  <Button type="button" onClick={() => setShowForm(false)} variant="outline">
+                  <Button 
+                    type="button" 
+                    onClick={() => {
+                      setShowForm(false);
+                      setFormErrors({});
+                      setSubmitSuccess(false);
+                    }} 
+                    variant="outline"
+                    disabled={isSubmitting}
+                  >
                     Cancel
                   </Button>
-                  <Button type="submit" className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90">
-                    Submit Application
+                  <Button 
+                    type="submit" 
+                    className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="loading-spinner mr-2"></span>
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit Application'
+                    )}
                   </Button>
                 </div>
               </form>

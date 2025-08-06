@@ -35,7 +35,7 @@ export const SkillsAcademyPage: React.FC = () => {
               <Link to="/" className="no-underline">
                 <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
               </Link>
-              <nav className="ml-10 hidden md:block">
+              <nav className="ml-10 hidden lg:block">
                 <ul className="flex space-x-8">
                   <li>
                     <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
@@ -86,7 +86,7 @@ export const SkillsAcademyPage: React.FC = () => {
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         <div className="container mx-auto px-6 h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between relative z-10">
           <div className="max-w-5xl text-center lg:text-left">
-            <p className="text-lg text-white/80 mb-2">Stop 2 of 6</p>
+            <p className="text-lg text-white/80 mb-2">Stop 2 of 5</p>
             <h1 className="text-4xl lg:text-5xl font-serif text-white mb-4 font-bold">
               {cmsContent.title || 'SKILLS Academy'}
             </h1>
@@ -101,7 +101,7 @@ export const SkillsAcademyPage: React.FC = () => {
           </div>
           <div className="mt-6 lg:mt-0 lg:block relative">
             <img 
-              className="h-[200px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto translate-y-[200px] lg:translate-y-0"
+              className="h-[200px] lg:h-[400px] w-auto drop-shadow-2xl mx-auto lg:translate-y-0"
               src="https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg"
               alt="SKILLS Academy Building"
             />

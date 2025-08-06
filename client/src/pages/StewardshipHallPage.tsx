@@ -6,6 +6,8 @@ import { Card } from '../components/ui/card';
 import { Checkbox } from '../components/ui/checkbox';
 import { useCMSContent } from '../hooks/useCMSContent';
 import { EditButton } from '../components/cms/EditButton';
+import { Breadcrumb } from '../components/Breadcrumb';
+import { SkipToContent } from '../components/SkipToContent';
 
 export const StewardshipHallPage: React.FC = () => {
   const { content: cmsContent, loading } = useCMSContent('building', 'heritage_center', {});
@@ -54,6 +56,7 @@ export const StewardshipHallPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
+      <SkipToContent />
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
@@ -62,7 +65,7 @@ export const StewardshipHallPage: React.FC = () => {
               <Link to="/" className="no-underline">
                 <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
               </Link>
-              <nav className="ml-10 hidden md:block">
+              <nav className="ml-10 hidden lg:block">
                 <ul className="flex space-x-8">
                   <li>
                     <Link to="/" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
@@ -100,7 +103,7 @@ export const StewardshipHallPage: React.FC = () => {
             <div className="flex items-center space-x-4">
               <Link to="/">
                 <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90">
-                  Return to Map
+                  <span className="hidden sm:inline">Return to </span>Map
                 </Button>
               </Link>
             </div>
@@ -108,8 +111,17 @@ export const StewardshipHallPage: React.FC = () => {
         </div>
       </header>
 
+      {/* Breadcrumb */}
+      <div className="container mx-auto px-6 py-4">
+        <Breadcrumb 
+          items={[
+            { label: 'Stewardship Hall', current: true }
+          ]} 
+        />
+      </div>
+
       {/* Hero Section */}
-      <div className="h-[500px] relative overflow-hidden bg-gradient-to-br from-[#1f4e79] to-[#2d5a87]">
+      <div id="main-content" className="h-[500px] relative overflow-hidden bg-gradient-to-br from-[#1f4e79] to-[#2d5a87]" tabIndex={-1}>
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
         <div className="container mx-auto px-6 h-full flex items-center justify-between relative z-10">
           <div className="max-w-4xl">
@@ -222,12 +234,14 @@ export const StewardshipHallPage: React.FC = () => {
                   <button 
                     onClick={() => handleScroll('left')}
                     className="w-10 h-10 rounded-full border-2 border-[#1f4e79] flex items-center justify-center text-[#1f4e79] hover:bg-[#1f4e79] hover:text-white transition"
+                    aria-label="Scroll timeline left"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button 
                     onClick={() => handleScroll('right')}
                     className="w-10 h-10 rounded-full border-2 border-[#1f4e79] flex items-center justify-center text-[#1f4e79] hover:bg-[#1f4e79] hover:text-white transition"
+                    aria-label="Scroll timeline right"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
@@ -300,6 +314,7 @@ export const StewardshipHallPage: React.FC = () => {
                           newCheckedItems[index] = checked as boolean;
                           setCheckedItems(newCheckedItems);
                         }}
+                        aria-label={`Agree to pledge item ${index + 1}`}
                       />
                       <p className="text-gray-700 text-lg">{item}</p>
                     </div>
@@ -311,6 +326,7 @@ export const StewardshipHallPage: React.FC = () => {
                 <Button 
                   className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90 text-lg px-8 py-4"
                   disabled={!checkedItems.every(item => item)}
+                  aria-label="Submit stewardship pledge after agreeing to all items"
                 >
                   Submit My Pledge
                 </Button>
@@ -377,13 +393,13 @@ export const StewardshipHallPage: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
-                    JOB Junction
+                  <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
+                    SKILLS Academy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
-                    SKILLS Academy
+                  <Link to="/building/city_hall" className="text-gray-400 hover:text-white transition">
+                    City Hall
                   </Link>
                 </li>
                 <li>
@@ -392,8 +408,8 @@ export const StewardshipHallPage: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/building/kasp_tower" className="text-gray-400 hover:text-white transition">
-                    Kaizen Tower
+                  <Link to="/building/trading_post" className="text-gray-400 hover:text-white transition">
+                    Trading Post
                   </Link>
                 </li>
               </ul>

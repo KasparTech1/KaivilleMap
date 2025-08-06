@@ -339,13 +339,13 @@ export const InnovationPlazaPage: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/building/community-center" className="text-gray-400 hover:text-white transition">
-                    JOB Junction
+                  <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
+                    SKILLS Academy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/building/learning_lodge" className="text-gray-400 hover:text-white transition">
-                    SKILLS Academy
+                  <Link to="/building/city_hall" className="text-gray-400 hover:text-white transition">
+                    City Hall
                   </Link>
                 </li>
                 <li>
@@ -354,8 +354,8 @@ export const InnovationPlazaPage: React.FC = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/building/kasp_tower" className="text-gray-400 hover:text-white transition">
-                    Kaizen Tower
+                  <Link to="/building/trading_post" className="text-gray-400 hover:text-white transition">
+                    Trading Post
                   </Link>
                 </li>
               </ul>
