@@ -288,12 +288,12 @@ export const InnovationPlazaPage: React.FC = () => {
           <div className="relative max-w-4xl mx-auto">
             <h2 className="text-4xl mb-6 font-serif">Inspired by these successes?</h2>
             <p className="text-xl text-gray-200 mb-10 max-w-3xl mx-auto">
-              {cmsContent.callToAction || 'Kaizen Tower awaits to show you the future possibilities and help you envision your own AI journey at Kaspar.'}
+              Visit our Trading Post to explore the AI tools and resources that will help you achieve similar success stories. Discover what's available now and what's coming soon.
             </p>
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
-              <Link to="/building/kasp_tower">
+              <Link to="/building/trading_post">
                 <Button className="bg-white text-[#1f4e79] hover:bg-[#F5F5DC] text-lg px-8 py-4">
-                  <TowerControl className="mr-2" /> Continue to next stop - Kaizen Tower
+                  Continue to next stop - Trading Post
                 </Button>
               </Link>
               <Link to="/">

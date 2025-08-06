@@ -41,7 +41,13 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
   // Special rendering for heritage_center, learning_lodge, craft_works, knn_tower, community-center, city_hall, celebration_station, safety_station, trading_post, and kasp_tower - SVG becomes the card
   if (building.id === 'heritage_center' || building.id === 'learning_lodge' || building.id === 'craft_works' || building.id === 'knn_tower' || building.id === 'community-center' || building.id === 'city_hall' || building.id === 'celebration_station' || building.id === 'safety_station' || building.id === 'trading_post' || building.id === 'kasp_tower') {
     return (
-      <Link to={`/building/${building.id}`} className="block" style={style}>
+      <Link 
+        to={`/building/${building.id}`} 
+        className="block" 
+        style={style}
+        aria-label={`Visit ${building.title}`}
+        title={`Click to explore ${building.title}`}
+      >
         <div className={`relative ${
           building.id === 'celebration_station' ? '' : 
           building.id === 'learning_lodge' ? 'hover:scale-[1.01]' : 
@@ -69,8 +75,8 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
           )}
           <img
             src={svgPath}
-            alt={building.title}
-            className={`w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.25)] hover:drop-shadow-[0_15px_30px_rgba(0,0,0,0.35)] transition-all duration-300 ${
+            alt={`${building.title} building illustration`}
+            className={`w-full h-full object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.25)] hover:drop-shadow-[0_15px_30px_rgba(0,0,0,0.35)] transition-all duration-300 focus:outline-4 focus:outline-[#D4AF37] focus:outline-offset-2 ${
               building.id === 'heritage_center' ? 'scale-[0.855]' : ''
             }`}
             onError={(e) => {
@@ -93,6 +99,7 @@ export const BuildingCard: React.FC<BuildingCardProps> = React.memo(({ building,
               <h3 className="text-lg font-semibold text-gray-800">
                 {building.title}
               </h3>
+              <p className="sr-only">Click to visit {building.title}</p>
             </div>
           </Card>
         </div>

@@ -230,20 +230,32 @@ export const StewardshipHallPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-center mt-8 space-x-2">
+                <div className="flex justify-center mt-8 space-x-4">
                   <button 
                     onClick={() => handleScroll('left')}
-                    className="w-10 h-10 rounded-full border-2 border-[#1f4e79] flex items-center justify-center text-[#1f4e79] hover:bg-[#1f4e79] hover:text-white transition"
-                    aria-label="Scroll timeline left"
+                    className="w-14 h-14 rounded-full border-2 border-[#1f4e79] flex items-center justify-center text-[#1f4e79] hover:bg-[#1f4e79] hover:text-white transition-all duration-200 focus:outline-4 focus:outline-[#D4AF37] focus:outline-offset-2"
+                    aria-label="Scroll timeline left to see earlier events"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleScroll('left');
+                      }
+                    }}
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <ChevronLeft className="w-8 h-8" />
                   </button>
                   <button 
                     onClick={() => handleScroll('right')}
-                    className="w-10 h-10 rounded-full border-2 border-[#1f4e79] flex items-center justify-center text-[#1f4e79] hover:bg-[#1f4e79] hover:text-white transition"
-                    aria-label="Scroll timeline right"
+                    className="w-14 h-14 rounded-full border-2 border-[#1f4e79] flex items-center justify-center text-[#1f4e79] hover:bg-[#1f4e79] hover:text-white transition-all duration-200 focus:outline-4 focus:outline-[#D4AF37] focus:outline-offset-2"
+                    aria-label="Scroll timeline right to see later events"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleScroll('right');
+                      }
+                    }}
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <ChevronRight className="w-8 h-8" />
                   </button>
                 </div>
 
@@ -305,19 +317,23 @@ export const StewardshipHallPage: React.FC = () => {
               <div className="space-y-6">
                 {cmsContent.pledgeItems.map((item: string, index: number) => (
                   <Card key={index} className="bg-white p-6 border-l-4 border-[#1f4e79] hover:shadow-lg transition">
-                    <div className="flex items-start">
+                    <label 
+                      className="flex items-start cursor-pointer" 
+                      htmlFor={`pledge-${index}`}
+                    >
                       <Checkbox 
-                        className="mt-1 mr-4"
+                        id={`pledge-${index}`}
+                        className="mt-1 mr-4 w-5 h-5"
                         checked={checkedItems[index]}
                         onCheckedChange={(checked) => {
                           const newCheckedItems = [...checkedItems];
                           newCheckedItems[index] = checked as boolean;
                           setCheckedItems(newCheckedItems);
                         }}
-                        aria-label={`Agree to pledge item ${index + 1}`}
+                        aria-describedby={`pledge-text-${index}`}
                       />
-                      <p className="text-gray-700 text-lg">{item}</p>
-                    </div>
+                      <p id={`pledge-text-${index}`} className="text-gray-700 text-lg flex-1">{item}</p>
+                    </label>
                   </Card>
                 ))}
               </div>
@@ -340,9 +356,9 @@ export const StewardshipHallPage: React.FC = () => {
       <div className="py-16 bg-[#1f4e79] text-white">
         <div className="container mx-auto px-6 text-center">
           <div className="relative max-w-4xl mx-auto">
-            <h2 className="text-4xl mb-6 font-serif">Ready to experience our culture in action?</h2>
+            <h2 className="text-4xl mb-6 font-serif">Ready to start your learning journey?</h2>
             <p className="text-xl text-gray-200 mb-10 max-w-3xl mx-auto">
-              {cmsContent.callToAction}
+              The SKILLS Academy awaits where you'll discover how our heritage values guide your AI development. From Swiss Guards to modern innovators, you're continuing our tradition of lifelong learning.
             </p>
             <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
               <Link to="/building/learning_lodge">

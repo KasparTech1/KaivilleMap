@@ -6,6 +6,7 @@ import { RoadConnector } from '../components/RoadConnector';
 import { EditButton } from '../components/cms/EditButton';
 import { DayNightToggle } from '../components/DayNightToggle';
 import { KNNTowerIcon } from '../components/KNNTowerIcon';
+import { MapLegend } from '../components/MapLegend';
 import { getBuildings } from '../api/buildings';
 import { useToast } from '../hooks/useToast';
 import { useCMSContent } from '../hooks/useCMSContent';
@@ -522,6 +523,9 @@ export const HomePage: React.FC = () => {
       
       {/* Floating Edit Button */}
       <EditButton editPath="/admin/home" label="Edit Home" />
+      
+      {/* Map Legend */}
+      <MapLegend />
     </div>
   );
 };

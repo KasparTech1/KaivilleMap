@@ -23,11 +23,40 @@ export const TradingPostPage: React.FC = () => {
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [email, setEmail] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSkillFilter, setSelectedSkillFilter] = useState<string>('');
+  const [showLegend, setShowLegend] = useState(false);
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
+
+  // Handle keyboard events for modal
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showComingSoonModal) {
+        setShowComingSoonModal(false);
+        setSelectedTool(null);
+        setEmail('');
+      }
+    };
+
+    if (showComingSoonModal) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Focus first input when modal opens
+      setTimeout(() => {
+        const emailInput = document.querySelector('input[type="email"]');
+        if (emailInput) {
+          (emailInput as HTMLElement).focus();
+        }
+      }, 100);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showComingSoonModal]);
 
   const tools: Tool[] = [
     {
@@ -110,8 +139,26 @@ export const TradingPostPage: React.FC = () => {
     }
   ];
 
-  const featuredTool = tools.find(tool => tool.featured);
-  const regularTools = tools.filter(tool => !tool.featured);
+  // Skill abbreviations legend
+  const skillLegend = {
+    'S': { name: 'Safety', description: 'Safety-focused tools and protocols' },
+    'K': { name: 'Kaizen', description: 'Continuous improvement and optimization' },
+    'L': { name: 'Leadership', description: 'Team management and guidance' },
+    'I': { name: 'Innovation', description: 'Creative solutions and new ideas' },
+    'D': { name: 'Data', description: 'Analytics and insights' }
+  };
+
+  // Filter tools based on search and skill filter
+  const filteredTools = tools.filter(tool => {
+    const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         tool.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSkill = selectedSkillFilter === '' || tool.skills.includes(selectedSkillFilter);
+    return matchesSearch && matchesSkill;
+  });
+
+  const featuredTool = filteredTools.find(tool => tool.featured);
+  const availableTools = filteredTools.filter(tool => !tool.featured && !tool.comingSoon);
+  const comingSoonTools = filteredTools.filter(tool => tool.comingSoon);
 
   const handleToolClick = (tool: Tool) => {
     if (tool.featured && tool.chatGptLink) {
@@ -192,7 +239,7 @@ export const TradingPostPage: React.FC = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center mb-4">
-              <span className="text-6xl mr-4">🏪</span>
+              <span className="text-6xl mr-4" role="img" aria-label="Trading post building">🏪</span>
               <div>
                 <h1 className="text-5xl font-serif font-bold mb-2">THE TRADING POST</h1>
                 <p className="text-xl italic text-[#D4AF37]">"Outfitting Innovation Since 1898"</p>
@@ -200,25 +247,74 @@ export const TradingPostPage: React.FC = () => {
             </div>
           </div>
           
-          <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <Input 
-                type="text"
-                placeholder="Search your challenge..."
-                className="pl-10 py-3 text-lg bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-white/70"
-              />
+          {/* Search and Filter Controls */}
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row gap-4 mb-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input 
+                  type="text"
+                  placeholder="Search tools..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 py-3 text-lg bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-white/70"
+                  aria-label="Search for AI tools"
+                />
+              </div>
+              <div className="flex gap-2">
+                <select
+                  value={selectedSkillFilter}
+                  onChange={(e) => setSelectedSkillFilter(e.target.value)}
+                  className="bg-white/20 text-white border border-white/20 rounded-md px-4 py-3 backdrop-blur-sm"
+                  aria-label="Filter by skill category"
+                >
+                  <option value="" className="text-gray-800">All Skills</option>
+                  {Object.entries(skillLegend).map(([key, skill]) => (
+                    <option key={key} value={key} className="text-gray-800">{key} - {skill.name}</option>
+                  ))}
+                </select>
+                <Button 
+                  onClick={() => setShowLegend(!showLegend)}
+                  className="bg-white/20 text-white border-white hover:bg-white/30 px-4"
+                  aria-label="Toggle skill legend"
+                >
+                  <Tag className="w-4 h-4 mr-2" />
+                  Legend
+                </Button>
+              </div>
             </div>
-            <Button className="bg-white/20 text-white border-white hover:bg-white/30 px-6">
-              <Filter className="w-4 h-4 mr-2" />
-              Filter
-              <ChevronDown className="w-4 h-4 ml-2" />
-            </Button>
-            <Button className="bg-white/20 text-white border-white hover:bg-white/30 px-6">
-              Sort: Popular
-              <ChevronDown className="w-4 h-4 ml-2" />
-            </Button>
+            
+            {/* Skill Legend */}
+            {showLegend && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mb-4">
+                <h3 className="text-lg font-semibold mb-3 text-white">Skill Categories</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {Object.entries(skillLegend).map(([key, skill]) => (
+                    <div key={key} className="flex items-start space-x-2">
+                      <span className="bg-[#D4AF37] text-[#1f4e79] font-bold px-2 py-1 rounded text-sm">{key}</span>
+                      <div>
+                        <div className="text-white font-medium">{skill.name}</div>
+                        <div className="text-white/80 text-sm">{skill.description}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+        </div>
+      </div>
+
+      {/* Search Results Summary */}
+      <div className="py-4 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <p className="text-gray-600 text-center">
+            {searchTerm || selectedSkillFilter ? (
+              <span>Found {filteredTools.length} tool{filteredTools.length !== 1 ? 's' : ''} {searchTerm && `matching "${searchTerm}"`} {selectedSkillFilter && `in ${skillLegend[selectedSkillFilter]?.name} category`}</span>
+            ) : (
+              <span>Showing all {tools.length} available tools</span>
+            )}
+          </p>
         </div>
       </div>
 
@@ -430,14 +526,20 @@ export const TradingPostPage: React.FC = () => {
 
       {/* Coming Soon Modal */}
       {showComingSoonModal && selectedTool && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="coming-soon-title"
+          onClick={(e) => e.target === e.currentTarget && setShowComingSoonModal(false)}
+        >
           <div className="bg-white rounded-lg max-w-md w-full">
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center">
                   <span className="text-3xl mr-3">{selectedTool.icon}</span>
                   <div>
-                    <h3 className="text-xl font-bold text-[#1f4e79]">{selectedTool.name}</h3>
+                    <h3 id="coming-soon-title" className="text-xl font-bold text-[#1f4e79]">{selectedTool.name}</h3>
                     <p className="text-sm text-gray-600">Coming Soon!</p>
                   </div>
                 </div>
@@ -445,6 +547,7 @@ export const TradingPostPage: React.FC = () => {
                   onClick={() => setShowComingSoonModal(false)}
                   variant="ghost" 
                   size="sm"
+                  aria-label="Close notification modal"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -465,6 +568,8 @@ export const TradingPostPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="mb-4"
+                  aria-label="Email address for notifications"
+                  required
                 />
                 
                 <div className="flex gap-3">
