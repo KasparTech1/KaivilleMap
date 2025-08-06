@@ -67,6 +67,11 @@ export const SkillsAcademyPage: React.FC = () => {
                       (5) Kaizen Tower
                     </Link>
                   </li>
+                  <li>
+                    <Link to="/city-hall" className="text-[#1f4e79] hover:text-[#D4AF37] transition">
+                      City Hall
+                    </Link>
+                  </li>
                 </ul>
               </nav>
             </div>
@@ -353,6 +358,11 @@ export const SkillsAcademyPage: React.FC = () => {
                 <li>
                   <Link to="/building/kasp_tower" className="text-gray-400 hover:text-white transition">
                     Kaizen Tower
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/city-hall" className="text-gray-400 hover:text-white transition">
+                    City Hall
                   </Link>
                 </li>
               </ul>
