@@ -17,7 +17,7 @@ interface PathPoint {
 export const AnimatedOrb: React.FC<AnimatedOrbProps> = ({
   pathData,
   duration = 3000,
-  size = 24,
+  size = 48,
   color = '#3B82F6',
   onComplete
 }) => {
