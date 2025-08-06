@@ -25,22 +25,22 @@ export const getBuildings = () => {
             connections: ["community-center"]
           },
           {
-            id: "community-center",
-            title: "JOB Junction",
-            row: 1,
-            column: 2,
-            span: 1,
-            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
-            connections: ["heritage_center", "learning_lodge", "celebration_station"]
-          },
-          {
             id: "learning_lodge",
             title: "Skills University",
             row: 1,
-            column: 3,
+            column: 2,
             span: 1,
             illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/skills_academy_02.svg?t=${Date.now()}`,
-            connections: ["community-center", "celebration_station"]
+            connections: ["heritage_center", "community-center", "celebration_station"]
+          },
+          {
+            id: "community-center",
+            title: "JOB Junction",
+            row: 1,
+            column: 3,
+            span: 1,
+            illustration: `https://yvbtqcmiuymyvtvaqgcf.supabase.co/storage/v1/object/public/kaiville-assets/maps/svg/full/join-junction-070325a.svg?t=${Date.now()}`,
+            connections: ["learning_lodge", "celebration_station"]
           },
           {
             id: "celebration_station",
