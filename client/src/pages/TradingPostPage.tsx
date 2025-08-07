@@ -61,7 +61,7 @@ export const TradingPostPage: React.FC = () => {
       users: 23,
       successStories: 8,
       featured: true,
-      chatGptLink: 'https://chatgpt.com'
+      chatGptLink: 'https://kasparcompanies.sharepoint.com/:w:/r/sites/KAI-RAG-Data-Hub/_layouts/15/Doc.aspx?sourcedoc=%7B0897171F-F810-4DA4-BE31-1D82608DBBF8%7D&file=History%20of%20Kaspar%20Companies%20-%201898%20thru%202000s.docx&action=default&mobileredirect=true'
     },
     {
       id: 'safety-scout',
@@ -257,7 +257,7 @@ export const TradingPostPage: React.FC = () => {
                       </div>
                       
                       <div className="flex gap-4">
-                        {featuredTool.chatGptLink && featuredTool.chatGptLink !== 'https://chatgpt.com' ? (
+                        {featuredTool.chatGptLink && featuredTool.chatGptLink.startsWith('https://kasparcompanies.sharepoint.com') ? (
                           <Button 
                             onClick={() => window.open(featuredTool.chatGptLink, '_blank')}
                             className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90 px-8 py-3"
