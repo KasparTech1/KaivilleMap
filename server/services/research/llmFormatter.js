@@ -136,9 +136,14 @@ async function formatWithLLM({ rawText, hints = {} }) {
  * @private
  */
 function buildFormattingPrompt(rawText, hints) {
-  const prompt = `You are a research formatting assistant for the Kaiville Research Center. Your task is to convert research submissions into properly formatted YAML frontmatter + Markdown.
+  const prompt = `You are a research formatting assistant for the Kaiville Research Center. Your task is to extract metadata and format research submissions while preserving ALL original text content.
 
-CRITICAL: Your response MUST start with exactly three dashes on a line (---), followed by YAML frontmatter, then exactly three dashes on a line (---), then the markdown body.
+CRITICAL REQUIREMENTS:
+1. Your response MUST start with exactly three dashes on a line (---)
+2. Extract metadata for YAML frontmatter
+3. PRESERVE THE ENTIRE ORIGINAL TEXT in the body section
+4. Only make minimal formatting improvements (fix obvious typos, improve paragraph breaks)
+5. DO NOT summarize, shorten, or remove any content from the body
 
 Example of REQUIRED output format:
 ---
@@ -147,40 +152,45 @@ authors: ["Author Name 1", "Author Name 2"]
 year: 2025
 publisher: "Organization Name"
 source_url: "https://example.com"
-source_type: "research_paper"
+source_type: "report"
 region: "Texas"
 domains: ["welding", "manufacturing"]
 topics: ["automation", "quality control"]
 keywords: ["keyword1", "keyword2"]
-summary: "> A concise one-paragraph summary of the research"
+summary: "> A concise one-paragraph summary you generate"
 key_points: ["Key finding 1", "Key finding 2", "Key finding 3"]
 ---
 
-# Main Title Here
-
-Body content in clean Markdown format...
+[THE COMPLETE ORIGINAL TEXT WITH MINIMAL FORMATTING IMPROVEMENTS]
 
 INSTRUCTIONS:
 1. ALWAYS start your response with --- on its own line
-2. Extract all available metadata from the content
+2. Extract metadata from the content for the frontmatter
 3. For missing fields, use null (not empty strings)
 4. Valid source_types and their meanings:
 ${SOURCE_TYPES.map(type => `   - "${type}": ${SOURCE_TYPE_EXAMPLES[type] || type}`).join('\n')}
 5. Valid domains (use only these): ${VALID_DOMAINS.join(', ')}
 6. Extract specific technical topics for the topics field
-7. Generate a summary starting with "> " if not provided
-8. Extract 2-5 key points from the content
-9. Clean and format the body as proper Markdown
-10. Preserve all important information
+7. GENERATE a concise summary (1 paragraph) starting with "> "
+8. EXTRACT 3-7 key points from the content
+9. In the body section: INCLUDE ALL ORIGINAL TEXT
+   - Fix obvious typos and formatting issues
+   - Improve paragraph breaks for readability
+   - Convert to clean Markdown formatting
+   - DO NOT remove, summarize, or shorten any content
+   - Preserve ALL sections, paragraphs, lists, references, etc.
 
-IMPORTANT: For source_type, choose the most appropriate from the list above. If unsure, use "other".
+IMPORTANT: 
+- For source_type, choose the most appropriate from the list above. If unsure, use "other"
+- The body must contain the COMPLETE original text, just cleaned up for display
+- If the original has references, citations, appendices - KEEP THEM ALL
 
 CONTENT TO FORMAT:
 ${rawText}
 
 ${hints.domain ? `HINT: This content is likely about ${hints.domain}` : ''}
 
-Remember: Start your response with --- on its own line!`;
+Remember: Start with ---, then frontmatter, then ---, then THE COMPLETE ORIGINAL TEXT!`;
   
   return prompt;
 }
@@ -264,18 +274,36 @@ function calculateConfidence(formatted, original) {
 }
 
 /**
+ * Clean text while preserving all content
+ * @param {string} text
+ * @returns {string} Cleaned text
+ */
+function cleanTextMinimal(text) {
+  // Fix common formatting issues while preserving all content
+  return text
+    .replace(/\r\n/g, '\n') // Normalize line endings
+    .replace(/\t/g, '    ') // Convert tabs to spaces
+    .replace(/\n{3,}/g, '\n\n') // Reduce multiple blank lines to double
+    .replace(/^\s+$/gm, '') // Remove whitespace-only lines
+    .trim();
+}
+
+/**
  * Fallback formatter using heuristics
  * @param {string} rawText
  * @returns {string} Best-effort formatted text
  */
 function heuristicFormat(rawText) {
   try {
-    const lines = rawText.split('\n');
+    const cleanedText = cleanTextMinimal(rawText);
+    const lines = cleanedText.split('\n');
     const frontmatter = {
       title: null,
       year: null,
       domains: [],
-      topics: []
+      topics: [],
+      summary: null,
+      key_points: []
     };
     
     // Try to extract title from first non-empty line
@@ -305,6 +333,14 @@ function heuristicFormat(rawText) {
       }
     }
     
+    // Generate a simple summary from first paragraph
+    const firstParagraph = lines
+      .slice(1) // Skip title
+      .find(line => line.trim().length > 50);
+    if (firstParagraph) {
+      frontmatter.summary = `> ${firstParagraph.trim().substring(0, 200)}...`;
+    }
+    
     // Build YAML frontmatter
     let yaml = '---\n';
     if (frontmatter.title) yaml += `title: "${frontmatter.title}"\n`;
@@ -314,10 +350,12 @@ function heuristicFormat(rawText) {
     }
     yaml += `topics: []\n`;
     yaml += `source_type: "other"\n`;
+    if (frontmatter.summary) yaml += `summary: "${frontmatter.summary}"\n`;
+    yaml += `key_points: []\n`;
     yaml += '---\n\n';
     
-    // Add the body
-    yaml += rawText;
+    // Add the COMPLETE cleaned body
+    yaml += cleanedText;
     
     return yaml;
   } catch (error) {
