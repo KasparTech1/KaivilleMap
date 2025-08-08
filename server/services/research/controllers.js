@@ -2,6 +2,8 @@ const { normalizeAndValidate } = require('./normalizer');
 const { createEmbeddingsForArticle } = require('./embeddings');
 const { supabase } = require('./supabaseClient');
 
+const { formatWithLLM, isLLMAvailable } = require('./llmFormatter');
+
 // Helpers
 function badRequest(res, message, code = 'bad_request') {
   return res.status(400).json({ error: { code, message } });
@@ -24,8 +26,36 @@ async function pasteHandler(req, res) {
       .single();
     if (upErr) return serverError(res, upErr.message);
 
-    // Normalize & validate
-    const norm = await normalizeAndValidate({ rawText: content, metadata });
+    // LLM formatting step
+    let processedContent = content;
+    let llmMetadata = {};
+    
+    if (isLLMAvailable()) {
+      try {
+        const llmResult = await formatWithLLM({ 
+          rawText: content, 
+          hints: metadata 
+        });
+        processedContent = llmResult.formatted;
+        llmMetadata = {
+          llmUsed: true,
+          llmModel: llmResult.llmModel,
+          confidence: llmResult.confidence
+        };
+        console.log('LLM formatting successful:', { 
+          model: llmResult.llmModel, 
+          confidence: llmResult.confidence?.overall 
+        });
+      } catch (error) {
+        console.warn('LLM formatting failed, using original:', error.message);
+      }
+    }
+
+    // Pass (possibly LLM-formatted) content to normalizer
+    const norm = await normalizeAndValidate({ 
+      rawText: processedContent, 
+      metadata: { ...metadata, ...llmMetadata } 
+    });
     if (!norm.ok) return badRequest(res, norm.message);
 
     // Dedup by content_hash

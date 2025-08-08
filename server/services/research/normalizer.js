@@ -1,6 +1,27 @@
 const crypto = require('crypto');
 const { renderMarkdownToHtml } = require('./markdown');
 
+/**
+ * ARCHITECTURE PLANNING - LLM ENHANCEMENT
+ * ======================================
+ * 
+ * CURRENT STATE:
+ * - Strict YAML frontmatter parser
+ * - Rejects malformed submissions
+ * - No intelligence in parsing
+ * 
+ * FUTURE STATE:
+ * - This remains as validation layer
+ * - LLM formatter preprocesses content
+ * - This validates LLM output
+ * 
+ * TODO:
+ * [ ] Add metadata for LLM confidence scores
+ * [ ] Track which fields were LLM-generated
+ * [ ] Add fallback for partial parsing
+ * [ ] Log parsing success metrics
+ */
+
 function slugify(input) {
   return input.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
@@ -14,6 +35,20 @@ function sha256(text) {
 // Minimal normalizer: expects Kaiville Research Markdown with YAML frontmatter
 // For MVP: parse frontmatter and render HTML with remark/rehype; LLM cleanup later
 async function normalizeAndValidate({ rawText, metadata }) {
+  /**
+   * TODO: ENHANCED VALIDATION
+   * ========================
+   * 
+   * If metadata.llmUsed === true:
+   * - Trust the formatting more
+   * - Log confidence scores
+   * - Track LLM performance
+   * 
+   * Future enhancements:
+   * - Partial validation (accept incomplete but valid data)
+   * - Suggest corrections instead of rejecting
+   * - Return validation score instead of binary ok/fail
+   */
   // naive YAML frontmatter parse
   const fmMatch = rawText.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!fmMatch) return { ok: false, message: 'Missing YAML frontmatter (--- ... ---)' };
