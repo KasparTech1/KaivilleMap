@@ -11,6 +11,7 @@ export const ResearchCenterPage: React.FC = () => {
   const [pasteText, setPasteText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState<string | null>(null);
+  const [processingStatus, setProcessingStatus] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -31,7 +32,15 @@ export const ResearchCenterPage: React.FC = () => {
   async function submitPaste() {
     setSubmitting(true);
     setSubmitMsg(null);
+    setProcessingStatus('Processing your submission...');
+    
     try {
+      // Check if content might need formatting
+      const hasYamlFrontmatter = pasteText.trim().startsWith('---');
+      if (!hasYamlFrontmatter) {
+        setProcessingStatus('Analyzing content and extracting metadata...');
+      }
+      
       const res = await fetch('/api/research/paste', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,8 +50,10 @@ export const ResearchCenterPage: React.FC = () => {
       if (!res.ok) throw new Error(json?.error?.message || `HTTP ${res.status}`);
       setSubmitMsg('Submitted for review. It will appear after moderation (status: published).');
       setPasteText('');
+      setProcessingStatus(null);
     } catch (e: any) {
       setSubmitMsg(`Error: ${e.message}`);
+      setProcessingStatus(null);
     } finally {
       setSubmitting(false);
     }
@@ -90,11 +101,19 @@ export const ResearchCenterPage: React.FC = () => {
               value={pasteText}
               onChange={(e) => setPasteText(e.target.value)}
             />
-            <div className="mt-4 flex justify-end gap-2">
-              <Button className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setShowUpload(false)}>Cancel</Button>
-              <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90" onClick={submitPaste} disabled={submitting || !pasteText.trim()}>
-                {submitting ? 'Submitting…' : 'Submit'}
-              </Button>
+            <div className="mt-4">
+              {processingStatus && (
+                <div className="mb-3 flex items-center gap-2 text-sm text-gray-600">
+                  <div className="animate-spin h-4 w-4 border-2 border-gray-300 border-t-[#1f4e79] rounded-full"></div>
+                  <span>{processingStatus}</span>
+                </div>
+              )}
+              <div className="flex justify-end gap-2">
+                <Button className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setShowUpload(false)}>Cancel</Button>
+                <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90" onClick={submitPaste} disabled={submitting || !pasteText.trim()}>
+                  {submitting ? 'Submitting…' : 'Submit'}
+                </Button>
+              </div>
             </div>
             {submitMsg && (
               <div className="mt-3 text-sm text-[#1f4e79]">{submitMsg}</div>

@@ -125,41 +125,48 @@ async function formatWithLLM({ rawText, hints = {} }) {
  * @private
  */
 function buildFormattingPrompt(rawText, hints) {
-  // TODO: Implement prompt building
-  const prompt = `
-Convert the following research submission into Kaiville Research Markdown format with YAML frontmatter.
+  const prompt = `You are a research formatting assistant for the Kaiville Research Center. Your task is to convert research submissions into properly formatted YAML frontmatter + Markdown.
 
-REQUIRED FORMAT:
+CRITICAL: Your response MUST start with exactly three dashes on a line (---), followed by YAML frontmatter, then exactly three dashes on a line (---), then the markdown body.
+
+Example of REQUIRED output format:
 ---
-title: "Exact title from the content"
-authors: ["Name 1", "Name 2"]
-year: YYYY
-publisher: "Organization name"
-source_url: "https://..."
-source_type: "one of: ${SOURCE_TYPES.join(', ')}"
-region: "State or Country"
-domains: ["choose from: ${VALID_DOMAINS.join(', ')}"]
-topics: ["specific technical topics mentioned"]
-keywords: ["relevant search terms"]
-summary: "> One paragraph summary"
-key_points: ["Key finding 1", "Key finding 2"]
+title: "The exact title extracted from content"
+authors: ["Author Name 1", "Author Name 2"]
+year: 2025
+publisher: "Organization Name"
+source_url: "https://example.com"
+source_type: "research_paper"
+region: "Texas"
+domains: ["welding", "manufacturing"]
+topics: ["automation", "quality control"]
+keywords: ["keyword1", "keyword2"]
+summary: "> A concise one-paragraph summary of the research"
+key_points: ["Key finding 1", "Key finding 2", "Key finding 3"]
 ---
 
-# Markdown Body
-Clean, well-formatted content...
+# Main Title Here
+
+Body content in clean Markdown format...
 
 INSTRUCTIONS:
-1. Extract metadata from the content intelligently
-2. Leave fields blank if uncertain (use null)
-3. Ensure valid YAML syntax
-4. Clean up the body text to proper Markdown
-5. Preserve all important information
+1. ALWAYS start your response with --- on its own line
+2. Extract all available metadata from the content
+3. For missing fields, use null (not empty strings)
+4. Valid source_types: ${SOURCE_TYPES.join(', ')}
+5. Valid domains (use only these): ${VALID_DOMAINS.join(', ')}
+6. Extract specific technical topics for the topics field
+7. Generate a summary starting with "> " if not provided
+8. Extract 2-5 key points from the content
+9. Clean and format the body as proper Markdown
+10. Preserve all important information
 
 CONTENT TO FORMAT:
 ${rawText}
 
-${hints.domain ? `HINT: This is likely about ${hints.domain}` : ''}
-`;
+${hints.domain ? `HINT: This content is likely about ${hints.domain}` : ''}
+
+Remember: Start your response with --- on its own line!`;
   
   return prompt;
 }
@@ -170,15 +177,33 @@ ${hints.domain ? `HINT: This is likely about ${hints.domain}` : ''}
  */
 function parseLLMResponse(responseText) {
   try {
-    // LLM should return properly formatted YAML + Markdown
-    // Basic validation that it has frontmatter
-    const fmMatch = responseText.match(/^---\n[\s\S]*?\n---\n[\s\S]*$/);
-    if (!fmMatch) {
-      console.warn('LLM response missing YAML frontmatter');
-      return responseText; // Return as-is and let normalizer handle
+    // Clean up response - sometimes LLM adds extra text before/after
+    let cleaned = responseText.trim();
+    
+    // If response doesn't start with ---, try to find it
+    if (!cleaned.startsWith('---')) {
+      const yamlStart = cleaned.indexOf('---');
+      if (yamlStart > 0) {
+        console.warn('LLM response had text before YAML, cleaning...');
+        cleaned = cleaned.substring(yamlStart);
+      }
     }
     
-    return responseText.trim();
+    // Validate it has proper frontmatter structure
+    const fmMatch = cleaned.match(/^---\n[\s\S]*?\n---\n[\s\S]*$/);
+    if (!fmMatch) {
+      console.error('LLM response missing valid YAML frontmatter structure');
+      // Last resort: if we have ---, try to ensure proper format
+      if (cleaned.includes('---')) {
+        const parts = cleaned.split('---');
+        if (parts.length >= 3) {
+          // Reconstruct with proper format
+          cleaned = `---\n${parts[1].trim()}\n---\n${parts.slice(2).join('---').trim()}`;
+        }
+      }
+    }
+    
+    return cleaned;
   } catch (error) {
     console.error('Error parsing LLM response:', error);
     return responseText;

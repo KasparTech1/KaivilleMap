@@ -32,6 +32,7 @@ async function pasteHandler(req, res) {
     
     if (isLLMAvailable()) {
       try {
+        console.log('Starting LLM formatting for research submission...');
         const llmResult = await formatWithLLM({ 
           rawText: content, 
           hints: metadata 
@@ -44,11 +45,17 @@ async function pasteHandler(req, res) {
         };
         console.log('LLM formatting successful:', { 
           model: llmResult.llmModel, 
-          confidence: llmResult.confidence?.overall 
+          confidence: llmResult.confidence?.overall,
+          hadValidYAML: processedContent.trim().startsWith('---')
         });
       } catch (error) {
-        console.warn('LLM formatting failed, using original:', error.message);
+        console.error('LLM formatting failed, using fallback:', error);
+        // Try heuristic formatting as fallback
+        const { heuristicFormat } = require('./llmFormatter');
+        processedContent = heuristicFormat(content);
       }
+    } else {
+      console.log('LLM not available, using direct parsing');
     }
 
     // Pass (possibly LLM-formatted) content to normalizer
