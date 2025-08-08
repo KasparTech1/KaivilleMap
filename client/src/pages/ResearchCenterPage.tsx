@@ -7,6 +7,10 @@ export const ResearchCenterPage: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showUpload, setShowUpload] = useState(false);
+  const [pasteText, setPasteText] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitMsg, setSubmitMsg] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -24,6 +28,26 @@ export const ResearchCenterPage: React.FC = () => {
     load();
   }, []);
 
+  async function submitPaste() {
+    setSubmitting(true);
+    setSubmitMsg(null);
+    try {
+      const res = await fetch('/api/research/paste', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: pasteText })
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error?.message || `HTTP ${res.status}`);
+      setSubmitMsg('Submitted for review. It will appear after moderation (status: published).');
+      setPasteText('');
+    } catch (e: any) {
+      setSubmitMsg(`Error: ${e.message}`);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       <header className="bg-white shadow-md sticky top-0 z-50">
@@ -32,6 +56,9 @@ export const ResearchCenterPage: React.FC = () => {
             <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
           </Link>
           <div className="flex items-center space-x-4">
+            <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90" onClick={() => setShowUpload(true)}>
+              Submit Research
+            </Button>
             <Link to="/building/learning_lodge">
               <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90">Back to SKILLS Academy</Button>
             </Link>
@@ -45,6 +72,36 @@ export const ResearchCenterPage: React.FC = () => {
           <p className="text-white/80">Recent research across welding, CNC, leather, firearms, and more.</p>
         </div>
       </div>
+
+      {/* Upload Modal */}
+      {showUpload && (
+        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-[#1f4e79]">Submit Kaiville Research Markdown</h3>
+              <button className="text-gray-500 hover:text-gray-700" onClick={() => setShowUpload(false)}>✕</button>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">
+              Paste content with YAML frontmatter (title, year, domains/topics, etc.). All submissions go to moderation.
+            </p>
+            <textarea
+              className="w-full h-64 border rounded p-3 font-mono text-sm"
+              placeholder={`---\ntitle: "Exact title"\nauthors: ["Name"]\nyear: 2025\npublisher: "Org"\nsource_url: "https://..."\nsource_type: "report"\nregion: "Texas"\ndomains: ["welding"]\ntopics: ["computer vision","quality control"]\nkeywords: ["weld"]\nsummary: "> short abstract"\nkey_points: ["point a","point b"]\n---\n# Body\nClean Markdown here...`}
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <Button className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setShowUpload(false)}>Cancel</Button>
+              <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90" onClick={submitPaste} disabled={submitting || !pasteText.trim()}>
+                {submitting ? 'Submitting…' : 'Submit'}
+              </Button>
+            </div>
+            {submitMsg && (
+              <div className="mt-3 text-sm text-[#1f4e79]">{submitMsg}</div>
+            )}
+          </div>
+        </div>
+      )}
 
       <main className="container mx-auto px-6 py-10">
         {loading && (
