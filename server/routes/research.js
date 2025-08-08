@@ -10,7 +10,8 @@ const {
   getArticleBySlugHandler,
   getTagsHandler,
   relatedArticlesHandler,
-  reprocessHandler
+  reprocessHandler,
+  deleteArticleHandler
 } = require('../services/research/controllers');
 
 // Routes
@@ -24,6 +25,7 @@ router.get('/articles/:id/related', relatedArticlesHandler);
 router.get('/tags', getTagsHandler);
 
 router.post('/articles/:id/reprocess', reprocessHandler);
+router.delete('/articles/:id', deleteArticleHandler);
 
 module.exports = router;
 

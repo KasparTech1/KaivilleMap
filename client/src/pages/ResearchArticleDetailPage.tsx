@@ -3,7 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { ChevronLeft, ExternalLink, Calendar, Building2, MapPin, Users } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../components/ui/alert-dialog';
+import { ChevronLeft, ExternalLink, Calendar, Building2, MapPin, Users, Trash2 } from 'lucide-react';
 
 interface ResearchArticle {
   id: string;
@@ -32,6 +33,7 @@ export const ResearchArticleDetailPage: React.FC = () => {
   const [article, setArticle] = useState<ResearchArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     async function loadArticle() {
@@ -56,6 +58,29 @@ export const ResearchArticleDetailPage: React.FC = () => {
     
     loadArticle();
   }, [slug]);
+
+  async function handleDelete() {
+    if (!article) return;
+    
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/research/articles/${article.id}`, {
+        method: 'DELETE'
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Failed to delete: ${res.status}`);
+      }
+      
+      // Navigate back to research list after successful deletion
+      navigate('/research');
+    } catch (e: any) {
+      console.error('Delete error:', e);
+      alert(`Failed to delete article: ${e.message}`);
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -99,13 +124,46 @@ export const ResearchArticleDetailPage: React.FC = () => {
               Kaiville
             </h1>
           </Link>
-          <Button 
-            onClick={() => navigate('/research')} 
-            className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90"
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Back to Research Center
-          </Button>
+          <div className="flex items-center gap-2">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  disabled={deleting}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Research Article?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete the research article
+                    "{article.title}" and all associated data.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={handleDelete}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    Delete Article
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <Button 
+              onClick={() => navigate('/research')} 
+              className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90"
+            >
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Back to Research Center
+            </Button>
+          </div>
         </div>
       </header>
 

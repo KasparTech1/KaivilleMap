@@ -145,7 +145,8 @@ async function listArticlesHandler(req, res) {
       year_end,
       sort = 'newest',
       page = 1,
-      page_size = 20
+      page_size = 20,
+      include_pending = false
     } = req.query;
 
     const pg = Math.max(parseInt(page, 10) || 1, 1);
@@ -155,8 +156,14 @@ async function listArticlesHandler(req, res) {
 
     let query = supabase
       .from('research_articles')
-      .select('id, slug, title, year, publisher, source_type, domains, topics, summary, key_points, published_at', { count: 'exact' })
-      .eq('status', 'published');
+      .select('id, slug, title, year, publisher, source_type, domains, topics, summary, key_points, published_at, status', { count: 'exact' });
+    
+    // Filter by status
+    if (include_pending === 'true' || include_pending === true) {
+      query = query.in('status', ['published', 'needs_review']);
+    } else {
+      query = query.eq('status', 'published');
+    }
 
     if (domains) {
       const arr = Array.isArray(domains) ? domains : String(domains).split(',').map(s=>s.trim()).filter(Boolean);
@@ -256,6 +263,38 @@ async function relatedArticlesHandler(req, res) { return badRequest(res, 'Not im
 // POST /api/research/articles/:id/reprocess - TODO
 async function reprocessHandler(req, res) { return badRequest(res, 'Not implemented yet', 'not_implemented'); }
 
+// DELETE /api/research/articles/:id
+async function deleteArticleHandler(req, res) {
+  try {
+    const { id } = req.params;
+    
+    if (!id || !/^[0-9a-f-]{36}$/i.test(id)) {
+      return badRequest(res, 'Invalid article ID');
+    }
+    
+    console.log(`Deleting research article: ${id}`);
+    
+    // Delete the article (cascades will handle related records)
+    const { error } = await supabase
+      .from('research_articles')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return res.status(404).json({ error: { code: 'not_found', message: 'Article not found' } });
+      }
+      return serverError(res, error.message);
+    }
+    
+    console.log(`Successfully deleted research article: ${id}`);
+    return res.json({ success: true, message: 'Article deleted successfully' });
+  } catch (e) {
+    console.error('Delete article error:', e);
+    return serverError(res, e.message);
+  }
+}
+
 module.exports = {
   pasteHandler,
   uploadHandler,
@@ -264,6 +303,7 @@ module.exports = {
   getArticleBySlugHandler,
   getTagsHandler,
   relatedArticlesHandler,
-  reprocessHandler
+  reprocessHandler,
+  deleteArticleHandler
 };
 

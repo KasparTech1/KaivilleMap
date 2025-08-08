@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
+import { Switch } from '../components/ui/switch';
+import { Label } from '../components/ui/label';
 
 export const ResearchCenterPage: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -12,11 +14,15 @@ export const ResearchCenterPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState<string | null>(null);
   const [processingStatus, setProcessingStatus] = useState<string | null>(null);
+  const [showPending, setShowPending] = useState(false);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch('/api/research/articles?page=1&page_size=12&sort=newest');
+        const url = showPending 
+          ? '/api/research/articles?page=1&page_size=50&sort=newest&include_pending=true'
+          : '/api/research/articles?page=1&page_size=12&sort=newest';
+        const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         setItems(json.items || []);
@@ -27,7 +33,7 @@ export const ResearchCenterPage: React.FC = () => {
       }
     }
     load();
-  }, []);
+  }, [showPending]);
 
   async function submitPaste() {
     setSubmitting(true);
@@ -123,6 +129,25 @@ export const ResearchCenterPage: React.FC = () => {
       )}
 
       <main className="container mx-auto px-6 py-10">
+        {/* Admin Toggle */}
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Switch
+              id="show-pending"
+              checked={showPending}
+              onCheckedChange={setShowPending}
+            />
+            <Label htmlFor="show-pending" className="text-sm font-medium">
+              Show pending review articles
+            </Label>
+          </div>
+          {showPending && (
+            <p className="text-sm text-gray-600">
+              Showing {items.filter(a => a.status === 'needs_review').length} pending, {items.filter(a => a.status === 'published').length} published
+            </p>
+          )}
+        </div>
+
         {loading && (
           <div className="text-center text-[#1f4e79]">Loading research…</div>
         )}
@@ -134,8 +159,13 @@ export const ResearchCenterPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {items.map((a: any) => (
               <Link key={a.id} to={`/research/${a.slug}`} className="no-underline">
-                <Card className="bg-white p-6 hover:shadow-xl transition h-full flex flex-col">
-                  <div className="mb-2 text-sm text-gray-500">{a.publisher || '—'} • {a.year || ''}</div>
+                <Card className={`bg-white p-6 hover:shadow-xl transition h-full flex flex-col ${a.status === 'needs_review' ? 'border-2 border-orange-300' : ''}`}>
+                  <div className="mb-2 flex justify-between items-start">
+                    <span className="text-sm text-gray-500">{a.publisher || '—'} • {a.year || ''}</span>
+                    {a.status === 'needs_review' && (
+                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">Pending Review</span>
+                    )}
+                  </div>
                   <h3 className="text-xl text-[#1f4e79] font-bold mb-2">{a.title}</h3>
                   <div className="text-gray-700 flex-1">{a.summary || (a.key_points?.[0] || '')}</div>
                   <div className="mt-4 flex flex-wrap gap-2">
