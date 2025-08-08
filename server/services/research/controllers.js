@@ -77,6 +77,7 @@ async function pasteHandler(req, res) {
     // Insert article (with conditional auto-approval)
     const autoApprove = process.env.AUTO_APPROVE_RESEARCH === 'true';
     const articleStatus = autoApprove ? 'published' : 'needs_review';
+    const publishedAt = autoApprove ? new Date().toISOString() : null;
     console.log(`Inserting research article with status: ${articleStatus} (AUTO_APPROVE_RESEARCH=${process.env.AUTO_APPROVE_RESEARCH})`);
     
     const insertPayload = {
@@ -98,7 +99,8 @@ async function pasteHandler(req, res) {
       content_md: norm.content_md,
       content_html: norm.content_html,
       created_by: null,
-      content_hash: norm.content_hash
+      content_hash: norm.content_hash,
+      published_at: publishedAt
     };
 
     const { data: article, error: artErr } = await supabase
@@ -132,6 +134,7 @@ async function importUrlHandler(req, res) { return badRequest(res, 'Not implemen
 // GET /api/research/articles
 async function listArticlesHandler(req, res) {
   try {
+    console.log('Research list request:', { query: req.query, AUTO_APPROVE: process.env.AUTO_APPROVE_RESEARCH });
     const {
       q,
       domains,
@@ -189,6 +192,8 @@ async function listArticlesHandler(req, res) {
 
     const { data, error, count } = await query;
     if (error) return serverError(res, error.message);
+    
+    console.log(`Research articles found: ${data?.length || 0} of ${count} total (showing published only)`);
 
     // Facets (basic counts for now)
     const facets = { domains: [], topics: [], regions: [], years: [], source_types: [] };
