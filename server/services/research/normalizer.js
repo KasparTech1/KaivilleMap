@@ -131,7 +131,15 @@ async function normalizeAndValidate({ rawText, metadata }) {
   });
 
   const title = front.title;
-  const year = front.year || (front.published_at && new Date(front.published_at).getFullYear());
+  // Parse year carefully - handle "null" string and ensure integer
+  let year = front.year || (front.published_at && new Date(front.published_at).getFullYear());
+  if (year === 'null' || year === 'undefined' || year === '') {
+    year = null;
+  } else if (year && typeof year === 'string') {
+    year = parseInt(year, 10);
+    if (isNaN(year)) year = null;
+  }
+  
   const domains = front.domains || [];
   const topics = front.topics || [];
   if (!title) return { ok: false, message: 'title is required' };
