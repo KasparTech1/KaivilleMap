@@ -203,16 +203,23 @@ export const ResearchArticleDetailPage: React.FC = () => {
 
         {/* Main Content */}
         <Card className="bg-white p-8">
+          <h2 className="text-xl font-semibold text-[#1f4e79] mb-6">Full Research Content</h2>
           <div 
             className="prose prose-lg max-w-none
-              prose-headings:text-[#1f4e79] prose-headings:font-serif
-              prose-p:text-gray-700 prose-p:leading-relaxed
+              prose-headings:text-[#1f4e79] prose-headings:font-serif prose-headings:font-bold
+              prose-h1:text-3xl prose-h1:mt-8 prose-h1:mb-4
+              prose-h2:text-2xl prose-h2:mt-6 prose-h2:mb-3
+              prose-h3:text-xl prose-h3:mt-4 prose-h3:mb-2
+              prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-4
               prose-a:text-[#1f4e79] prose-a:no-underline hover:prose-a:text-[#D4AF37]
-              prose-strong:text-[#1f4e79]
-              prose-ul:list-disc prose-ol:list-decimal
-              prose-blockquote:border-l-4 prose-blockquote:border-[#D4AF37] prose-blockquote:pl-4 prose-blockquote:italic
+              prose-strong:text-[#1f4e79] prose-strong:font-bold
+              prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4
+              prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4
+              prose-li:mb-2
+              prose-blockquote:border-l-4 prose-blockquote:border-[#D4AF37] prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:my-4
               prose-code:bg-gray-100 prose-code:text-[#1f4e79] prose-code:px-1 prose-code:rounded
-              prose-pre:bg-gray-900 prose-pre:text-gray-100"
+              prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded prose-pre:overflow-x-auto
+              [&>*]:mb-4 [&>*:last-child]:mb-0"
             dangerouslySetInnerHTML={{ __html: article.content_html }}
           />
         </Card>

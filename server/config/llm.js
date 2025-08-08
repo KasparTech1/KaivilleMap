@@ -164,7 +164,7 @@ class UnifiedLLMClient {
             messages: [
               {
                 role: 'system',
-                content: 'You are a helpful assistant that formats research submissions for the Kaiville Research Center.'
+                content: 'You are a formatting assistant for the Kaiville Research Center. Your PRIMARY DIRECTIVE is to PRESERVE ALL ORIGINAL TEXT. Never summarize or remove content - only extract metadata and improve formatting.'
               },
               {
                 role: 'user',

@@ -107,6 +107,27 @@ async function formatWithLLM({ rawText, hints = {} }) {
     // Parse LLM response
     const formatted = parseLLMResponse(response.text);
     
+    // VALIDATION: Check if LLM preserved the text
+    const formattedBody = formatted.split('---')[2] || '';
+    const originalLength = rawText.length;
+    const formattedLength = formattedBody.length;
+    
+    // If the formatted text is significantly shorter (lost >20% of content), use fallback
+    if (formattedLength < originalLength * 0.8) {
+      console.warn(`LLM removed too much content! Original: ${originalLength} chars, Formatted: ${formattedLength} chars`);
+      console.warn('Falling back to heuristic formatting to preserve full text');
+      
+      // Use heuristic formatter which preserves everything
+      const heuristicResult = heuristicFormat(rawText);
+      return {
+        formatted: heuristicResult,
+        confidence: { overall: 0.5 },
+        llmUsed: false,
+        llmModel: 'heuristic-fallback',
+        error: 'LLM removed content'
+      };
+    }
+    
     // Calculate confidence scores
     const confidence = calculateConfidence(formatted, rawText);
     
@@ -136,61 +157,58 @@ async function formatWithLLM({ rawText, hints = {} }) {
  * @private
  */
 function buildFormattingPrompt(rawText, hints) {
-  const prompt = `You are a research formatting assistant for the Kaiville Research Center. Your task is to extract metadata and format research submissions while preserving ALL original text content.
+  const prompt = `You are a formatting assistant. Your ONLY job is to:
+1. Extract metadata for YAML frontmatter
+2. Pass through the ENTIRE original text with better markdown formatting
 
-CRITICAL REQUIREMENTS:
-1. Your response MUST start with exactly three dashes on a line (---)
-2. Extract metadata for YAML frontmatter
-3. PRESERVE THE ENTIRE ORIGINAL TEXT in the body section
-4. Only make minimal formatting improvements (fix obvious typos, improve paragraph breaks)
-5. DO NOT summarize, shorten, or remove any content from the body
+⚠️ CRITICAL: DO NOT REMOVE ANY TEXT! DO NOT SUMMARIZE! DO NOT SHORTEN!
 
-Example of REQUIRED output format:
+Your output MUST follow this EXACT structure:
+
 ---
-title: "The exact title extracted from content"
-authors: ["Author Name 1", "Author Name 2"]
-year: 2025
-publisher: "Organization Name"
-source_url: "https://example.com"
-source_type: "report"
-region: "Texas"
-domains: ["welding", "manufacturing"]
-topics: ["automation", "quality control"]
-keywords: ["keyword1", "keyword2"]
-summary: "> A concise one-paragraph summary you generate"
-key_points: ["Key finding 1", "Key finding 2", "Key finding 3"]
+title: "Extract the title"
+authors: ["Extract any authors"]
+year: Extract year or null
+publisher: "Extract publisher or null"
+source_url: "Extract URL or null"
+source_type: "Choose from: ${SOURCE_TYPES.join(', ')}"
+region: "Extract region or null"
+domains: ["Choose from: ${VALID_DOMAINS.join(', ')}"]
+topics: ["Extract specific technical topics"]
+keywords: ["Extract keywords"]
+summary: "> Write a NEW 1-paragraph summary (don't extract, GENERATE this)"
+key_points: ["Extract key point 1", "Extract key point 2", "Extract key point 3"]
 ---
 
-[THE COMPLETE ORIGINAL TEXT WITH MINIMAL FORMATTING IMPROVEMENTS]
+[PASTE THE ENTIRE ORIGINAL TEXT HERE WITH ONLY THESE CHANGES:
+- Fix line breaks between paragraphs (add blank lines)
+- Convert headers to proper markdown (# ## ###)
+- Fix list formatting (- or 1. 2. 3.)
+- NO OTHER CHANGES! DO NOT REMOVE ANY SENTENCES, PARAGRAPHS, SECTIONS, OR WORDS!]
 
-INSTRUCTIONS:
-1. ALWAYS start your response with --- on its own line
-2. Extract metadata from the content for the frontmatter
-3. For missing fields, use null (not empty strings)
-4. Valid source_types and their meanings:
-${SOURCE_TYPES.map(type => `   - "${type}": ${SOURCE_TYPE_EXAMPLES[type] || type}`).join('\n')}
-5. Valid domains (use only these): ${VALID_DOMAINS.join(', ')}
-6. Extract specific technical topics for the topics field
-7. GENERATE a concise summary (1 paragraph) starting with "> "
-8. EXTRACT 3-7 key points from the content
-9. In the body section: INCLUDE ALL ORIGINAL TEXT
-   - Fix obvious typos and formatting issues
-   - Improve paragraph breaks for readability
-   - Convert to clean Markdown formatting
-   - DO NOT remove, summarize, or shorten any content
-   - Preserve ALL sections, paragraphs, lists, references, etc.
+EXAMPLE - If the original text is:
+"Introduction This is a paper about welding. Methods We used TIG welding. Results It worked well. References [1] Smith 2023"
 
-IMPORTANT: 
-- For source_type, choose the most appropriate from the list above. If unsure, use "other"
-- The body must contain the COMPLETE original text, just cleaned up for display
-- If the original has references, citations, appendices - KEEP THEM ALL
+Your body should be:
+# Introduction
+This is a paper about welding.
 
-CONTENT TO FORMAT:
+## Methods
+We used TIG welding.
+
+## Results
+It worked well.
+
+## References
+[1] Smith 2023
+
+⚠️ FINAL WARNING: The body section must contain EVERY SINGLE WORD from the original text!
+Only improve formatting - DO NOT DELETE ANYTHING!
+
+ORIGINAL TEXT TO FORMAT:
 ${rawText}
 
-${hints.domain ? `HINT: This content is likely about ${hints.domain}` : ''}
-
-Remember: Start with ---, then frontmatter, then ---, then THE COMPLETE ORIGINAL TEXT!`;
+REMEMBER: Start with --- then frontmatter then --- then THE COMPLETE TEXT!`;
   
   return prompt;
 }
