@@ -22,6 +22,65 @@ const { renderMarkdownToHtml } = require('./markdown');
  * [ ] Log parsing success metrics
  */
 
+// Valid source types from database enum
+const VALID_SOURCE_TYPES = [
+  'peer-reviewed', 'whitepaper', 'standard', 'blog', 'news', 'report', 'other'
+];
+
+// Mapping of common variations to valid enum values
+const SOURCE_TYPE_MAPPINGS = {
+  'research_paper': 'peer-reviewed',
+  'research-paper': 'peer-reviewed',
+  'academic_paper': 'peer-reviewed',
+  'academic-paper': 'peer-reviewed',
+  'journal': 'peer-reviewed',
+  'white_paper': 'whitepaper',
+  'white-paper': 'whitepaper',
+  'industry_report': 'report',
+  'industry-report': 'report',
+  'technical_report': 'report',
+  'technical-report': 'report',
+  'government_report': 'report',
+  'government-report': 'report',
+  'case_study': 'report',
+  'case-study': 'report',
+  'technical_article': 'blog',
+  'technical-article': 'blog',
+  'article': 'blog',
+  'conference_paper': 'peer-reviewed',
+  'conference-paper': 'peer-reviewed',
+  'academic_thesis': 'peer-reviewed',
+  'academic-thesis': 'peer-reviewed',
+  'thesis': 'peer-reviewed',
+  'dissertation': 'peer-reviewed'
+};
+
+/**
+ * Validate and normalize source type to match database enum
+ * @param {string} sourceType - The source type to validate
+ * @returns {string} A valid source type or 'other'
+ */
+function normalizeSourceType(sourceType) {
+  if (!sourceType) return 'other';
+  
+  const normalized = sourceType.toLowerCase().trim();
+  
+  // Check if it's already valid
+  if (VALID_SOURCE_TYPES.includes(normalized)) {
+    return normalized;
+  }
+  
+  // Check if we have a mapping for it
+  if (SOURCE_TYPE_MAPPINGS[normalized]) {
+    console.log(`Mapping source type: ${sourceType} → ${SOURCE_TYPE_MAPPINGS[normalized]}`);
+    return SOURCE_TYPE_MAPPINGS[normalized];
+  }
+  
+  // Default to 'other'
+  console.log(`Unknown source type "${sourceType}", defaulting to "other"`);
+  return 'other';
+}
+
 function slugify(input) {
   return input.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
@@ -91,7 +150,7 @@ async function normalizeAndValidate({ rawText, metadata }) {
     title,
     subtitle: front.subtitle || null,
     source_url: front.source_url || null,
-    source_type: front.source_type || 'other',
+    source_type: normalizeSourceType(front.source_type),
     authors: front.authors || [],
     publisher: front.publisher || null,
     year: year || null,

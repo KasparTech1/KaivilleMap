@@ -68,13 +68,24 @@ const VALID_DOMAINS = [
 ];
 
 /**
- * Research source types
+ * Research source types (matching database enum)
  */
 const SOURCE_TYPES = [
-  'research_paper', 'industry_report', 'case_study',
-  'technical_article', 'white_paper', 'government_report',
-  'academic_thesis', 'conference_paper', 'other'
+  'peer-reviewed', 'whitepaper', 'standard', 'blog', 'news', 'report', 'other'
 ];
+
+/**
+ * Helpful mappings for LLM prompt
+ */
+const SOURCE_TYPE_EXAMPLES = {
+  'peer-reviewed': 'academic papers, journal articles, conference papers, theses',
+  'whitepaper': 'white papers, technical specifications',
+  'standard': 'industry standards, technical standards',
+  'blog': 'blog posts, technical articles, online articles',
+  'news': 'news articles, press releases',
+  'report': 'industry reports, case studies, government reports, technical reports',
+  'other': 'anything else'
+};
 
 /**
  * Main formatting function with LLM
@@ -153,13 +164,16 @@ INSTRUCTIONS:
 1. ALWAYS start your response with --- on its own line
 2. Extract all available metadata from the content
 3. For missing fields, use null (not empty strings)
-4. Valid source_types: ${SOURCE_TYPES.join(', ')}
+4. Valid source_types and their meanings:
+${SOURCE_TYPES.map(type => `   - "${type}": ${SOURCE_TYPE_EXAMPLES[type] || type}`).join('\n')}
 5. Valid domains (use only these): ${VALID_DOMAINS.join(', ')}
 6. Extract specific technical topics for the topics field
 7. Generate a summary starting with "> " if not provided
 8. Extract 2-5 key points from the content
 9. Clean and format the body as proper Markdown
 10. Preserve all important information
+
+IMPORTANT: For source_type, choose the most appropriate from the list above. If unsure, use "other".
 
 CONTENT TO FORMAT:
 ${rawText}
