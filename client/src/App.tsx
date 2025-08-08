@@ -19,6 +19,7 @@ import { HomeEditor } from "./pages/admin/HomeEditor"
 import { BuildingEditor } from "./pages/admin/BuildingEditor"
 import { TestPage } from "./pages/TestPage"
 import ResearchCenterPage from "./pages/ResearchCenterPage"
+import ResearchArticleDetailPage from "./pages/ResearchArticleDetailPage"
 
 function App() {
   console.log('Initializing Kaiville Interactive Map App');
@@ -41,7 +42,7 @@ function App() {
           <Route path="/news" element={<KNNFeedPage />} />
           <Route path="/news/*" element={<ArticlePage />} />
           <Route path="/research" element={<ResearchCenterPage />} />
-          <Route path="/research/:slug" element={<ArticlePage />} />
+          <Route path="/research/:slug" element={<ResearchArticleDetailPage />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/home" element={<HomeEditor />} />

@@ -74,7 +74,11 @@ async function pasteHandler(req, res) {
     if (dupErr) return serverError(res, dupErr.message);
     if (dup) return res.status(409).json({ error: { code: 'duplicate', message: 'Article already exists' }, article: dup });
 
-    // Insert article (needs_review)
+    // Insert article (with conditional auto-approval)
+    const autoApprove = process.env.AUTO_APPROVE_RESEARCH === 'true';
+    const articleStatus = autoApprove ? 'published' : 'needs_review';
+    console.log(`Inserting research article with status: ${articleStatus} (AUTO_APPROVE_RESEARCH=${process.env.AUTO_APPROVE_RESEARCH})`);
+    
     const insertPayload = {
       slug: norm.slug,
       title: norm.title,
@@ -88,7 +92,7 @@ async function pasteHandler(req, res) {
       domains: norm.domains,
       topics: norm.topics,
       keywords: norm.keywords,
-      status: 'needs_review',
+      status: articleStatus,
       summary: norm.summary,
       key_points: norm.key_points,
       content_md: norm.content_md,
