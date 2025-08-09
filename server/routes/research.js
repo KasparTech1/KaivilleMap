@@ -27,7 +27,8 @@ const {
   getStatusHandler,
   testGrokHandler,
   testGPT5Handler,
-  getRecentPromptsHandler
+  getRecentPromptsHandler,
+  queueArticleHandler
 } = require('../services/research/controllers');
 
 // Routes
@@ -45,6 +46,7 @@ router.delete('/articles/:id', deleteArticleHandler);
 
 // AI Research Generation
 router.post('/generate', generateResearchHandler);
+router.post('/queue-article', queueArticleHandler);
 
 // Template Management
 router.get('/templates', getTemplatesHandler);
