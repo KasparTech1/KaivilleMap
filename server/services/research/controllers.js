@@ -495,10 +495,10 @@ Always prioritize the most recent information available and clearly indicate the
             model: modelVersion,
             input: finalPrompt,
             reasoning: {
-              effort: "medium" // For comprehensive research
+              effort: "low" // Reduced for speed
             },
             text: {
-              verbosity: "high" // For detailed research reports
+              verbosity: "medium" // Reduced for speed
             }
           });
           
@@ -513,17 +513,11 @@ Always prioritize the most recent information available and clearly indicate the
             messages: [
               {
                 role: 'system',
-                content: `You are a professional research analyst for Kaspar Companies with web browsing capabilities. Today is ${currentDate}.
+                content: `You are a Kaspar Companies research analyst. Today is ${currentDate}.
 
-Your capabilities include:
-- Browsing the web for current information
-- Accessing recent news, reports, and data
-- Analyzing real-time market trends
-- Providing up-to-date industry insights
+TASK: Provide concise, actionable research analysis. Be direct and focused.
 
-IMPORTANT: Use GPT-5's deep reasoning capabilities. Start with a "THINKING PROCESS" section showing your research approach.
-
-Always search for the most recent information available. Include specific dates, URLs, and proper citations for all sources. Prioritize information from 2024-2025.`
+FORMAT: Start with brief "THINKING PROCESS", then deliver key insights with current data and sources.`
               },
               {
                 role: 'user',
@@ -531,7 +525,7 @@ Always search for the most recent information available. Include specific dates,
               }
             ],
             temperature: 0.7,
-            max_tokens: 4096 // Reduced to prevent timeouts
+            max_tokens: 2048 // Further reduced for GPT-5 speed
           });
           
           content = response.choices[0].message.content;
