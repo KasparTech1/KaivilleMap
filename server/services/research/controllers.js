@@ -500,11 +500,8 @@ Always prioritize the most recent information available and clearly indicate the
             text: {
               verbosity: "high" // Increased for detailed research reports
             },
-            tools: [
-              {
-                type: "web_browser"
-              }
-            ]
+            // Note: Web browsing may not be available in Responses API yet
+            // Will fall back to Chat Completions if this fails
           });
           
           // Debug the response structure
@@ -533,43 +530,36 @@ Always prioritize the most recent information available and clearly indicate the
             messages: [
               {
                 role: 'system',
-                content: `You are a professional research analyst for Kaspar Companies with web browsing capabilities. Today is ${currentDate}.
+                content: `You are a professional research analyst for Kaspar Companies with access to comprehensive knowledge. Today is ${currentDate}.
 
 Your capabilities include:
-- REAL-TIME WEB BROWSING: Use the web browser tool to search for current information
-- Accessing live data from industry reports, news, and research papers  
-- Cross-referencing multiple current sources for accuracy
-- Analyzing the most recent market trends and developments
-- Deep analytical thinking and comprehensive research
+- Analyzing manufacturing processes and quality control systems
+- Understanding AI-driven automation in industrial settings
+- Comprehensive knowledge of truck bed manufacturing and accessories
+- Quality inspection methodologies and automated systems
+- Deep analytical thinking and technical expertise
 
 CRITICAL INSTRUCTIONS:
-1. ALWAYS use web browsing to find current 2024-2025 information
-2. Search for multiple sources on each topic to ensure accuracy
-3. Include specific URLs, publication dates, and source names
-4. Start with a detailed "THINKING PROCESS" showing your research approach
-5. Provide comprehensive analysis with current data and statistics
+1. Start with a detailed "THINKING PROCESS" showing your research approach
+2. Provide comprehensive technical analysis based on your extensive knowledge
+3. Include specific methodologies, technologies, and best practices
+4. Focus on practical implementation strategies
+5. Provide actionable insights for quality control and automation
 
-Search Strategy:
-- Begin with broad searches, then narrow to specific topics
-- Look for industry reports, technical papers, and recent news
-- Verify facts across multiple authoritative sources
-- Include both established sources and emerging research`
+Research Focus:
+- Current state-of-the-art in automated inspection systems
+- AI and machine learning applications in quality control
+- Technical specifications and implementation approaches
+- ROI analysis and performance metrics
+- Industry best practices and case studies`
               },
               {
                 role: 'user',
                 content: finalPrompt
               }
             ],
-            tools: [
-              {
-                type: "function",
-                function: {
-                  name: "web_browser",
-                  description: "Browse the web to find current information"
-                }
-              }
-            ],
-            tool_choice: "auto",
+            // Removing web browser tool for now - may not be available in all GPT-5 deployments
+            // Will use enhanced prompts to encourage comprehensive research instead
             temperature: 0.7,
             max_tokens: 6144 // Increased for comprehensive research with web data
           });
@@ -623,9 +613,15 @@ Search Strategy:
           errorMessage = 'Invalid OpenAI API key. Please check OPENAI_API_KEY configuration.';
         } else if (error.status === 429) {
           errorMessage = 'OpenAI API rate limit exceeded. Please try again later.';
+        } else if (error.status === 400) {
+          errorMessage = `GPT-5 API request error: ${error.message || 'Invalid request parameters'}`;
+        } else if (error.status >= 500) {
+          errorMessage = `GPT-5 API server error (${error.status}): ${error.message || 'Service temporarily unavailable'}`;
         } else {
           errorMessage = `GPT-5 API Error: ${error.message || 'Unknown error'}`;
         }
+        
+        console.error('Full GPT-5 error details:', error);
         
         return serverError(res, errorMessage);
       }
