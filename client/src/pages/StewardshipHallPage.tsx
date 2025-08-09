@@ -153,6 +153,12 @@ export const StewardshipHallPage: React.FC = () => {
         </div>
       </div>
 
+      {/* ElevenLabs ConvAI Widget */}
+      <div className="flex justify-center py-8 bg-white">
+        <elevenlabs-convai agent-id="agent_4601k279pktve4datt9cvj73e1s9"></elevenlabs-convai>
+        <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+      </div>
+
       {/* Why We Exist Section */}
       {cmsContent.mission && (
         <div className="py-16 bg-white">
