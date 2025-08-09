@@ -5,7 +5,7 @@ import { Card } from '../components/ui/card';
 import { Switch } from '../components/ui/switch';
 import { Label } from '../components/ui/label';
 import { ResearchPromptModal } from '../components/research/ResearchPromptModal';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Building2, Factory, Cpu, Brain, Zap } from 'lucide-react';
 
 export const ResearchCenterPage: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -171,20 +171,72 @@ export const ResearchCenterPage: React.FC = () => {
               <Link key={a.id} to={`/research/${a.slug}`} className="no-underline">
                 <Card className={`bg-white p-6 hover:shadow-xl transition h-full flex flex-col ${a.status === 'needs_review' ? 'border-2 border-orange-300' : ''}`}>
                   <div className="mb-2 flex justify-between items-start">
-                    <span className="text-sm text-gray-500">{a.publisher || '—'} • {a.year || ''}</span>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                      {a.ai_model ? (
+                        <div className="flex items-center gap-1">
+                          {a.ai_model === 'gpt5' && <Cpu className="w-3 h-3 text-green-400" />}
+                          {a.ai_model === 'claude' && <Brain className="w-3 h-3 text-orange-500" />}
+                          {a.ai_model === 'grok' && <Zap className="w-3 h-3 text-purple-500" />}
+                          <span className="text-xs font-medium">
+                            {a.ai_model === 'gpt5' ? 'GPT-5' : a.ai_model === 'claude' ? 'Claude' : 'Grok'}
+                          </span>
+                        </div>
+                      ) : (
+                        <span>{a.publisher || '—'}</span>
+                      )}
+                      <span>•</span>
+                      <span>{a.year || new Date(a.created_at).getFullYear()}</span>
+                    </div>
                     {a.status === 'needs_review' && (
                       <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">Pending Review</span>
                     )}
                   </div>
+                  
+                  {/* Research Generator Metadata Strip */}
+                  {(a.business_unit || a.research_domain) && (
+                    <div className="mb-2 flex items-center gap-2 text-xs">
+                      {a.business_unit && (
+                        <div className="flex items-center gap-1 text-[#1f4e79]">
+                          <Building2 className="w-3 h-3" />
+                          <span className="font-medium">{a.business_unit.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                        </div>
+                      )}
+                      {a.business_unit && a.research_domain && <span className="text-gray-300">|</span>}
+                      {a.research_domain && (
+                        <div className="flex items-center gap-1 text-[#D4AF37]">
+                          <Factory className="w-3 h-3" />
+                          <span className="font-medium">{a.research_domain.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <h3 className="text-xl text-[#1f4e79] font-bold mb-2">{a.title}</h3>
                   <div className="text-gray-700 flex-1">{a.summary || (a.key_points?.[0] || '')}</div>
+                  
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {(a.domains || []).slice(0, 3).map((d: string) => (
-                      <span key={d} className="text-xs bg-[#1f4e79]/10 text-[#1f4e79] px-2 py-1 rounded">{d}</span>
-                    ))}
-                    {(a.topics || []).slice(0, 2).map((t: string) => (
-                      <span key={t} className="text-xs bg-[#D4AF37]/10 text-[#6b5400] px-2 py-1 rounded">{t}</span>
-                    ))}
+                    {/* Show Research Generator specific badges first */}
+                    {a.report_type && (
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-medium">
+                        {a.report_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </span>
+                    )}
+                    {a.analysis_method && (
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                        {a.analysis_method.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </span>
+                    )}
+                    {/* Fallback to legacy domains/topics if no Research Generator data */}
+                    {!a.business_unit && !a.research_domain && (
+                      <>
+                        {(a.domains || []).slice(0, 2).map((d: string) => (
+                          <span key={d} className="text-xs bg-[#1f4e79]/10 text-[#1f4e79] px-2 py-1 rounded">{d}</span>
+                        ))}
+                        {(a.topics || []).slice(0, 2).map((t: string) => (
+                          <span key={t} className="text-xs bg-[#D4AF37]/10 text-[#6b5400] px-2 py-1 rounded">{t}</span>
+                        ))}
+                      </>
+                    )}
                   </div>
                 </Card>
               </Link>

@@ -4,7 +4,7 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../components/ui/alert-dialog';
-import { ChevronLeft, ExternalLink, Calendar, Building2, MapPin, Users, Trash2 } from 'lucide-react';
+import { ChevronLeft, ExternalLink, Calendar, Building2, MapPin, Users, Trash2, Cpu, Brain, Zap, FileText, BarChart3, Factory, Clock } from 'lucide-react';
 
 interface ResearchArticle {
   id: string;
@@ -25,6 +25,16 @@ interface ResearchArticle {
   content_html: string;
   created_at: string;
   updated_at: string;
+  // Research Generator aligned fields
+  business_unit?: string;
+  research_domain?: string;
+  analysis_method?: string;
+  report_type?: string;
+  ai_model?: string;
+  generation_template?: string;
+  prompt_segments?: any;
+  tokens_used?: number;
+  generation_time_ms?: number;
 }
 
 export const ResearchArticleDetailPage: React.FC = () => {
@@ -205,6 +215,94 @@ export const ResearchArticleDetailPage: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* Research Generator Metadata */}
+          {(article.business_unit || article.research_domain || article.analysis_method || article.report_type || article.ai_model) && (
+            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 mb-6 border border-blue-200">
+              <h3 className="text-sm font-semibold text-[#1f4e79] mb-3 flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                AI Research Details
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                {article.business_unit && (
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4 text-[#1f4e79]" />
+                    <span className="font-medium">Business Unit:</span>
+                    <Badge className="bg-[#1f4e79] text-white text-xs">
+                      {article.business_unit.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </Badge>
+                  </div>
+                )}
+                {article.research_domain && (
+                  <div className="flex items-center gap-2">
+                    <Factory className="w-4 h-4 text-[#D4AF37]" />
+                    <span className="font-medium">Research Domain:</span>
+                    <Badge className="bg-[#D4AF37] text-white text-xs">
+                      {article.research_domain.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </Badge>
+                  </div>
+                )}
+                {article.analysis_method && (
+                  <div className="flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-purple-600" />
+                    <span className="font-medium">Analysis Method:</span>
+                    <Badge className="bg-purple-600 text-white text-xs">
+                      {article.analysis_method.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </Badge>
+                  </div>
+                )}
+                {article.report_type && (
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-green-600" />
+                    <span className="font-medium">Report Type:</span>
+                    <Badge className="bg-green-600 text-white text-xs">
+                      {article.report_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </Badge>
+                  </div>
+                )}
+                {article.ai_model && (
+                  <div className="flex items-center gap-2">
+                    {article.ai_model === 'gpt5' && <Cpu className="w-4 h-4 text-green-400" />}
+                    {article.ai_model === 'claude' && <Brain className="w-4 h-4 text-orange-500" />}
+                    {article.ai_model === 'grok' && <Zap className="w-4 h-4 text-purple-500" />}
+                    <span className="font-medium">AI Model:</span>
+                    <Badge className={`text-white text-xs ${
+                      article.ai_model === 'gpt5' ? 'bg-green-500' : 
+                      article.ai_model === 'claude' ? 'bg-orange-500' : 'bg-purple-500'
+                    }`}>
+                      {article.ai_model === 'gpt5' ? 'GPT-5' : 
+                       article.ai_model === 'claude' ? 'Claude Opus 4.1' : 'Grok 4'}
+                    </Badge>
+                  </div>
+                )}
+                {article.generation_template && (
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-gray-600" />
+                    <span className="font-medium">Template:</span>
+                    <Badge className="bg-gray-600 text-white text-xs">
+                      {article.generation_template}
+                    </Badge>
+                  </div>
+                )}
+              </div>
+              {(article.tokens_used || article.generation_time_ms) && (
+                <div className="mt-3 pt-3 border-t border-blue-200 flex gap-4 text-xs text-gray-600">
+                  {article.tokens_used && (
+                    <span className="flex items-center gap-1">
+                      <BarChart3 className="w-3 h-3" />
+                      {article.tokens_used.toLocaleString()} tokens
+                    </span>
+                  )}
+                  {article.generation_time_ms && (
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {(article.generation_time_ms / 1000).toFixed(1)}s generation
+                    </span>
+                  )}
+                </div>
+              )}
+            </Card>
+          )}
 
           {/* Source Link */}
           {article.source_url && (

@@ -24,6 +24,8 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
   const [thinkingProcess, setThinkingProcess] = useState<string[]>([]);
   const [usageData, setUsageData] = useState<any>(null);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [usedTemplate, setUsedTemplate] = useState<string | null>(null);
+  const [generationStartTime, setGenerationStartTime] = useState<number | null>(null);
   const [promptSegments, setPromptSegments] = useState({
     business_unit: null,
     research_domain: null,
@@ -162,6 +164,7 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
     setPromptSegments(template.config);
     setCustomInputs({});
     setShowCustomInput({});
+    setUsedTemplate(template.name);
   };
 
   const assemblePrompt = () => {
@@ -228,6 +231,7 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
       setStreamingContent('');
       setGeneratedContent('');
       setShowResults(false);
+      setGenerationStartTime(Date.now());
       
       // Create abort controller for cancellation
       const controller = new AbortController();
@@ -423,7 +427,9 @@ ${generatedContent}
             promptSegments,
             assembledPrompt: assemblePrompt(),
             tokensUsed: usageData?.totalTokens || 0,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            templateName: usedTemplate,
+            generationTimeMs: generationStartTime ? Date.now() - generationStartTime : null
           }
         }),
       });

@@ -1097,7 +1097,17 @@ ${content}`;
                 content_md: norm.content_md,
                 content_html: norm.content_html,
                 content_hash: norm.content_hash,
-                published_at: publishedAt
+                published_at: publishedAt,
+                // Research Generator aligned fields
+                business_unit: metadata.promptSegments?.business_unit || null,
+                research_domain: metadata.promptSegments?.research_domain || null,
+                analysis_method: metadata.promptSegments?.analysis_method || null,
+                report_type: metadata.promptSegments?.output_format || null,
+                ai_model: metadata.model || null,
+                generation_template: metadata.templateName || null,
+                prompt_segments: metadata.promptSegments || null,
+                tokens_used: metadata.tokensUsed || null,
+                generation_time_ms: metadata.generationTimeMs || null
               })
               .select('*')
               .single();
