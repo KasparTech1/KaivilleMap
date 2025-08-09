@@ -456,13 +456,34 @@ Always prioritize the most recent information available and clearly indicate the
         thinkingProcess.push('Leveraging 45% reduced hallucination rate for accuracy...');
         thinkingProcess.push('Engaging expert-level response generation...');
         
-        // Use GPT-5 - standard API call without experimental features
-        const response = await openai.chat.completions.create({
-          model: modelVersion, // 'gpt-5'
-          messages: [
-            {
-              role: 'system',
-              content: `You are a professional research analyst for Kaspar Companies with web browsing capabilities. Today is ${currentDate}.
+        // Check if we should use Responses API for GPT-5
+        const useResponsesAPI = process.env.USE_GPT5_RESPONSES_API === 'true';
+        
+        if (useResponsesAPI) {
+          // Use the new Responses API for GPT-5
+          const response = await openai.responses.create({
+            model: modelVersion,
+            input: finalPrompt,
+            reasoning: {
+              effort: "medium" // For comprehensive research
+            },
+            text: {
+              verbosity: "high" // For detailed research reports
+            }
+          });
+          
+          content = response.choices?.[0]?.text || response.text || response.content;
+          // Extract usage from responses API format
+          inputTokens = response.usage?.prompt_tokens || response.usage?.input_tokens || 0;
+          outputTokens = response.usage?.completion_tokens || response.usage?.output_tokens || 0;
+        } else {
+          // Fallback to Chat Completions API
+          const response = await openai.chat.completions.create({
+            model: modelVersion,
+            messages: [
+              {
+                role: 'system',
+                content: `You are a professional research analyst for Kaspar Companies with web browsing capabilities. Today is ${currentDate}.
 
 Your capabilities include:
 - Browsing the web for current information
@@ -473,20 +494,22 @@ Your capabilities include:
 IMPORTANT: Use GPT-5's deep reasoning capabilities. Start with a "THINKING PROCESS" section showing your research approach.
 
 Always search for the most recent information available. Include specific dates, URLs, and proper citations for all sources. Prioritize information from 2024-2025.`
-            },
-            {
-              role: 'user',
-              content: finalPrompt
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 8192 // Standard max tokens for now
-        });
+              },
+              {
+                role: 'user',
+                content: finalPrompt
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 8192
+          });
+          
+          content = response.choices[0].message.content;
+          inputTokens = response.usage?.prompt_tokens || 0;
+          outputTokens = response.usage?.completion_tokens || 0;
+        }
         
-        content = response.choices[0].message.content;
-        inputTokens = response.usage?.prompt_tokens || 0;
-        outputTokens = response.usage?.completion_tokens || 0;
-        tokensUsed = response.usage?.total_tokens || 0;
+        tokensUsed = inputTokens + outputTokens;
         
         // Calculate cost for GPT-5
         cost = costCalculator.calculateCost('gpt5', modelVersion, inputTokens, outputTokens);
