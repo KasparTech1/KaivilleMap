@@ -295,6 +295,81 @@ async function deleteArticleHandler(req, res) {
   }
 }
 
+// POST /api/research/generate
+async function generateResearchHandler(req, res) {
+  try {
+    const { model, prompt } = req.body || {};
+    
+    if (!model || !prompt) {
+      return badRequest(res, 'model and prompt are required');
+    }
+    
+    if (!['claude', 'grok'].includes(model)) {
+      return badRequest(res, 'model must be either "claude" or "grok"');
+    }
+    
+    let content = '';
+    
+    if (model === 'claude') {
+      // Use Anthropic API
+      const Anthropic = require('@anthropic-ai/sdk');
+      const anthropic = new Anthropic({
+        apiKey: process.env.ANTHROPIC_KEY
+      });
+      
+      try {
+        const response = await anthropic.messages.create({
+          model: 'claude-3-5-sonnet-20241022',
+          max_tokens: 4096,
+          temperature: 0.7,
+          messages: [{
+            role: 'user',
+            content: prompt
+          }]
+        });
+        
+        content = response.content[0].text;
+      } catch (error) {
+        console.error('Anthropic API error:', error);
+        return serverError(res, 'Failed to generate research with Claude');
+      }
+    } else if (model === 'grok') {
+      // Use xAI/Grok API via OpenAI client
+      const OpenAI = require('openai');
+      const openai = new OpenAI({
+        apiKey: process.env.XAI_KEY,
+        baseURL: 'https://api.x.ai/v1'
+      });
+      
+      try {
+        const response = await openai.chat.completions.create({
+          model: 'grok-beta',
+          messages: [{
+            role: 'user',
+            content: prompt
+          }],
+          temperature: 0.7,
+          max_tokens: 4096
+        });
+        
+        content = response.choices[0].message.content;
+      } catch (error) {
+        console.error('xAI/Grok API error:', error);
+        return serverError(res, 'Failed to generate research with Grok');
+      }
+    }
+    
+    return res.json({ 
+      content, 
+      model,
+      timestamp: new Date().toISOString()
+    });
+  } catch (e) {
+    console.error('Generate research error:', e);
+    return serverError(res, e.message);
+  }
+}
+
 module.exports = {
   pasteHandler,
   uploadHandler,
@@ -304,6 +379,7 @@ module.exports = {
   getTagsHandler,
   relatedArticlesHandler,
   reprocessHandler,
-  deleteArticleHandler
+  deleteArticleHandler,
+  generateResearchHandler
 };
 

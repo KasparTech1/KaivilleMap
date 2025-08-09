@@ -4,6 +4,8 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Switch } from '../components/ui/switch';
 import { Label } from '../components/ui/label';
+import { ResearchPromptModal } from '../components/research/ResearchPromptModal';
+import { Sparkles } from 'lucide-react';
 
 export const ResearchCenterPage: React.FC = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -15,6 +17,7 @@ export const ResearchCenterPage: React.FC = () => {
   const [submitMsg, setSubmitMsg] = useState<string | null>(null);
   const [processingStatus, setProcessingStatus] = useState<string | null>(null);
   const [showPending, setShowPending] = useState(false);
+  const [showPromptBuilder, setShowPromptBuilder] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -73,6 +76,13 @@ export const ResearchCenterPage: React.FC = () => {
             <h1 className="text-2xl text-[#1f4e79] font-serif font-bold hover:text-[#D4AF37] transition cursor-pointer">Kaiville</h1>
           </Link>
           <div className="flex items-center space-x-4">
+            <Button 
+              className="bg-orange-600 text-white hover:bg-orange-700 flex items-center gap-2" 
+              onClick={() => setShowPromptBuilder(true)}
+            >
+              <Sparkles size={18} />
+              AI Research Lab
+            </Button>
             <Button className="bg-[#1f4e79] text-white hover:bg-[#1f4e79]/90" onClick={() => setShowUpload(true)}>
               Submit Research
             </Button>
@@ -188,6 +198,12 @@ export const ResearchCenterPage: React.FC = () => {
           © 2025 Kaspar Companies. All rights reserved.
         </div>
       </footer>
+
+      {/* Research Prompt Builder Modal */}
+      <ResearchPromptModal 
+        isOpen={showPromptBuilder} 
+        onClose={() => setShowPromptBuilder(false)} 
+      />
     </div>
   );
 };

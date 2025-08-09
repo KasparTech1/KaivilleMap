@@ -11,7 +11,8 @@ const {
   getTagsHandler,
   relatedArticlesHandler,
   reprocessHandler,
-  deleteArticleHandler
+  deleteArticleHandler,
+  generateResearchHandler
 } = require('../services/research/controllers');
 
 // Routes
@@ -26,6 +27,9 @@ router.get('/tags', getTagsHandler);
 
 router.post('/articles/:id/reprocess', reprocessHandler);
 router.delete('/articles/:id', deleteArticleHandler);
+
+// AI Research Generation
+router.post('/generate', generateResearchHandler);
 
 module.exports = router;
 
