@@ -540,8 +540,8 @@ ${generatedContent}
               {/* Usage Statistics */}
               {usageData && (
                 <div className="mb-4 p-3 bg-gray-900 rounded border border-gray-700">
-                  <h4 className="text-sm text-green-400 mb-2 uppercase">Usage & Cost:</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <h4 className="text-sm text-green-400 mb-2 uppercase">Token Usage:</h4>
+                  <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
                       <span className="text-gray-500">Input Tokens:</span>
                       <p className="text-gray-300">{usageData.inputTokens?.toLocaleString() || 0}</p>
@@ -554,18 +554,7 @@ ${generatedContent}
                       <span className="text-gray-500">Total Tokens:</span>
                       <p className="text-gray-300">{usageData.totalTokens?.toLocaleString() || 0}</p>
                     </div>
-                    <div>
-                      <span className="text-gray-500">Estimated Cost:</span>
-                      <p className="text-green-400 font-bold">
-                        {usageData.cost ? `$${usageData.cost.totalCost.toFixed(4)} USD` : 'N/A'}
-                      </p>
-                    </div>
                   </div>
-                  {usageData.cost && (
-                    <p className="text-xs text-gray-500 mt-2">
-                      Cost breakdown: ${usageData.cost.inputCost.toFixed(4)} (input) + ${usageData.cost.outputCost.toFixed(4)} (output)
-                    </p>
-                  )}
                 </div>
               )}
 

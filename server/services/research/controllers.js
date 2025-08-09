@@ -456,10 +456,9 @@ Always prioritize the most recent information available and clearly indicate the
         thinkingProcess.push('Leveraging 45% reduced hallucination rate for accuracy...');
         thinkingProcess.push('Engaging expert-level response generation...');
         
-        // Use GPT-5 with deep reasoning capabilities
+        // Use GPT-5 - standard API call without experimental features
         const response = await openai.chat.completions.create({
-          model: modelVersion,
-          reasoning_level: 'high', // Enable maximum reasoning capability
+          model: modelVersion, // 'gpt-5'
           messages: [
             {
               role: 'system',
@@ -481,7 +480,7 @@ Always search for the most recent information available. Include specific dates,
             }
           ],
           temperature: 0.7,
-          max_tokens: 128000 // GPT-5 supports up to 128K output tokens
+          max_tokens: 8192 // Standard max tokens for now
         });
         
         content = response.choices[0].message.content;
@@ -494,8 +493,27 @@ Always search for the most recent information available. Include specific dates,
         thinkingProcess.push(`Tokens used: ${tokensUsed} (Input: ${inputTokens}, Output: ${outputTokens})`);
         thinkingProcess.push(`Estimated cost: ${costCalculator.formatCost(cost.totalCost)}`);
       } catch (error) {
-        console.error('OpenAI GPT-4 API error:', error);
-        errorMessage = error.message || 'Failed to generate research with GPT-4';
+        console.error('OpenAI GPT-5 API detailed error:', {
+          message: error.message,
+          status: error.status,
+          type: error.type,
+          code: error.code,
+          response: error.response?.data,
+          headers: error.response?.headers,
+          model: modelVersion
+        });
+        
+        // Check for specific error types
+        if (error.status === 404) {
+          errorMessage = 'GPT-5 model not found. Your OpenAI account may not have access yet. Please check your account status.';
+        } else if (error.status === 401) {
+          errorMessage = 'Invalid OpenAI API key. Please check OPENAI_API_KEY configuration.';
+        } else if (error.status === 429) {
+          errorMessage = 'OpenAI API rate limit exceeded. Please try again later.';
+        } else {
+          errorMessage = `GPT-5 API Error: ${error.message || 'Unknown error'}`;
+        }
+        
         return serverError(res, errorMessage);
       }
     } else if (model === 'grok') {
@@ -837,6 +855,64 @@ async function getStatusHandler(req, res) {
   }
 }
 
+// GET /api/research/test-gpt5 - Test GPT-5 API connection
+async function testGPT5Handler(req, res) {
+  try {
+    if (!process.env.OPENAI_API_KEY) {
+      return res.json({ 
+        success: false, 
+        error: 'OPENAI_API_KEY not found in environment variables',
+        envKeys: Object.keys(process.env).filter(k => k.includes('OPENAI') || k.includes('KEY')).sort()
+      });
+    }
+
+    const OpenAI = require('openai');
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+
+    console.log('Testing GPT-5 API connection...');
+    
+    try {
+      // Try a simple completion with GPT-5
+      const response = await openai.chat.completions.create({
+        model: 'gpt-5',
+        messages: [{ role: 'user', content: 'Say "Hello from GPT-5!"' }],
+        max_tokens: 10
+      });
+
+      return res.json({ 
+        success: true, 
+        response: response.choices[0].message.content,
+        model: response.model,
+        usage: response.usage
+      });
+    } catch (apiError) {
+      console.error('GPT-5 API test error:', {
+        message: apiError.message,
+        status: apiError.status,
+        type: apiError.type,
+        code: apiError.code,
+        response: apiError.response?.data
+      });
+      
+      return res.json({ 
+        success: false, 
+        error: apiError.message,
+        status: apiError.status,
+        type: apiError.type,
+        details: apiError.response?.data,
+        suggestion: apiError.status === 404 ? 
+          'GPT-5 may not be available for your account yet. Check OpenAI dashboard for access.' : 
+          'Check your API key and account status'
+      });
+    }
+  } catch (e) {
+    console.error('Test GPT-5 handler error:', e);
+    return res.json({ success: false, error: e.message });
+  }
+}
+
 // GET /api/research/test-grok - Test Grok API connection
 async function testGrokHandler(req, res) {
   try {
@@ -916,6 +992,7 @@ module.exports = {
   createSegmentOptionHandler,
   updateSegmentOptionHandler,
   getStatusHandler,
-  testGrokHandler
+  testGrokHandler,
+  testGPT5Handler
 };
 
