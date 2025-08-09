@@ -226,10 +226,17 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
       }, 2000);
       
       try {
-        const data = await generateResearch({
+        // Add a client-side timeout of 4 minutes (less than server timeout)
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Request timed out after 4 minutes. The model may be taking longer than expected to generate comprehensive research. Please try again with a simpler prompt or different model.')), 4 * 60 * 1000);
+        });
+        
+        const dataPromise = generateResearch({
           model: selectedModel as 'claude' | 'gpt5' | 'grok',
           prompt: assemblePrompt()
         });
+        
+        const data = await Promise.race([dataPromise, timeoutPromise]);
         
         clearInterval(messageInterval);
         setProcessingMessage('');
@@ -242,7 +249,23 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
         clearInterval(messageInterval);
         console.error('Error generating research:', error);
         setProcessingMessage('');
-        setGeneratedContent(`Error generating research: ${error.message || 'Please check your API configuration and try again.'}`);
+        
+        let errorMessage = error.message || 'Please check your API configuration and try again.';
+        
+        // Provide more specific error messages
+        if (error.message?.includes('timed out')) {
+          errorMessage = 'The request timed out. This can happen with complex research queries. Try:\n\n' +
+            '• Using a different model (Claude or Grok may be faster)\n' +
+            '• Simplifying your research prompt\n' +
+            '• Breaking down the research into smaller parts';
+        } else if (error.message?.includes('500')) {
+          errorMessage = 'Server error occurred. This might be due to:\n\n' +
+            '• API rate limits or availability issues\n' +
+            '• Very long response generation\n' +
+            '• Please wait a moment and try again';
+        }
+        
+        setGeneratedContent(`Error generating research:\n\n${errorMessage}`);
         setIsGenerating(false);
         setShowResults(true);
       }

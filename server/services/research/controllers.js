@@ -302,7 +302,13 @@ async function deleteArticleHandler(req, res) {
 // POST /api/research/generate
 async function generateResearchHandler(req, res) {
   try {
+    // Set a longer timeout for this endpoint (5 minutes)
+    req.setTimeout(5 * 60 * 1000); // 5 minutes
+    res.setTimeout(5 * 60 * 1000); // 5 minutes
+    
     const { model, prompt, templateId, promptSegments, savePrompt = true } = req.body || {};
+    
+    console.log(`Research generation started: Model=${model}, Prompt length=${prompt?.length || 0}`);
     
     if (!model || !prompt) {
       return badRequest(res, 'model and prompt are required');
@@ -459,6 +465,9 @@ Always prioritize the most recent information available and clearly indicate the
         // Check if we should use Responses API for GPT-5
         const useResponsesAPI = process.env.USE_GPT5_RESPONSES_API === 'true';
         
+        console.log(`GPT-5 API call starting... useResponsesAPI=${useResponsesAPI}`);
+        const apiStartTime = Date.now();
+        
         if (useResponsesAPI) {
           // Use the new Responses API for GPT-5
           const response = await openai.responses.create({
@@ -501,7 +510,7 @@ Always search for the most recent information available. Include specific dates,
               }
             ],
             temperature: 0.7,
-            max_tokens: 8192
+            max_tokens: 4096 // Reduced to prevent timeouts
           });
           
           content = response.choices[0].message.content;
@@ -510,6 +519,9 @@ Always search for the most recent information available. Include specific dates,
         }
         
         tokensUsed = inputTokens + outputTokens;
+        
+        const apiDuration = Date.now() - apiStartTime;
+        console.log(`GPT-5 API call completed in ${apiDuration}ms, tokens: ${tokensUsed}`);
         
         // Calculate cost for GPT-5
         cost = costCalculator.calculateCost('gpt5', modelVersion, inputTokens, outputTokens);
