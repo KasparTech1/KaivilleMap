@@ -1,5 +1,5 @@
 interface GenerateResearchRequest {
-  model: 'claude' | 'gpt4' | 'grok';
+  model: 'claude' | 'gpt5' | 'grok';
   prompt: string;
   templateId?: string;
   promptSegments?: any;
