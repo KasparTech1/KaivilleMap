@@ -212,7 +212,12 @@ export const ResearchCenterPage: React.FC = () => {
                   )}
 
                   <h3 className="text-xl text-[#1f4e79] font-bold mb-2">{a.title}</h3>
-                  <div className="text-gray-700 flex-1">{a.summary || (a.key_points?.[0] || '')}</div>
+                  <div className="text-gray-700 flex-1 text-sm leading-relaxed">
+                    {(() => {
+                      const content = a.summary || (a.key_points?.[0] || '');
+                      return content.length > 300 ? content.substring(0, 300) + '...' : content;
+                    })()}
+                  </div>
                   
                   <div className="mt-4 flex flex-wrap gap-2">
                     {/* Show Research Generator specific badges first */}
