@@ -511,7 +511,7 @@ Always prioritize the most recent information available and clearly indicate the
             choicesLength: response.choices?.length
           });
           
-          content = response.choices?.[0]?.text || response.text || response.content || response.choices?.[0]?.message?.content;
+          content = response.output_text || response.choices?.[0]?.text || response.text || response.content || response.choices?.[0]?.message?.content;
           
           if (!content) {
             console.error('No content found in GPT-5 Responses API response:', response);
@@ -755,7 +755,9 @@ IMPORTANT: Show your "THINKING PROCESS" including how you're using tools and rea
     console.log('Sending response to client:', {
       hasContent: !!responsePayload.content,
       contentLength: responsePayload.content?.length || 0,
-      contentPreview: responsePayload.content?.substring(0, 100) + '...',
+      contentPreview: (responsePayload.content && typeof responsePayload.content === 'string') 
+        ? responsePayload.content.substring(0, 100) + '...' 
+        : 'No content preview available',
       model: responsePayload.model,
       tokensUsed: responsePayload.usage.totalTokens
     });
@@ -1036,7 +1038,7 @@ async function getRecentPromptsHandler(req, res) {
     const { limit = 10, userId } = req.query;
     const guestUserId = userId || req.headers['x-guest-id'];
     
-    const recentPrompts = await promptService.getRecentPromptsWithResponses(guestUserId, parseInt(limit));
+    const recentPrompts = await promptService.getPromptHistory(guestUserId, parseInt(limit));
     
     return res.json({
       prompts: recentPrompts,
