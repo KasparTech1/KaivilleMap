@@ -24,7 +24,8 @@ const {
   clonePromptHandler,
   createSegmentOptionHandler,
   updateSegmentOptionHandler,
-  getStatusHandler
+  getStatusHandler,
+  testGrokHandler
 } = require('../services/research/controllers');
 
 // Routes
@@ -62,6 +63,7 @@ router.put('/segment-options/:id', updateSegmentOptionHandler);
 
 // Status check
 router.get('/status', getStatusHandler);
+router.get('/test-grok', testGrokHandler);
 
 module.exports = router;
 
