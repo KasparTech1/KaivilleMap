@@ -490,16 +490,21 @@ Always prioritize the most recent information available and clearly indicate the
         const apiStartTime = Date.now();
         
         if (useResponsesAPI) {
-          // Use the new Responses API for GPT-5
+          // Use the new Responses API for GPT-5 with web browsing
           const response = await openai.responses.create({
             model: modelVersion,
             input: finalPrompt,
             reasoning: {
-              effort: "low" // Reduced for speed
+              effort: "medium" // Increased for comprehensive research with web access
             },
             text: {
-              verbosity: "medium" // Reduced for speed
-            }
+              verbosity: "high" // Increased for detailed research reports
+            },
+            tools: [
+              {
+                type: "web_browser"
+              }
+            ]
           });
           
           // Debug the response structure
@@ -522,32 +527,51 @@ Always prioritize the most recent information available and clearly indicate the
           inputTokens = response.usage?.prompt_tokens || response.usage?.input_tokens || 0;
           outputTokens = response.usage?.completion_tokens || response.usage?.output_tokens || 0;
         } else {
-          // Fallback to Chat Completions API
+          // Fallback to Chat Completions API with tools
           const response = await openai.chat.completions.create({
             model: modelVersion,
             messages: [
               {
                 role: 'system',
-                content: `You are a professional research analyst for Kaspar Companies with access to current web information. Today is ${currentDate}.
+                content: `You are a professional research analyst for Kaspar Companies with web browsing capabilities. Today is ${currentDate}.
 
 Your capabilities include:
-- Accessing real-time web information and current data
-- Analyzing recent market trends and industry reports
-- Providing citations with dates and URLs
-- Cross-referencing multiple sources for accuracy
+- REAL-TIME WEB BROWSING: Use the web browser tool to search for current information
+- Accessing live data from industry reports, news, and research papers  
+- Cross-referencing multiple current sources for accuracy
+- Analyzing the most recent market trends and developments
 - Deep analytical thinking and comprehensive research
 
-IMPORTANT: Use GPT-5's deep reasoning capabilities. Start with a detailed "THINKING PROCESS" section showing your research approach, then proceed with comprehensive analysis.
+CRITICAL INSTRUCTIONS:
+1. ALWAYS use web browsing to find current 2024-2025 information
+2. Search for multiple sources on each topic to ensure accuracy
+3. Include specific URLs, publication dates, and source names
+4. Start with a detailed "THINKING PROCESS" showing your research approach
+5. Provide comprehensive analysis with current data and statistics
 
-Always prioritize the most recent information available and clearly indicate the date of any statistics or trends you cite. Format your response with clear sections, bullet points, and numbered citations. Provide thorough, actionable insights.`
+Search Strategy:
+- Begin with broad searches, then narrow to specific topics
+- Look for industry reports, technical papers, and recent news
+- Verify facts across multiple authoritative sources
+- Include both established sources and emerging research`
               },
               {
                 role: 'user',
                 content: finalPrompt
               }
             ],
+            tools: [
+              {
+                type: "function",
+                function: {
+                  name: "web_browser",
+                  description: "Browse the web to find current information"
+                }
+              }
+            ],
+            tool_choice: "auto",
             temperature: 0.7,
-            max_tokens: 4096 // Restored for comprehensive research
+            max_tokens: 6144 // Increased for comprehensive research with web data
           });
           
           content = response.choices[0].message.content;

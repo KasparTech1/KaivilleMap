@@ -232,10 +232,11 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
         ],
         gpt5: [
           'Connecting to GPT-5 unified intelligence system...',
-          'Activating deep reasoning mode for complex analysis...',
-          'Processing with 45% less hallucination rate...',
-          'Synthesizing research with state-of-the-art accuracy...',
-          'Preparing comprehensive findings with expert reasoning...'
+          'Activating web browsing and deep reasoning capabilities...',
+          'Searching current web sources for 2024-2025 data...',
+          'Cross-referencing multiple authoritative sources...',
+          'Synthesizing comprehensive research with live web data...',
+          'Preparing detailed analysis with current citations...'
         ],
         grok: [
           'Activating Grok 4 with native tool use...',
