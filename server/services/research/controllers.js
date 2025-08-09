@@ -483,7 +483,7 @@ Always prioritize the most recent information available and clearly indicate the
         thinkingProcess.push('Leveraging 45% reduced hallucination rate for accuracy...');
         thinkingProcess.push('Engaging expert-level response generation...');
         
-        // Check if we should use Responses API for GPT-5
+        // Check if we should use Responses API for GPT-5 (default to false for stability)
         const useResponsesAPI = process.env.USE_GPT5_RESPONSES_API === 'true';
         
         console.log(`GPT-5 API call starting... useResponsesAPI=${useResponsesAPI}`);
@@ -502,7 +502,22 @@ Always prioritize the most recent information available and clearly indicate the
             }
           });
           
-          content = response.choices?.[0]?.text || response.text || response.content;
+          // Debug the response structure
+          console.log('GPT-5 Responses API response structure:', {
+            hasChoices: !!response.choices,
+            hasText: !!response.text,
+            hasContent: !!response.content,
+            responseKeys: Object.keys(response),
+            choicesLength: response.choices?.length
+          });
+          
+          content = response.choices?.[0]?.text || response.text || response.content || response.choices?.[0]?.message?.content;
+          
+          if (!content) {
+            console.error('No content found in GPT-5 Responses API response:', response);
+            content = 'Error: GPT-5 response received but no content could be extracted';
+          }
+          
           // Extract usage from responses API format
           inputTokens = response.usage?.prompt_tokens || response.usage?.input_tokens || 0;
           outputTokens = response.usage?.completion_tokens || response.usage?.output_tokens || 0;
@@ -513,11 +528,18 @@ Always prioritize the most recent information available and clearly indicate the
             messages: [
               {
                 role: 'system',
-                content: `You are a Kaspar Companies research analyst. Today is ${currentDate}.
+                content: `You are a professional research analyst for Kaspar Companies with access to current web information. Today is ${currentDate}.
 
-TASK: Provide concise, actionable research analysis. Be direct and focused.
+Your capabilities include:
+- Accessing real-time web information and current data
+- Analyzing recent market trends and industry reports
+- Providing citations with dates and URLs
+- Cross-referencing multiple sources for accuracy
+- Deep analytical thinking and comprehensive research
 
-FORMAT: Start with brief "THINKING PROCESS", then deliver key insights with current data and sources.`
+IMPORTANT: Use GPT-5's deep reasoning capabilities. Start with a detailed "THINKING PROCESS" section showing your research approach, then proceed with comprehensive analysis.
+
+Always prioritize the most recent information available and clearly indicate the date of any statistics or trends you cite. Format your response with clear sections, bullet points, and numbered citations. Provide thorough, actionable insights.`
               },
               {
                 role: 'user',
@@ -525,7 +547,7 @@ FORMAT: Start with brief "THINKING PROCESS", then deliver key insights with curr
               }
             ],
             temperature: 0.7,
-            max_tokens: 2048 // Further reduced for GPT-5 speed
+            max_tokens: 4096 // Restored for comprehensive research
           });
           
           content = response.choices[0].message.content;
@@ -708,7 +730,7 @@ IMPORTANT: Show your "THINKING PROCESS" including how you're using tools and rea
     // Generate user ID for guest tracking
     const guestUserId = req.headers['x-guest-id'] || `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    return res.json({ 
+    const responsePayload = { 
       content, 
       model,
       modelVersion,
@@ -728,7 +750,17 @@ IMPORTANT: Show your "THINKING PROCESS" including how you're using tools and rea
         promptLength: prompt.length,
         responseLength: content.length
       }
+    };
+    
+    console.log('Sending response to client:', {
+      hasContent: !!responsePayload.content,
+      contentLength: responsePayload.content?.length || 0,
+      contentPreview: responsePayload.content?.substring(0, 100) + '...',
+      model: responsePayload.model,
+      tokensUsed: responsePayload.usage.totalTokens
     });
+    
+    return res.json(responsePayload);
   } catch (e) {
     console.error('Generate research error:', e);
     return serverError(res, e.message);
