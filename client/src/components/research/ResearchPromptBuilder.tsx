@@ -9,7 +9,7 @@ interface ResearchPromptBuilderProps {
 }
 
 export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ onClose }) => {
-  const [selectedModel, setSelectedModel] = useState('claude');
+  const [selectedModel, setSelectedModel] = useState('gpt5');
   const [isGenerating, setIsGenerating] = useState(false);
   const [leverPulled, setLeverPulled] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -31,8 +31,8 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
   });
 
   const models = [
-    { id: 'claude', name: 'Opus 4.1', icon: Brain, color: 'rgb(255, 140, 0)', fullName: 'Claude Opus 4.1', version: 'claude-opus-4-1-20250805' },
     { id: 'gpt5', name: 'GPT-5', icon: Cpu, color: 'rgb(0, 255, 157)', fullName: 'GPT-5', version: 'gpt-5' },
+    { id: 'claude', name: 'Opus 4.1', icon: Brain, color: 'rgb(255, 140, 0)', fullName: 'Claude Opus 4.1', version: 'claude-opus-4-1-20250805' },
     { id: 'grok', name: 'GROK 4', icon: Zap, color: 'rgb(138, 43, 226)', fullName: 'Grok 4', version: 'grok-4-0709' }
   ];
 
