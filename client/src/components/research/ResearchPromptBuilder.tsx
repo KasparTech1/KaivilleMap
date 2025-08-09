@@ -30,6 +30,38 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
     output_format: null
   });
 
+  // Auto-recovery effect - triggers when results should show but content is empty
+  useEffect(() => {
+    if (showResults && !generatedContent && !isGenerating) {
+      console.log('Blank results detected, attempting auto-recovery...');
+      setTimeout(async () => {
+        try {
+          const response = await fetch('/api/research/prompts/recent?limit=3');
+          const data = await response.json();
+          if (data.prompts && data.prompts.length > 0) {
+            const mostRecent = data.prompts[0];
+            if (mostRecent.response?.content) {
+              console.log('Auto-recovery successful:', {
+                promptId: mostRecent.id,
+                contentLength: mostRecent.response.content.length,
+                tokens: mostRecent.response.tokens_used
+              });
+              setGeneratedContent(mostRecent.response.content);
+              setThinkingProcess(mostRecent.response.thinking || []);
+              setUsageData({
+                inputTokens: mostRecent.response.input_tokens,
+                outputTokens: mostRecent.response.output_tokens,
+                totalTokens: mostRecent.response.tokens_used
+              });
+            }
+          }
+        } catch (err) {
+          console.error('Auto-recovery failed:', err);
+        }
+      }, 1000);
+    }
+  }, [showResults, generatedContent, isGenerating]);
+
   const models = [
     { id: 'gpt5', name: 'GPT-5', icon: Cpu, color: 'rgb(0, 255, 157)', fullName: 'GPT-5', version: 'gpt-5' },
     { id: 'claude', name: 'Opus 4.1', icon: Brain, color: 'rgb(255, 140, 0)', fullName: 'Claude Opus 4.1', version: 'claude-opus-4-1-20250805' },
@@ -239,16 +271,33 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
         const data = await Promise.race([dataPromise, timeoutPromise]);
         
         clearInterval(messageInterval);
+        console.log('Research generation completed:', {
+          hasContent: !!data?.content,
+          contentLength: data?.content?.length,
+          model: selectedModel,
+          usage: data?.usage
+        });
+        
         setProcessingMessage('');
-        setGeneratedContent(data.content);
-        setThinkingProcess(data.thinking || []);
-        setUsageData(data.usage || null);
+        
+        // Ensure we have content before updating state
+        if (data && data.content) {
+          setGeneratedContent(data.content);
+          setThinkingProcess(data.thinking || []);
+          setUsageData(data.usage || null);
+          setShowResults(true);
+        } else {
+          console.error('No content in response data:', data);
+          setGeneratedContent('Error: Response received but no content found. Please check the logs.');
+          setShowResults(true);
+        }
+        
         setIsGenerating(false);
-        setShowResults(true);
       } catch (error) {
         clearInterval(messageInterval);
         console.error('Error generating research:', error);
         setProcessingMessage('');
+        setIsGenerating(false);
         
         let errorMessage = error.message || 'Please check your API configuration and try again.';
         
@@ -257,17 +306,42 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
           errorMessage = 'The request timed out. This can happen with complex research queries. Try:\n\n' +
             '• Using a different model (Claude or Grok may be faster)\n' +
             '• Simplifying your research prompt\n' +
-            '• Breaking down the research into smaller parts';
+            '• Breaking down the research into smaller parts\n\n' +
+            'Note: Your response may have been saved to the database despite the timeout.';
         } else if (error.message?.includes('500')) {
           errorMessage = 'Server error occurred. This might be due to:\n\n' +
             '• API rate limits or availability issues\n' +
             '• Very long response generation\n' +
-            '• Please wait a moment and try again';
+            '• Please wait a moment and try again\n\n' +
+            'Note: The API response may have completed successfully and been saved.';
         }
         
         setGeneratedContent(`Error generating research:\n\n${errorMessage}`);
-        setIsGenerating(false);
         setShowResults(true);
+        
+        // Try to recover response after a short delay
+        setTimeout(async () => {
+          try {
+            console.log('Attempting error recovery...');
+            const response = await fetch('/api/research/prompts/recent?limit=3');
+            const data = await response.json();
+            if (data.prompts && data.prompts.length > 0) {
+              const mostRecent = data.prompts[0];
+              if (mostRecent.response?.content && !mostRecent.response.content.includes('Error')) {
+                console.log('Error recovery found valid response:', mostRecent.response.content.substring(0, 100));
+                setGeneratedContent(mostRecent.response.content);
+                setThinkingProcess(mostRecent.response.thinking || []);
+                setUsageData({
+                  inputTokens: mostRecent.response.input_tokens,
+                  outputTokens: mostRecent.response.output_tokens,
+                  totalTokens: mostRecent.response.tokens_used
+                });
+              }
+            }
+          } catch (recoveryError) {
+            console.error('Error recovery failed:', recoveryError);
+          }
+        }, 2000);
       }
     }
   };
@@ -593,6 +667,16 @@ ${generatedContent}`;
         {showResults && (
           <div className="bg-gray-800 rounded-lg p-6 border-2 border-orange-400 animate-fade-in">
             <h2 className="text-2xl mb-4 text-orange-400">KASPAR RESEARCH OUTPUT</h2>
+            
+            {/* Show loading state if no content yet but not generating */}
+            {!generatedContent && !isGenerating && (
+              <div className="mb-4 p-4 bg-yellow-900 rounded border border-yellow-700 text-center">
+                <div className="animate-spin h-6 w-6 border-2 border-yellow-400 border-t-transparent rounded-full mx-auto mb-2"></div>
+                <p className="text-yellow-400">Retrieving your research results...</p>
+                <p className="text-sm text-yellow-600 mt-1">Your API response may be loading from the database</p>
+              </div>
+            )}
+            
             <div className="prose prose-invert max-w-none">
               <h3 className="text-xl mb-3">Generated by {models.find(m => m.id === selectedModel)?.fullName || selectedModel.toUpperCase()}</h3>
               
