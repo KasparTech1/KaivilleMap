@@ -641,6 +641,37 @@ ${generatedContent}`;
                 <p className="text-gray-300 whitespace-pre-wrap">
                   {generatedContent}
                 </p>
+                {generatedContent.includes('Error') && (
+                  <div className="mt-4 p-3 bg-yellow-900 rounded border border-yellow-700">
+                    <p className="text-yellow-400 text-sm mb-2">
+                      💡 Tip: Your API response may have been saved even if the UI timed out.
+                    </p>
+                    <button
+                      onClick={async () => {
+                        try {
+                          const response = await fetch('/api/research/prompts/recent?limit=5');
+                          const data = await response.json();
+                          if (data.prompts && data.prompts.length > 0) {
+                            const mostRecent = data.prompts[0];
+                            if (mostRecent.response?.content) {
+                              setGeneratedContent(mostRecent.response.content);
+                              setUsageData({
+                                inputTokens: mostRecent.response.input_tokens,
+                                outputTokens: mostRecent.response.output_tokens,
+                                totalTokens: mostRecent.response.tokens_used
+                              });
+                            }
+                          }
+                        } catch (err) {
+                          console.error('Failed to recover response:', err);
+                        }
+                      }}
+                      className="px-3 py-1 bg-yellow-700 hover:bg-yellow-600 rounded text-sm"
+                    >
+                      Try to Recover Last Response
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="mt-6 flex gap-3 flex-wrap">
                 <button

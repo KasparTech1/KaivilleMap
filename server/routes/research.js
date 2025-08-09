@@ -26,7 +26,8 @@ const {
   updateSegmentOptionHandler,
   getStatusHandler,
   testGrokHandler,
-  testGPT5Handler
+  testGPT5Handler,
+  getRecentPromptsHandler
 } = require('../services/research/controllers');
 
 // Routes
@@ -55,6 +56,7 @@ router.put('/templates/:id', updateTemplateHandler);
 // Prompt History
 router.get('/prompts/history', getPromptHistoryHandler);
 router.get('/prompts/stats', getPromptStatsHandler);
+router.get('/prompts/recent', getRecentPromptsHandler);
 router.get('/prompts/:id', getPromptByIdHandler);
 router.post('/prompts/:id/clone', clonePromptHandler);
 
