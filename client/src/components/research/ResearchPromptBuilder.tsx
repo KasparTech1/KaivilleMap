@@ -23,6 +23,7 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
   const [processingMessage, setProcessingMessage] = useState('');
   const [thinkingProcess, setThinkingProcess] = useState<string[]>([]);
   const [usageData, setUsageData] = useState<any>(null);
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
   const [promptSegments, setPromptSegments] = useState({
     business_unit: null,
     research_domain: null,
@@ -207,6 +208,17 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
     setShowCustomInput({ ...showCustomInput, [segment]: false });
   };
 
+  const cancelGeneration = () => {
+    if (abortController) {
+      abortController.abort();
+      setAbortController(null);
+    }
+    setIsGenerating(false);
+    setProcessingMessage('');
+    setGeneratedContent('Generation cancelled by user');
+    setShowResults(true);
+  };
+
   const pullLever = async () => {
     if (Object.values(promptSegments).some(v => v)) {
       setLeverPulled(true);
@@ -216,6 +228,10 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
       setStreamingContent('');
       setGeneratedContent('');
       setShowResults(false);
+      
+      // Create abort controller for cancellation
+      const controller = new AbortController();
+      setAbortController(controller);
       
       setTimeout(() => {
         setLeverPulled(false);
@@ -294,11 +310,20 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
         }
         
         setIsGenerating(false);
+        setAbortController(null);
       } catch (error) {
         clearInterval(messageInterval);
         console.error('Error generating research:', error);
         setProcessingMessage('');
         setIsGenerating(false);
+        setAbortController(null);
+        
+        // Check if it was cancelled
+        if (error.name === 'AbortError') {
+          setGeneratedContent('Research generation was cancelled.');
+          setShowResults(true);
+          return;
+        }
         
         let errorMessage = error.message || 'Please check your API configuration and try again.';
         
@@ -636,20 +661,59 @@ ${generatedContent}
           </button>
         </div>
 
-        {/* Processing Feedback */}
-        {isGenerating && processingMessage && (
-          <div className="mb-8 text-center animate-fade-in">
-            <div className="bg-gray-800 rounded-lg p-6 border-2 border-yellow-600 max-w-2xl mx-auto">
-              <div className="flex items-center justify-center mb-4">
-                <div className="animate-spin h-8 w-8 border-4 border-yellow-600 border-t-transparent rounded-full mr-3"></div>
-                <h3 className="text-xl text-yellow-400">Research in Progress</h3>
+        {/* Focused Modal Overlay for Generation */}
+        {isGenerating && (
+          <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 animate-fade-in">
+            <div className="bg-gray-900 rounded-lg p-8 border-2 border-orange-400 max-w-3xl w-full shadow-2xl">
+              {/* Header with Cancel */}
+              <div className="flex justify-between items-start mb-6">
+                <h2 className="text-2xl font-bold text-orange-400">GENERATING RESEARCH</h2>
+                <button
+                  onClick={cancelGeneration}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded text-white flex items-center gap-2 transition-colors"
+                >
+                  <span className="text-lg">✕</span>
+                  CANCEL
+                </button>
               </div>
-              <p className="text-lg text-gray-300 mb-2">{processingMessage}</p>
-              <p className="text-sm text-gray-500">
-                This may take 30-60 seconds depending on the complexity of your request.
-                <br />
-                Your comprehensive research report is being generated with citations and analysis.
-              </p>
+              
+              {/* Lever Animation */}
+              <div className="flex justify-center mb-8">
+                <div className={`
+                  relative w-48 h-24 rounded-lg bg-yellow-600 animate-pulse
+                  shadow-lg shadow-yellow-600/50
+                `}>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-lg font-bold mb-1">GENERATING...</div>
+                      <ChevronDown size={20} className="mx-auto animate-bounce" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Progress Messages */}
+              <div className="bg-gray-800 rounded-lg p-6 border-2 border-yellow-600">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="animate-spin h-8 w-8 border-4 border-yellow-600 border-t-transparent rounded-full mr-3"></div>
+                  <h3 className="text-xl text-yellow-400">Research in Progress</h3>
+                </div>
+                <p className="text-lg text-gray-300 mb-2 text-center">{processingMessage}</p>
+                <div className="text-sm text-gray-500 text-center">
+                  <p>Model: <span className="text-orange-400">{models.find(m => m.id === selectedModel)?.fullName}</span></p>
+                  <p className="mt-2">This may take 30-60 seconds depending on the complexity of your request.</p>
+                  <p>Your comprehensive research report is being generated with citations and analysis.</p>
+                </div>
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="mt-6">
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div className="bg-gradient-to-r from-orange-400 to-yellow-400 h-2 rounded-full animate-pulse" 
+                    style={{ width: '100%', animation: 'loading 3s ease-in-out infinite' }}
+                  ></div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -834,6 +898,11 @@ ${generatedContent}
         }
         .animate-check {
           animation: check-bounce 0.3s ease-out;
+        }
+        @keyframes loading {
+          0% { transform: translateX(-100%); }
+          50% { transform: translateX(0); }
+          100% { transform: translateX(100%); }
         }
       `}</style>
     </div>
