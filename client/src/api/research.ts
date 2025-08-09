@@ -1,6 +1,9 @@
 interface GenerateResearchRequest {
-  model: 'claude' | 'grok';
+  model: 'claude' | 'gpt4' | 'grok';
   prompt: string;
+  templateId?: string;
+  promptSegments?: any;
+  savePrompt?: boolean;
 }
 
 interface GenerateResearchResponse {

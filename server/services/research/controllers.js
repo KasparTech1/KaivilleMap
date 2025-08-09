@@ -1,6 +1,8 @@
 const { normalizeAndValidate } = require('./normalizer');
 const { createEmbeddingsForArticle } = require('./embeddings');
 const { supabase } = require('./supabaseClient');
+const templateService = require('./templateService');
+const promptService = require('./promptService');
 
 const { formatWithLLM, isLLMAvailable } = require('./llmFormatter');
 
@@ -298,17 +300,37 @@ async function deleteArticleHandler(req, res) {
 // POST /api/research/generate
 async function generateResearchHandler(req, res) {
   try {
-    const { model, prompt } = req.body || {};
+    const { model, prompt, templateId, promptSegments, savePrompt = true } = req.body || {};
     
     if (!model || !prompt) {
       return badRequest(res, 'model and prompt are required');
     }
     
-    if (!['claude', 'grok'].includes(model)) {
-      return badRequest(res, 'model must be either "claude" or "grok"');
+    if (!['claude', 'gpt4', 'grok'].includes(model)) {
+      return badRequest(res, 'model must be either "claude", "gpt4", or "grok"');
+    }
+    
+    let promptRecord = null;
+    const startTime = Date.now();
+    
+    // Save prompt if requested
+    if (savePrompt && templateId) {
+      try {
+        promptRecord = await promptService.savePrompt({
+          templateId,
+          model,
+          promptSegments,
+          assembledPrompt: prompt
+        });
+      } catch (saveError) {
+        console.error('Failed to save prompt:', saveError);
+        // Continue with generation even if save fails
+      }
     }
     
     let content = '';
+    let tokensUsed = null;
+    let errorMessage = null;
     
     if (model === 'claude') {
       // Use Anthropic API
@@ -329,19 +351,53 @@ async function generateResearchHandler(req, res) {
         });
         
         content = response.content[0].text;
+        tokensUsed = response.usage?.output_tokens || null;
       } catch (error) {
         console.error('Anthropic API error:', error);
-        return serverError(res, 'Failed to generate research with Claude');
+        errorMessage = error.message || 'Failed to generate research with Claude';
+        return serverError(res, errorMessage);
+      }
+    } else if (model === 'gpt4') {
+      // Use OpenAI GPT-4
+      const OpenAI = require('openai');
+      const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY
+      });
+      
+      try {
+        const response = await openai.chat.completions.create({
+          model: 'gpt-4-turbo-preview',
+          messages: [{
+            role: 'user',
+            content: prompt
+          }],
+          temperature: 0.7,
+          max_tokens: 4096
+        });
+        
+        content = response.choices[0].message.content;
+        tokensUsed = response.usage?.total_tokens || null;
+      } catch (error) {
+        console.error('OpenAI GPT-4 API error:', error);
+        errorMessage = error.message || 'Failed to generate research with GPT-4';
+        return serverError(res, errorMessage);
       }
     } else if (model === 'grok') {
       // Use xAI/Grok API via OpenAI client
       const OpenAI = require('openai');
+      
+      if (!process.env.XAI_KEY) {
+        console.error('XAI_KEY environment variable not set');
+        return serverError(res, 'Grok API key not configured');
+      }
+      
       const openai = new OpenAI({
         apiKey: process.env.XAI_KEY,
         baseURL: 'https://api.x.ai/v1'
       });
       
       try {
+        console.log('Calling Grok API with prompt length:', prompt.length);
         const response = await openai.chat.completions.create({
           model: 'grok-beta',
           messages: [{
@@ -353,19 +409,257 @@ async function generateResearchHandler(req, res) {
         });
         
         content = response.choices[0].message.content;
+        tokensUsed = response.usage?.total_tokens || null;
       } catch (error) {
-        console.error('xAI/Grok API error:', error);
-        return serverError(res, 'Failed to generate research with Grok');
+        console.error('xAI/Grok API detailed error:', {
+          message: error.message,
+          status: error.status,
+          response: error.response?.data,
+          headers: error.response?.headers
+        });
+        errorMessage = `Grok API Error: ${error.message || 'Unknown error'}`;
+        
+        // Check for specific error types
+        if (error.status === 401) {
+          errorMessage = 'Invalid Grok API key. Please check XAI_KEY configuration.';
+        } else if (error.status === 429) {
+          errorMessage = 'Grok API rate limit exceeded. Please try again later.';
+        } else if (error.status === 500) {
+          errorMessage = 'Grok API server error. The service may be temporarily unavailable.';
+        }
+        
+        return serverError(res, errorMessage);
+      }
+    }
+    
+    const responseTimeMs = Date.now() - startTime;
+    
+    // Save response if we have a prompt record
+    if (promptRecord) {
+      try {
+        await promptService.saveResponse({
+          promptId: promptRecord.id,
+          model,
+          content,
+          tokensUsed,
+          responseTimeMs,
+          errorMessage
+        });
+      } catch (saveError) {
+        console.error('Failed to save response:', saveError);
+        // Continue even if save fails
       }
     }
     
     return res.json({ 
       content, 
       model,
+      promptId: promptRecord?.id || null,
       timestamp: new Date().toISOString()
     });
   } catch (e) {
     console.error('Generate research error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// GET /api/research/templates
+async function getTemplatesHandler(req, res) {
+  try {
+    const templates = await templateService.getTemplates();
+    return res.json(templates);
+  } catch (e) {
+    console.error('Get templates error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// GET /api/research/templates/:id
+async function getTemplateByIdHandler(req, res) {
+  try {
+    const { id } = req.params;
+    const template = await templateService.getTemplateWithSegments(id);
+    
+    if (!template) {
+      return res.status(404).json({ error: { code: 'not_found', message: 'Template not found' } });
+    }
+    
+    // Also get quick starts for this template
+    const quickStarts = await templateService.getQuickStarts(id);
+    
+    return res.json({
+      ...template,
+      quickStarts
+    });
+  } catch (e) {
+    console.error('Get template error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// GET /api/research/templates/default
+async function getDefaultTemplateHandler(req, res) {
+  try {
+    const template = await templateService.getDefaultTemplate();
+    
+    if (!template) {
+      return res.status(404).json({ error: { code: 'not_found', message: 'No default template found' } });
+    }
+    
+    // Get full template with segments
+    const fullTemplate = await templateService.getTemplateWithSegments(template.id);
+    const quickStarts = await templateService.getQuickStarts(template.id);
+    
+    return res.json({
+      ...fullTemplate,
+      quickStarts
+    });
+  } catch (e) {
+    console.error('Get default template error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// POST /api/research/templates
+async function createTemplateHandler(req, res) {
+  try {
+    const { name, description, icon } = req.body;
+    
+    if (!name) {
+      return badRequest(res, 'name is required');
+    }
+    
+    const template = await templateService.createTemplate({
+      name,
+      description,
+      icon
+    });
+    
+    return res.json(template);
+  } catch (e) {
+    console.error('Create template error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// PUT /api/research/templates/:id
+async function updateTemplateHandler(req, res) {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    
+    const template = await templateService.updateTemplate(id, updates);
+    return res.json(template);
+  } catch (e) {
+    console.error('Update template error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// GET /api/research/prompts/history
+async function getPromptHistoryHandler(req, res) {
+  try {
+    const { limit = 50, offset = 0, userId } = req.query;
+    const history = await promptService.getPromptHistory(userId, parseInt(limit), parseInt(offset));
+    return res.json(history);
+  } catch (e) {
+    console.error('Get prompt history error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// GET /api/research/prompts/:id
+async function getPromptByIdHandler(req, res) {
+  try {
+    const { id } = req.params;
+    const prompt = await promptService.getPromptWithResponse(id);
+    
+    if (!prompt) {
+      return res.status(404).json({ error: { code: 'not_found', message: 'Prompt not found' } });
+    }
+    
+    return res.json(prompt);
+  } catch (e) {
+    console.error('Get prompt error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// GET /api/research/prompts/stats
+async function getPromptStatsHandler(req, res) {
+  try {
+    const { userId } = req.query;
+    const stats = await promptService.getPromptStats(userId);
+    return res.json(stats);
+  } catch (e) {
+    console.error('Get prompt stats error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// POST /api/research/prompts/:id/clone
+async function clonePromptHandler(req, res) {
+  try {
+    const { id } = req.params;
+    const cloned = await promptService.clonePrompt(id);
+    return res.json(cloned);
+  } catch (e) {
+    console.error('Clone prompt error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// POST /api/research/segment-options
+async function createSegmentOptionHandler(req, res) {
+  try {
+    const optionData = req.body;
+    
+    if (!optionData.segment_id || !optionData.option_key || !optionData.display_text || !optionData.prompt_text) {
+      return badRequest(res, 'segment_id, option_key, display_text, and prompt_text are required');
+    }
+    
+    const option = await templateService.createSegmentOption(optionData);
+    return res.json(option);
+  } catch (e) {
+    console.error('Create segment option error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// PUT /api/research/segment-options/:id
+async function updateSegmentOptionHandler(req, res) {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    
+    const option = await templateService.updateSegmentOption(id, updates);
+    return res.json(option);
+  } catch (e) {
+    console.error('Update segment option error:', e);
+    return serverError(res, e.message);
+  }
+}
+
+// GET /api/research/status - Check API configuration
+async function getStatusHandler(req, res) {
+  try {
+    const status = {
+      anthropic: !!process.env.ANTHROPIC_KEY,
+      openai: !!process.env.OPENAI_API_KEY,
+      xai: !!process.env.XAI_KEY,
+      supabase: !!process.env.SUPABASE_URL && !!process.env.SUPABASE_SERVICE_KEY
+    };
+    
+    return res.json({
+      configured: status,
+      models: {
+        claude: status.anthropic ? 'configured' : 'missing ANTHROPIC_KEY',
+        gpt4: status.openai ? 'configured' : 'missing OPENAI_API_KEY',
+        grok: status.xai ? 'configured' : 'missing XAI_KEY'
+      }
+    });
+  } catch (e) {
+    console.error('Get status error:', e);
     return serverError(res, e.message);
   }
 }
@@ -380,6 +674,18 @@ module.exports = {
   relatedArticlesHandler,
   reprocessHandler,
   deleteArticleHandler,
-  generateResearchHandler
+  generateResearchHandler,
+  getTemplatesHandler,
+  getTemplateByIdHandler,
+  getDefaultTemplateHandler,
+  createTemplateHandler,
+  updateTemplateHandler,
+  getPromptHistoryHandler,
+  getPromptByIdHandler,
+  getPromptStatsHandler,
+  clonePromptHandler,
+  createSegmentOptionHandler,
+  updateSegmentOptionHandler,
+  getStatusHandler
 };
 

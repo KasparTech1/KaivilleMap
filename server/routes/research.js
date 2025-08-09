@@ -12,7 +12,19 @@ const {
   relatedArticlesHandler,
   reprocessHandler,
   deleteArticleHandler,
-  generateResearchHandler
+  generateResearchHandler,
+  getTemplatesHandler,
+  getTemplateByIdHandler,
+  getDefaultTemplateHandler,
+  createTemplateHandler,
+  updateTemplateHandler,
+  getPromptHistoryHandler,
+  getPromptByIdHandler,
+  getPromptStatsHandler,
+  clonePromptHandler,
+  createSegmentOptionHandler,
+  updateSegmentOptionHandler,
+  getStatusHandler
 } = require('../services/research/controllers');
 
 // Routes
@@ -30,6 +42,26 @@ router.delete('/articles/:id', deleteArticleHandler);
 
 // AI Research Generation
 router.post('/generate', generateResearchHandler);
+
+// Template Management
+router.get('/templates', getTemplatesHandler);
+router.get('/templates/default', getDefaultTemplateHandler);
+router.get('/templates/:id', getTemplateByIdHandler);
+router.post('/templates', createTemplateHandler);
+router.put('/templates/:id', updateTemplateHandler);
+
+// Prompt History
+router.get('/prompts/history', getPromptHistoryHandler);
+router.get('/prompts/stats', getPromptStatsHandler);
+router.get('/prompts/:id', getPromptByIdHandler);
+router.post('/prompts/:id/clone', clonePromptHandler);
+
+// Segment Options Management
+router.post('/segment-options', createSegmentOptionHandler);
+router.put('/segment-options/:id', updateSegmentOptionHandler);
+
+// Status check
+router.get('/status', getStatusHandler);
 
 module.exports = router;
 

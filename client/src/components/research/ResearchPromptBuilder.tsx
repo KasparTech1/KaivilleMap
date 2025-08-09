@@ -26,6 +26,7 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
 
   const models = [
     { id: 'claude', name: 'CLAUDE', icon: Brain, color: 'rgb(255, 140, 0)' },
+    { id: 'gpt4', name: 'GPT-4', icon: Cpu, color: 'rgb(0, 255, 157)' },
     { id: 'grok', name: 'GROK', icon: Zap, color: 'rgb(138, 43, 226)' }
   ];
 
@@ -180,7 +181,7 @@ export const ResearchPromptBuilder: React.FC<ResearchPromptBuilderProps> = ({ on
       
       try {
         const data = await generateResearch({
-          model: selectedModel as 'claude' | 'grok',
+          model: selectedModel as 'claude' | 'gpt4' | 'grok',
           prompt: assemblePrompt()
         });
         
