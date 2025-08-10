@@ -67,6 +67,13 @@ export const ResearchArticleDetailPage: React.FC = () => {
           throw new Error(`Error loading article: ${res.status}`);
         }
         const data = await res.json();
+        console.log('Article loaded:', { 
+          id: data.id, 
+          title: data.title, 
+          slug: data.slug,
+          hasContentMd: !!data.content_md,
+          contentMdLength: data.content_md?.length || 0
+        });
         setArticle(data);
       } catch (e: any) {
         setError(e.message || 'Failed to load research article');
@@ -102,7 +109,26 @@ export const ResearchArticleDetailPage: React.FC = () => {
   }
 
   const handleEdit = () => {
-    setEditedArticle(article);
+    if (!article) {
+      console.error('Cannot edit: article is null');
+      return;
+    }
+    
+    // Create a deep copy of the article to avoid reference issues
+    const articleCopy = {
+      ...article,
+      // Ensure content_md exists - if not, try to convert from HTML or use empty string
+      content_md: article.content_md || '', // We'll just use empty string if no markdown exists
+      authors: [...(article.authors || [])],
+      key_points: [...(article.key_points || [])],
+      domains: [...(article.domains || [])],
+      topics: [...(article.topics || [])],
+      keywords: [...(article.keywords || [])],
+    };
+    
+    console.log('Entering edit mode with article:', articleCopy);
+    
+    setEditedArticle(articleCopy);
     setIsEditMode(true);
     setHasUnsavedChanges(false);
   };
@@ -155,7 +181,10 @@ export const ResearchArticleDetailPage: React.FC = () => {
   };
 
   const handleFieldChange = (field: string, value: any) => {
-    if (!editedArticle) return;
+    if (!editedArticle) {
+      console.error('Cannot change field: editedArticle is null');
+      return;
+    }
     
     setEditedArticle({
       ...editedArticle,
@@ -343,7 +372,7 @@ export const ResearchArticleDetailPage: React.FC = () => {
           </div>
 
           {/* Edit Mode - Metadata Fields */}
-          {isEditMode && (
+          {isEditMode && editedArticle && (
             <Card className="bg-gray-50 p-6 mb-6 border border-gray-300">
               <h3 className="text-lg font-semibold text-[#1f4e79] mb-4">Metadata</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -599,20 +628,36 @@ export const ResearchArticleDetailPage: React.FC = () => {
                 [&>*]:mb-4 [&>*:last-child]:mb-0"
               dangerouslySetInnerHTML={{ __html: article.content_html }}
             />
-          ) : (
+          ) : editedArticle ? (
             <div className="min-h-[500px]">
-              <MDEditor
-                value={editedArticle?.content_md || ''}
-                onChange={(value) => handleFieldChange('content_md', value || '')}
-                preview="live"
-                height={600}
-                textareaProps={{
-                  placeholder: 'Enter your markdown content here...\n\n# Heading 1\n## Heading 2\n### Heading 3\n\n**Bold text** and *italic text*\n\n- Bullet list\n- Another item\n\n1. Numbered list\n2. Another item'
-                }}
-                previewOptions={{
-                  className: 'prose prose-lg max-w-none prose-headings:text-[#1f4e79] prose-headings:font-serif prose-headings:font-bold'
-                }}
-              />
+              {(() => {
+                try {
+                  return (
+                    <MDEditor
+                      value={editedArticle?.content_md || ''}
+                      onChange={(value) => handleFieldChange('content_md', value || '')}
+                      preview="live"
+                      height={600}
+                      textareaProps={{
+                        placeholder: 'Enter your markdown content here...\n\n# Heading 1\n## Heading 2\n### Heading 3\n\n**Bold text** and *italic text*\n\n- Bullet list\n- Another item\n\n1. Numbered list\n2. Another item'
+                      }}
+                    />
+                  );
+                } catch (error) {
+                  console.error('MDEditor error:', error);
+                  return (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded">
+                      <p className="text-red-600">Error loading markdown editor</p>
+                      <textarea
+                        className="w-full h-96 p-4 border rounded mt-2"
+                        value={editedArticle?.content_md || ''}
+                        onChange={(e) => handleFieldChange('content_md', e.target.value)}
+                        placeholder="Enter markdown content..."
+                      />
+                    </div>
+                  );
+                }
+              })()}
               <div className="mt-4 text-sm text-gray-600">
                 <p className="font-semibold mb-2">Markdown Quick Reference:</p>
                 <div className="grid grid-cols-2 gap-4">
@@ -632,6 +677,10 @@ export const ResearchArticleDetailPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          ) : (
+            <div className="p-8 text-center text-gray-500">
+              <p>Loading editor...</p>
             </div>
           )}
         </Card>
