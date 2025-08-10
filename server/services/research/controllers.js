@@ -1276,6 +1276,8 @@ async function updateArticleHandler(req, res) {
     const { id } = req.params;
     const updates = req.body;
     
+    console.log('Update request received:', { id, updateFields: Object.keys(updates) });
+    
     // Remove fields that shouldn't be updated directly
     delete updates.id;
     delete updates.created_at;
@@ -1306,30 +1308,38 @@ async function updateArticleHandler(req, res) {
     
     // Process key_points if it's an array
     if (updates.key_points && Array.isArray(updates.key_points)) {
-      updates.key_points = JSON.stringify(updates.key_points);
+      // Filter out empty strings and ensure valid array
+      const validKeyPoints = updates.key_points.filter(point => point && point.trim());
+      updates.key_points = validKeyPoints.length > 0 ? validKeyPoints : [];
     }
     
     // Convert markdown to HTML if content_md is updated
     if (updates.content_md) {
-      const { marked } = require('marked');
-      const DOMPurify = require('isomorphic-dompurify');
-      
-      // Configure marked for safe rendering
-      marked.setOptions({
-        gfm: true,
-        breaks: true,
-        sanitize: false // We'll use DOMPurify instead
-      });
-      
-      // Convert markdown to HTML and sanitize
-      const rawHtml = marked(updates.content_md);
-      updates.content_html = DOMPurify.sanitize(rawHtml, {
-        ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'u', 's', 
-                      'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead', 
-                      'tbody', 'tr', 'th', 'td', 'hr', 'div', 'span'],
-        ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'target'],
-        ALLOW_DATA_ATTR: false
-      });
+      try {
+        const { marked } = require('marked');
+        const DOMPurify = require('isomorphic-dompurify');
+        
+        // Configure marked for safe rendering
+        marked.setOptions({
+          gfm: true,
+          breaks: true,
+          sanitize: false // We'll use DOMPurify instead
+        });
+        
+        // Convert markdown to HTML and sanitize
+        const rawHtml = marked(updates.content_md);
+        updates.content_html = DOMPurify.sanitize(rawHtml, {
+          ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'u', 's', 
+                        'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead', 
+                        'tbody', 'tr', 'th', 'td', 'hr', 'div', 'span'],
+          ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'target'],
+          ALLOW_DATA_ATTR: false
+        });
+      } catch (markdownError) {
+        console.error('Markdown conversion error:', markdownError);
+        // If markdown conversion fails, use the raw content
+        updates.content_html = updates.content_md;
+      }
     }
     
     // Update timestamps
@@ -1362,8 +1372,13 @@ async function updateArticleHandler(req, res) {
     return res.json({ article });
     
   } catch (error) {
-    console.error('updateArticleHandler error:', error);
-    return serverError(res, 'Failed to update article');
+    console.error('updateArticleHandler error details:', {
+      message: error.message,
+      stack: error.stack,
+      updates: updates,
+      articleId: id
+    });
+    return serverError(res, `Failed to update article: ${error.message}`);
   }
 }
 
