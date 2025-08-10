@@ -1319,15 +1319,18 @@ async function updateArticleHandler(req, res) {
         const { marked } = require('marked');
         const DOMPurify = require('isomorphic-dompurify');
         
-        // Configure marked for safe rendering
-        marked.setOptions({
+        console.log('Converting markdown to HTML, content length:', updates.content_md.length);
+        
+        // Configure marked options - use the synchronous parse method
+        const rawHtml = marked.parse(updates.content_md, {
           gfm: true,
           breaks: true,
-          sanitize: false // We'll use DOMPurify instead
+          sanitize: false
         });
         
-        // Convert markdown to HTML and sanitize
-        const rawHtml = marked(updates.content_md);
+        console.log('Raw HTML generated, length:', rawHtml.length);
+        
+        // Sanitize the HTML
         updates.content_html = DOMPurify.sanitize(rawHtml, {
           ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'u', 's', 
                         'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead', 
@@ -1335,8 +1338,13 @@ async function updateArticleHandler(req, res) {
           ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'target'],
           ALLOW_DATA_ATTR: false
         });
+        
+        console.log('Sanitized HTML generated, length:', updates.content_html.length);
+        console.log('HTML preview:', updates.content_html.substring(0, 200) + '...');
+        
       } catch (markdownError) {
         console.error('Markdown conversion error:', markdownError);
+        console.log('Falling back to raw markdown content');
         // If markdown conversion fails, use the raw content
         updates.content_html = updates.content_md;
       }
