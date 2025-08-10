@@ -389,58 +389,58 @@ export const ResearchArticleDetailPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <EditableField
                   label="Business Unit"
-                  value={editedArticle?.business_unit || ''}
+                  value={editedArticle?.business_unit || 'none'}
                   type="select"
                   options={[
-                    { value: '', label: 'None' },
+                    { value: 'none', label: 'None' },
                     { value: 'bedrock', label: 'Bedrock Truck Beds' },
                     { value: 'circle_y', label: 'Circle Y Saddles' },
                     { value: 'horizon', label: 'Horizon Firearms' },
                     { value: 'wire_works', label: 'Wire Works' },
                     { value: 'precious_metals', label: 'TX Precious Metals' },
                   ]}
-                  onChange={(value) => handleFieldChange('business_unit', value || null)}
+                  onChange={(value) => handleFieldChange('business_unit', value === 'none' ? null : value)}
                 />
                 <EditableField
                   label="Research Domain"
-                  value={editedArticle?.research_domain || ''}
+                  value={editedArticle?.research_domain || 'none'}
                   type="select"
                   options={[
-                    { value: '', label: 'None' },
+                    { value: 'none', label: 'None' },
                     { value: 'manufacturing', label: 'Manufacturing Optimization' },
                     { value: 'quality', label: 'Quality & Automation' },
                     { value: 'supply_chain', label: 'Supply Chain' },
                     { value: 'market', label: 'Market Analysis' },
                     { value: 'innovation', label: 'Product Innovation' },
                   ]}
-                  onChange={(value) => handleFieldChange('research_domain', value || null)}
+                  onChange={(value) => handleFieldChange('research_domain', value === 'none' ? null : value)}
                 />
                 <EditableField
                   label="Analysis Method"
-                  value={editedArticle?.analysis_method || ''}
+                  value={editedArticle?.analysis_method || 'none'}
                   type="select"
                   options={[
-                    { value: '', label: 'None' },
+                    { value: 'none', label: 'None' },
                     { value: 'predictive', label: 'Predictive Analytics' },
                     { value: 'process_mining', label: 'Process Mining' },
                     { value: 'ai_automation', label: 'AI Automation' },
                     { value: 'benchmarking', label: 'Industry Benchmarking' },
                     { value: 'roi_analysis', label: 'ROI Analysis' },
                   ]}
-                  onChange={(value) => handleFieldChange('analysis_method', value || null)}
+                  onChange={(value) => handleFieldChange('analysis_method', value === 'none' ? null : value)}
                 />
                 <EditableField
                   label="Report Type"
-                  value={editedArticle?.report_type || ''}
+                  value={editedArticle?.report_type || 'none'}
                   type="select"
                   options={[
-                    { value: '', label: 'None' },
+                    { value: 'none', label: 'None' },
                     { value: 'executive', label: 'Executive Brief' },
                     { value: 'technical', label: 'Technical Report' },
                     { value: 'implementation', label: 'Implementation Plan' },
                     { value: 'case_study', label: 'Case Study' },
                   ]}
-                  onChange={(value) => handleFieldChange('report_type', value || null)}
+                  onChange={(value) => handleFieldChange('report_type', value === 'none' ? null : value)}
                 />
                 <EditableField
                   label="Authors"
