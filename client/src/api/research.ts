@@ -66,3 +66,21 @@ export async function submitResearchArticle(
 
   return response.json();
 }
+
+export async function updateResearchArticle(id: string, updates: any): Promise<any> {
+  const response = await fetch(`/api/research/articles/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updates),
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Unknown error' }));
+    throw new Error(error.error?.message || error.message || 'Failed to update article');
+  }
+  
+  const data = await response.json();
+  return data.article;
+}

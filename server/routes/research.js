@@ -11,6 +11,7 @@ const {
   getTagsHandler,
   relatedArticlesHandler,
   reprocessHandler,
+  updateArticleHandler,
   deleteArticleHandler,
   generateResearchHandler,
   getTemplatesHandler,
@@ -42,6 +43,7 @@ router.get('/articles/:id/related', relatedArticlesHandler);
 router.get('/tags', getTagsHandler);
 
 router.post('/articles/:id/reprocess', reprocessHandler);
+router.put('/articles/:id', updateArticleHandler);
 router.delete('/articles/:id', deleteArticleHandler);
 
 // AI Research Generation

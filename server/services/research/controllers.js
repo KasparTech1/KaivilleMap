@@ -1270,6 +1270,103 @@ async function testGrokHandler(req, res) {
   }
 }
 
+// PUT /api/research/articles/:id
+async function updateArticleHandler(req, res) {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    
+    // Remove fields that shouldn't be updated directly
+    delete updates.id;
+    delete updates.created_at;
+    delete updates.content_hash;
+    
+    // Validate enum fields if provided
+    const validBusinessUnits = ['bedrock', 'circle_y', 'horizon', 'wire_works', 'precious_metals'];
+    const validDomains = ['manufacturing', 'quality', 'supply_chain', 'market', 'innovation'];
+    const validMethods = ['predictive', 'process_mining', 'ai_automation', 'benchmarking', 'roi_analysis'];
+    const validReportTypes = ['executive', 'technical', 'implementation', 'case_study'];
+    const validModels = ['gpt5', 'claude', 'grok'];
+    
+    if (updates.business_unit && !validBusinessUnits.includes(updates.business_unit)) {
+      return badRequest(res, 'Invalid business unit');
+    }
+    if (updates.research_domain && !validDomains.includes(updates.research_domain)) {
+      return badRequest(res, 'Invalid research domain');
+    }
+    if (updates.analysis_method && !validMethods.includes(updates.analysis_method)) {
+      return badRequest(res, 'Invalid analysis method');
+    }
+    if (updates.report_type && !validReportTypes.includes(updates.report_type)) {
+      return badRequest(res, 'Invalid report type');
+    }
+    if (updates.ai_model && !validModels.includes(updates.ai_model)) {
+      return badRequest(res, 'Invalid AI model');
+    }
+    
+    // Process key_points if it's an array
+    if (updates.key_points && Array.isArray(updates.key_points)) {
+      updates.key_points = JSON.stringify(updates.key_points);
+    }
+    
+    // Convert markdown to HTML if content_md is updated
+    if (updates.content_md) {
+      const { marked } = require('marked');
+      const DOMPurify = require('isomorphic-dompurify');
+      
+      // Configure marked for safe rendering
+      marked.setOptions({
+        gfm: true,
+        breaks: true,
+        sanitize: false // We'll use DOMPurify instead
+      });
+      
+      // Convert markdown to HTML and sanitize
+      const rawHtml = marked(updates.content_md);
+      updates.content_html = DOMPurify.sanitize(rawHtml, {
+        ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'u', 's', 
+                      'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead', 
+                      'tbody', 'tr', 'th', 'td', 'hr', 'div', 'span'],
+        ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'target'],
+        ALLOW_DATA_ATTR: false
+      });
+    }
+    
+    // Update timestamps
+    updates.updated_at = new Date().toISOString();
+    
+    // Update the article
+    const { data: article, error } = await supabase
+      .from('research_articles')
+      .update(updates)
+      .eq('id', id)
+      .select('*')
+      .single();
+      
+    if (error) {
+      console.error('Update article error:', error);
+      return serverError(res, error.message);
+    }
+    
+    if (!article) {
+      return res.status(404).json({ error: { code: 'not_found', message: 'Article not found' } });
+    }
+    
+    // If content was updated, regenerate embeddings in background
+    if (updates.content_md || updates.summary) {
+      createEmbeddingsForArticle(article).catch(err => {
+        console.error('Failed to regenerate embeddings:', err);
+      });
+    }
+    
+    return res.json({ article });
+    
+  } catch (error) {
+    console.error('updateArticleHandler error:', error);
+    return serverError(res, 'Failed to update article');
+  }
+}
+
 module.exports = {
   pasteHandler,
   uploadHandler,
@@ -1279,6 +1376,7 @@ module.exports = {
   getTagsHandler,
   relatedArticlesHandler,
   reprocessHandler,
+  updateArticleHandler,
   deleteArticleHandler,
   generateResearchHandler,
   getTemplatesHandler,
