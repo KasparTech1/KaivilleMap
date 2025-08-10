@@ -5,7 +5,8 @@ import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../components/ui/alert-dialog';
 import { ChevronLeft, ExternalLink, Calendar, Building2, MapPin, Users, Trash2, Cpu, Brain, Zap, FileText, BarChart3, Factory, Clock, Edit, Save, X } from 'lucide-react';
-import MDEditor from '@uiw/react-md-editor';
+// Temporarily comment out MDEditor to debug
+// import MDEditor from '@uiw/react-md-editor';
 import { EditableField } from '../components/research/EditableField';
 import { updateResearchArticle } from '../api/research';
 import DOMPurify from 'dompurify';
@@ -310,6 +311,16 @@ export const ResearchArticleDetailPage: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Debug Info */}
+      {isEditMode && (
+        <div className="container mx-auto px-6 py-2 max-w-5xl">
+          <div className="bg-blue-50 border border-blue-200 rounded p-2 text-xs">
+            Debug: isEditMode={String(isEditMode)}, editedArticle={editedArticle ? 'exists' : 'null'}, 
+            hasContentMd={editedArticle?.content_md ? 'yes' : 'no'}
+          </div>
+        </div>
+      )}
 
       {/* Article Content */}
       <article className="container mx-auto px-6 py-10 max-w-5xl">
@@ -630,34 +641,29 @@ export const ResearchArticleDetailPage: React.FC = () => {
             />
           ) : editedArticle ? (
             <div className="min-h-[500px]">
-              {(() => {
-                try {
-                  return (
-                    <MDEditor
-                      value={editedArticle?.content_md || ''}
-                      onChange={(value) => handleFieldChange('content_md', value || '')}
-                      preview="live"
-                      height={600}
-                      textareaProps={{
-                        placeholder: 'Enter your markdown content here...\n\n# Heading 1\n## Heading 2\n### Heading 3\n\n**Bold text** and *italic text*\n\n- Bullet list\n- Another item\n\n1. Numbered list\n2. Another item'
-                      }}
-                    />
-                  );
-                } catch (error) {
-                  console.error('MDEditor error:', error);
-                  return (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded">
-                      <p className="text-red-600">Error loading markdown editor</p>
-                      <textarea
-                        className="w-full h-96 p-4 border rounded mt-2"
-                        value={editedArticle?.content_md || ''}
-                        onChange={(e) => handleFieldChange('content_md', e.target.value)}
-                        placeholder="Enter markdown content..."
-                      />
-                    </div>
-                  );
-                }
-              })()}
+              <div className="space-y-4">
+                <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
+                  <p className="text-sm text-yellow-800">Markdown editor temporarily disabled for debugging. Using plain text editor.</p>
+                </div>
+                <textarea
+                  className="w-full h-96 p-4 border border-gray-300 rounded-md font-mono text-sm"
+                  value={editedArticle?.content_md || ''}
+                  onChange={(e) => handleFieldChange('content_md', e.target.value)}
+                  placeholder="Enter markdown content here...
+
+# Heading 1
+## Heading 2
+### Heading 3
+
+**Bold text** and *italic text*
+
+- Bullet list
+- Another item
+
+1. Numbered list
+2. Another item"
+                />
+              </div>
               <div className="mt-4 text-sm text-gray-600">
                 <p className="font-semibold mb-2">Markdown Quick Reference:</p>
                 <div className="grid grid-cols-2 gap-4">
