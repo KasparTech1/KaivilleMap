@@ -57,7 +57,7 @@ export const ResearchCenterPage: React.FC = () => {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error?.message || `HTTP ${res.status}`);
-      setSubmitMsg('Submitted for review. It will appear after moderation (status: published).');
+      setSubmitMsg('Article published successfully!');
       setPasteText('');
       setProcessingStatus(null);
     } catch (e: any) {
@@ -109,7 +109,7 @@ export const ResearchCenterPage: React.FC = () => {
               <button className="text-gray-500 hover:text-gray-700" onClick={() => setShowUpload(false)}>✕</button>
             </div>
             <p className="text-sm text-gray-600 mb-3">
-              Paste content with YAML frontmatter (title, year, domains/topics, etc.). All submissions go to moderation.
+              Paste content with YAML frontmatter (title, year, domains/topics, etc.). All submissions are automatically published.
             </p>
             <textarea
               className="w-full h-64 border rounded p-3 font-mono text-sm"
