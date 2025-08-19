@@ -4,6 +4,7 @@ const router = express.Router();
 // Subrouters
 const researchRouter = require('./research');
 const debugRouter = require('./debug');
+const adminRouter = require('./admin');
 
 // Root path response
 router.get("/", (req, res) => {
@@ -19,5 +20,8 @@ router.use('/research', researchRouter);
 
 // Debug API routes (for schema checking)
 router.use('/debug', debugRouter);
+
+// Admin API routes
+router.use('/admin', adminRouter);
 
 module.exports = router;
