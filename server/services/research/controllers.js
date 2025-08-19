@@ -1316,30 +1316,14 @@ async function updateArticleHandler(req, res) {
     // Convert markdown to HTML if content_md is updated
     if (updates.content_md) {
       try {
-        const { marked } = require('marked');
-        const DOMPurify = require('isomorphic-dompurify');
+        const { renderMarkdownToHtml } = require('./markdown');
         
-        console.log('Converting markdown to HTML, content length:', updates.content_md.length);
+        console.log('Converting markdown to HTML using enhanced renderer, content length:', updates.content_md.length);
         
-        // Configure marked options - use the synchronous parse method
-        const rawHtml = marked.parse(updates.content_md, {
-          gfm: true,
-          breaks: true,
-          sanitize: false
-        });
+        // Use our enhanced markdown renderer with proper formatting
+        updates.content_html = await renderMarkdownToHtml(updates.content_md);
         
-        console.log('Raw HTML generated, length:', rawHtml.length);
-        
-        // Sanitize the HTML
-        updates.content_html = DOMPurify.sanitize(rawHtml, {
-          ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'em', 'u', 's', 
-                        'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'table', 'thead', 
-                        'tbody', 'tr', 'th', 'td', 'hr', 'div', 'span'],
-          ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'target'],
-          ALLOW_DATA_ATTR: false
-        });
-        
-        console.log('Sanitized HTML generated, length:', updates.content_html.length);
+        console.log('Enhanced HTML generated, length:', updates.content_html.length);
         console.log('HTML preview:', updates.content_html.substring(0, 200) + '...');
         
       } catch (markdownError) {
