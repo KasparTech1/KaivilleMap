@@ -60,6 +60,13 @@ export const ResearchCenterPage: React.FC = () => {
       setSubmitMsg('Article published successfully!');
       setPasteText('');
       setProcessingStatus(null);
+      // Auto-close modal after 1.5 seconds on success
+      setTimeout(() => {
+        setShowUpload(false);
+        setSubmitMsg('');
+        // Refresh the articles list to show the new article
+        window.location.reload();
+      }, 1500);
     } catch (e: any) {
       setSubmitMsg(`Error: ${e.message}`);
       setProcessingStatus(null);
