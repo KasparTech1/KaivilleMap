@@ -6,7 +6,7 @@ const md = new MarkdownIt({
   linkify: true, 
   typographer: true,
   breaks: true,
-  quotes: '""''',
+  quotes: '""\'\'',
 })
 .enable(['table', 'strikethrough'])
 .disable(['image']); // Disable images for security
