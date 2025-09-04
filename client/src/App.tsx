@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import { ThemeProvider } from "./components/ui/theme-provider"
 import { Toaster } from "./components/ui/toaster"
@@ -20,9 +21,36 @@ import { BuildingEditor } from "./pages/admin/BuildingEditor"
 import { TestPage } from "./pages/TestPage"
 import ResearchCenterPage from "./pages/ResearchCenterPage"
 import ResearchArticleDetailPage from "./pages/ResearchArticleDetailPage"
+import { SiteLogin } from "./components/SiteLogin"
 
 function App() {
   console.log('Initializing Kaiville Interactive Map App');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is already authenticated
+    const authenticated = sessionStorage.getItem('siteAuthenticated') === 'true';
+    setIsAuthenticated(authenticated);
+    setIsLoading(false);
+  }, []);
+
+  const handleAuthenticated = () => {
+    setIsAuthenticated(true);
+  };
+
+  if (isLoading) {
+    return null; // Or a loading spinner
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <ThemeProvider defaultTheme="light" storageKey="ui-theme">
+        <SiteLogin onAuthenticated={handleAuthenticated} />
+        <Toaster />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="ui-theme">
