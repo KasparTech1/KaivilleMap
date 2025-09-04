@@ -505,15 +505,23 @@ export const HomePage: React.FC = () => {
               </div>
               
               {/* Wire Basket */}
-              <div className="flex-shrink-0 self-end">
-                <img 
-                  src={getAssetUrl('wire-basket.svg')} 
-                  alt="Wire basket"
-                  className="w-8 h-auto md:w-10 opacity-70"
-                  style={{
-                    filter: isDayMode ? 'none' : 'brightness(0.8)'
-                  }}
-                />
+              <div className="flex-shrink-0 self-end group relative">
+                <div className="relative transform transition-all duration-300 hover:scale-125">
+                  {/* Blue orb glow effect on hover */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute w-16 h-16 md:w-20 md:h-20 bg-blue-500 rounded-full blur-xl" />
+                    <div className="absolute w-12 h-12 md:w-16 md:h-16 bg-blue-400 rounded-full blur-lg animate-pulse" />
+                    <div className="absolute w-8 h-8 md:w-10 md:h-10 bg-white rounded-full blur-md opacity-60" />
+                  </div>
+                  <img 
+                    src={getAssetUrl('wire-basket.svg')} 
+                    alt="Wire basket"
+                    className="relative z-10 w-8 h-auto md:w-10 opacity-70 group-hover:opacity-100 transition-all duration-300"
+                    style={{
+                      filter: isDayMode ? 'none' : 'brightness(0.8)'
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
