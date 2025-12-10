@@ -1,0 +1,82 @@
+# Dockerfile for DGX Spark deployment
+# Multi-stage build: React frontend + Express backend
+
+# =============================================================================
+# Stage 1: Build React frontend
+# =============================================================================
+FROM node:18-alpine AS client-build
+
+WORKDIR /app/client
+
+# Copy package files first for better layer caching
+COPY client/package*.json ./
+
+# Install dependencies
+RUN npm install --legacy-peer-deps --no-audit --progress=false
+
+# Copy client source
+COPY client/ ./
+
+# Build arguments for Vite (passed at build time)
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
+ARG VITE_API_URL
+
+# Set as environment variables for the build
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+ENV VITE_API_URL=$VITE_API_URL
+
+# Build React app with increased memory for build process
+ENV NODE_OPTIONS="--max_old_space_size=1024"
+RUN npm run build
+
+# =============================================================================
+# Stage 2: Production server
+# =============================================================================
+FROM node:18-alpine
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init curl
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+# Create app directory
+WORKDIR /app
+
+# Copy server package files
+COPY server/package*.json ./
+
+# Install production dependencies only
+RUN npm install --production --legacy-peer-deps --no-audit --progress=false
+
+# Copy server source code
+COPY server/ ./
+
+# Copy built React app from build stage
+COPY --from=client-build /app/client/dist ./public
+
+# Create uploads directory
+RUN mkdir -p ./uploads && chown -R nodejs:nodejs /app
+
+# Switch to non-root user
+USER nodejs
+
+# Runtime environment
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start the server
+CMD ["node", "index.js"]
