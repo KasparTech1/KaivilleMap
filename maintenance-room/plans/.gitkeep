@@ -1,0 +1,20 @@
+# Plans Directory
+
+Generated implementation plans will be saved here.
+
+These files ARE committed to the repository to share architectural decisions with the team.
+
+Example plan file:
+- PLAN-research-center.md
+
+Plans are generated based on your decision answers and include:
+- Architecture decisions summary
+- Implementation roadmap
+- Technical requirements
+- Testing strategy
+- Risk mitigation
+- Next steps
+
+To generate a plan, ask Claude Code:
+"Generate an implementation plan from my decisions and save it to
+maintenance-room/plans/PLAN-research-center.md"

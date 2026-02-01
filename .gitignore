@@ -6,3 +6,6 @@ client/package-lock.json
 node_modules/
 package-lock.json
 .env
+
+# Maintenance Room - Keep decision answers private
+maintenance-room/answers/

@@ -1,0 +1,997 @@
+{
+  "feature": "research-center-architecture",
+  "title": "Research Center Architecture Decisions",
+  "description": "Architectural decisions for the KaivilleMap Research Center - LLM-powered article generation, formatting, storage, and Circle Y integration.",
+  "version": "1.0",
+  "lastUpdated": "2026-02-01",
+  "questions": [
+    {
+      "id": "q1",
+      "phase": "Phase 1: LLM Provider Strategy",
+      "question": "How should we handle multiple LLM providers (OpenAI, Anthropic, Azure)?",
+      "context": "Currently only OpenAI is fully implemented. Anthropic and Azure have placeholder code but throw errors. Need to decide on multi-provider strategy.",
+      "options": [
+        {
+          "id": "openai-only",
+          "label": "OpenAI Only (Current State)",
+          "recommended": false,
+          "description": "Keep only OpenAI implementation, remove Anthropic/Azure code entirely",
+          "pros": [
+            "Simplest implementation",
+            "Lower maintenance burden",
+            "Proven stable provider",
+            "Best API documentation"
+          ],
+          "cons": [
+            "Vendor lock-in risk",
+            "No fallback if OpenAI has issues",
+            "Can't optimize for cost across providers",
+            "Limited to OpenAI's models and capabilities"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "flexibility": "Low",
+            "complexity": "Low",
+            "cost": "Higher (single vendor)",
+            "reliability": "Medium (single point of failure)"
+          }
+        },
+        {
+          "id": "multi-provider-failover",
+          "label": "Multi-Provider with Automatic Failover",
+          "recommended": true,
+          "description": "Implement all providers with automatic failover - if primary fails, try secondary",
+          "pros": [
+            "High reliability (automatic fallback)",
+            "Can optimize for cost by provider",
+            "Different models for different use cases",
+            "No vendor lock-in"
+          ],
+          "cons": [
+            "More complex implementation",
+            "Need to normalize responses across providers",
+            "More API keys to manage",
+            "Testing complexity increases"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "flexibility": "High",
+            "complexity": "High",
+            "cost": "Optimizable (can choose cheapest)",
+            "reliability": "High (multiple fallbacks)"
+          }
+        },
+        {
+          "id": "multi-provider-manual",
+          "label": "Multi-Provider with Manual Selection",
+          "recommended": false,
+          "description": "Implement all providers but require explicit selection (no automatic failover)",
+          "pros": [
+            "Predictable behavior",
+            "Users can choose preferred provider",
+            "Easier to debug (no automatic switching)",
+            "Lower complexity than automatic failover"
+          ],
+          "cons": [
+            "Users must handle failures manually",
+            "No automatic reliability improvement",
+            "Still need to implement all providers",
+            "Poor UX if provider is down"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "flexibility": "Medium",
+            "complexity": "Medium",
+            "cost": "Optimizable (manual selection)",
+            "reliability": "Low (no failover)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "phase": "Phase 1: LLM Provider Strategy",
+      "question": "Which LLM models should we support for different use cases?",
+      "context": "Different research tasks may benefit from different models - fast/cheap for summaries, powerful/expensive for deep analysis.",
+      "options": [
+        {
+          "id": "single-model",
+          "label": "Single Model for All Tasks",
+          "recommended": false,
+          "description": "Use one model (e.g., GPT-4) for all research generation tasks",
+          "pros": [
+            "Simplest implementation",
+            "Consistent quality",
+            "Easier to predict costs",
+            "Less configuration needed"
+          ],
+          "cons": [
+            "Higher costs (using expensive model for simple tasks)",
+            "Slower for simple tasks",
+            "Can't optimize for specific use cases",
+            "Wasteful resource usage"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "costEfficiency": "Low",
+            "performance": "Consistent but not optimized",
+            "complexity": "Low"
+          }
+        },
+        {
+          "id": "tiered-models",
+          "label": "Tiered Model Selection (Fast/Smart/Deep)",
+          "recommended": true,
+          "description": "Use different models based on task complexity: GPT-3.5 for simple, GPT-4 for complex, Claude Opus for deep analysis",
+          "pros": [
+            "Cost optimized (cheap models for simple tasks)",
+            "Performance optimized (fast models for quick tasks)",
+            "Quality optimized (best models for important tasks)",
+            "Flexible and scalable"
+          ],
+          "cons": [
+            "More configuration complexity",
+            "Need to classify task complexity",
+            "Inconsistent output formats to normalize",
+            "More API management"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "costEfficiency": "High",
+            "performance": "High (optimized per task)",
+            "complexity": "Medium"
+          }
+        },
+        {
+          "id": "user-selectable",
+          "label": "User-Selectable Model per Generation",
+          "recommended": false,
+          "description": "Let users choose which model to use for each article generation",
+          "pros": [
+            "Maximum user control",
+            "Users can optimize for their needs",
+            "Easy to A/B test different models",
+            "Transparent costs to users"
+          ],
+          "cons": [
+            "Cognitive load on users",
+            "Most users won't know which to choose",
+            "Inconsistent results across users",
+            "Poor default experience"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "costEfficiency": "Variable (user-dependent)",
+            "performance": "Variable",
+            "complexity": "Low (simple pass-through)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "phase": "Phase 2: Article Generation Workflow",
+      "question": "Should article generation be synchronous or asynchronous?",
+      "context": "Currently appears to be synchronous (request waits for completion). LLM calls can take 30+ seconds. Need to decide on user experience.",
+      "options": [
+        {
+          "id": "synchronous",
+          "label": "Synchronous (Wait for Completion)",
+          "recommended": false,
+          "description": "User makes request, waits for article to be fully generated before getting response",
+          "pros": [
+            "Simple implementation",
+            "Immediate feedback (success or failure)",
+            "No polling or websockets needed",
+            "User knows exactly when done"
+          ],
+          "cons": [
+            "Poor UX for long generations (30+ seconds)",
+            "Browser timeout risk",
+            "Blocks user from other actions",
+            "Can't batch multiple generations"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "userExperience": "Poor for slow tasks",
+            "scalability": "Low",
+            "complexity": "Low"
+          }
+        },
+        {
+          "id": "async-queue",
+          "label": "Asynchronous Queue with Status Polling",
+          "recommended": true,
+          "description": "Queue article generation jobs, return immediately with job ID, user polls for status/results",
+          "pros": [
+            "Better UX (immediate response)",
+            "Can batch multiple jobs",
+            "Better error handling",
+            "No browser timeout issues",
+            "Can prioritize jobs"
+          ],
+          "cons": [
+            "More complex implementation",
+            "Need job queue system",
+            "Need polling or websockets",
+            "Database for job status"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "userExperience": "Good (responsive UI)",
+            "scalability": "High",
+            "complexity": "High"
+          }
+        },
+        {
+          "id": "hybrid",
+          "label": "Hybrid: Fast Sync, Slow Async",
+          "recommended": false,
+          "description": "Simple generations run synchronously, complex ones queue asynchronously based on estimated time",
+          "pros": [
+            "Best UX (simple is instant, complex is queued)",
+            "Doesn't force async for simple cases",
+            "Balanced complexity",
+            "Users get immediate results when possible"
+          ],
+          "cons": [
+            "Two code paths to maintain",
+            "Need to estimate generation time",
+            "Inconsistent UX patterns",
+            "More testing complexity"
+          ],
+          "impact": {
+            "techDebt": "High (two patterns)",
+            "userExperience": "Good (optimized per case)",
+            "scalability": "Medium",
+            "complexity": "High"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "phase": "Phase 2: Article Generation Workflow",
+      "question": "How should we handle article formatting and structure?",
+      "context": "Generated articles need to be formatted into markdown with proper sections, metadata, and styling. Current implementation uses llmFormatter.js.",
+      "options": [
+        {
+          "id": "llm-formats",
+          "label": "LLM Generates Pre-Formatted Markdown",
+          "recommended": true,
+          "description": "Prompt instructs LLM to output properly formatted markdown directly",
+          "pros": [
+            "Simpler implementation (no post-processing)",
+            "LLM handles structure intelligently",
+            "More natural writing flow",
+            "Fewer parsing errors"
+          ],
+          "cons": [
+            "Less control over exact format",
+            "LLM might not follow format perfectly",
+            "Harder to enforce consistent structure",
+            "Costs more tokens (format instructions in prompt)"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "qualityConsistency": "Medium (LLM-dependent)",
+            "flexibility": "High",
+            "cost": "Higher (more prompt tokens)"
+          }
+        },
+        {
+          "id": "structured-extraction",
+          "label": "LLM Outputs JSON, We Format to Markdown",
+          "recommended": false,
+          "description": "Prompt LLM to output structured JSON, then convert to markdown with templates",
+          "pros": [
+            "Consistent formatting guaranteed",
+            "Easy to validate structure",
+            "Can change templates without re-generating",
+            "Better error handling"
+          ],
+          "cons": [
+            "More complex implementation",
+            "LLM must output valid JSON",
+            "Two-step process (generate then format)",
+            "Template system to maintain"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "qualityConsistency": "High (template-enforced)",
+            "flexibility": "Medium",
+            "cost": "Similar (different token distribution)"
+          }
+        },
+        {
+          "id": "hybrid-format",
+          "label": "LLM Markdown + Post-Processing Cleanup",
+          "recommended": false,
+          "description": "LLM generates markdown, we run cleanup/normalization scripts after",
+          "pros": [
+            "Balance of control and naturalness",
+            "Can fix common LLM formatting issues",
+            "Preserves LLM's writing style",
+            "Allows for custom enhancements"
+          ],
+          "cons": [
+            "Need robust markdown parser",
+            "Edge cases in cleanup logic",
+            "Could corrupt good LLM output",
+            "Adds processing time"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "qualityConsistency": "Medium (best effort)",
+            "flexibility": "High",
+            "cost": "Similar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "phase": "Phase 3: Circle Y Integration",
+      "question": "How should Circle Y business data be integrated into research generation?",
+      "context": "Circle Y is an optional external PostgreSQL database with business data. Currently has conditional integration with graceful fallback.",
+      "options": [
+        {
+          "id": "optional-checkbox",
+          "label": "Optional Checkbox (Current Approach)",
+          "recommended": true,
+          "description": "User explicitly opts-in to include Circle Y data via checkbox/toggle",
+          "pros": [
+            "User control over data inclusion",
+            "Clear when Circle Y is being used",
+            "Easy to debug issues",
+            "No surprise data in articles"
+          ],
+          "cons": [
+            "Users might forget to enable it",
+            "Extra UI element needed",
+            "Two code paths to maintain",
+            "Requires user knowledge of Circle Y"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "userExperience": "Good (explicit control)",
+            "dataIntegrity": "High (intentional)",
+            "complexity": "Low"
+          }
+        },
+        {
+          "id": "auto-detect",
+          "label": "Automatic Detection Based on Topic",
+          "recommended": false,
+          "description": "Automatically query Circle Y if topic is business-related (detect keywords)",
+          "pros": [
+            "Seamless user experience",
+            "No extra UI needed",
+            "Smart data enrichment",
+            "Users don't need to understand Circle Y"
+          ],
+          "cons": [
+            "May query unnecessarily",
+            "Keyword detection unreliable",
+            "Surprises users with data they didn't expect",
+            "Harder to debug why Circle Y was queried"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "userExperience": "Good if accurate, poor if not",
+            "dataIntegrity": "Medium (automatic decisions)",
+            "complexity": "Medium"
+          }
+        },
+        {
+          "id": "always-include",
+          "label": "Always Include When Available",
+          "recommended": false,
+          "description": "If Circle Y is configured, always query and include relevant data",
+          "pros": [
+            "Richest articles possible",
+            "No user decisions needed",
+            "Simplest user experience",
+            "Maximizes Circle Y value"
+          ],
+          "cons": [
+            "Performance impact on all generations",
+            "Irrelevant data in non-business articles",
+            "No control for users who don't want it",
+            "Higher Circle Y database load"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "userExperience": "Mixed (convenience vs relevance)",
+            "dataIntegrity": "Low (may include irrelevant data)",
+            "complexity": "Low"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "phase": "Phase 3: Circle Y Integration",
+      "question": "What should happen when Circle Y database is unavailable or returns errors?",
+      "context": "Circle Y is external and optional. Need graceful degradation strategy.",
+      "options": [
+        {
+          "id": "fail-gracefully",
+          "label": "Fail Gracefully (Continue Without Circle Y Data)",
+          "recommended": true,
+          "description": "Log error, continue article generation without Circle Y data, notify user",
+          "pros": [
+            "Article generation never fails due to Circle Y",
+            "Best user experience (always get article)",
+            "Circle Y is truly optional",
+            "No dependency on external system"
+          ],
+          "cons": [
+            "User might expect Circle Y data but not get it",
+            "Silent failures if notification missed",
+            "Incomplete articles if Circle Y was critical",
+            "Hard to notice Circle Y issues"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "userExperience": "Good (reliable generation)",
+            "dataIntegrity": "Medium (missing data acceptable)",
+            "reliability": "High"
+          }
+        },
+        {
+          "id": "fail-hard",
+          "label": "Fail Hard (Reject Request if Circle Y Selected)",
+          "recommended": false,
+          "description": "If user requested Circle Y data but it's unavailable, return error and don't generate",
+          "pros": [
+            "User knows exactly why it failed",
+            "No incomplete articles",
+            "Respects user's explicit request",
+            "Clear error messaging"
+          ],
+          "cons": [
+            "Poor user experience (no article at all)",
+            "Circle Y becomes critical dependency",
+            "Users frustrated by failures",
+            "Reduces system reliability"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "userExperience": "Poor (blocked on external system)",
+            "dataIntegrity": "High (all or nothing)",
+            "reliability": "Low"
+          }
+        },
+        {
+          "id": "retry-fallback",
+          "label": "Retry with Exponential Backoff, Then Fail Gracefully",
+          "recommended": false,
+          "description": "Try Circle Y multiple times with delays, then continue without it if all retries fail",
+          "pros": [
+            "Handles transient Circle Y issues",
+            "Best chance of getting Circle Y data",
+            "Still generates article eventually",
+            "Good balance of reliability and completeness"
+          ],
+          "cons": [
+            "Adds latency to generation (retries take time)",
+            "More complex error handling",
+            "User waits longer only to get partial result",
+            "Could mask persistent Circle Y issues"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "userExperience": "Mixed (slower but more complete)",
+            "dataIntegrity": "Medium (best effort)",
+            "reliability": "Medium"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "phase": "Phase 4: Template & Customization",
+      "question": "How should article templates and customization be handled?",
+      "context": "Research articles may need different structures for different domains (business analysis vs technical research vs market reports).",
+      "options": [
+        {
+          "id": "single-template",
+          "label": "Single Universal Template",
+          "recommended": false,
+          "description": "One article template structure for all research types",
+          "pros": [
+            "Simplest implementation",
+            "Consistent article format",
+            "Easy to understand for users",
+            "Lower maintenance"
+          ],
+          "cons": [
+            "Not optimized for specific domains",
+            "May be too generic",
+            "Can't specialize for use cases",
+            "Limits article variety"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "flexibility": "Low",
+            "userSatisfaction": "Medium",
+            "complexity": "Low"
+          }
+        },
+        {
+          "id": "template-library",
+          "label": "Template Library (Predefined Options)",
+          "recommended": true,
+          "description": "Curated set of templates for common use cases (business, technical, market, etc.)",
+          "pros": [
+            "Optimized templates for each domain",
+            "Users can choose appropriate structure",
+            "Maintains consistency within domains",
+            "Extensible over time"
+          ],
+          "cons": [
+            "Need to create and maintain multiple templates",
+            "Users need to choose correct template",
+            "More complex template management",
+            "Testing across all templates"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "flexibility": "High",
+            "userSatisfaction": "High (tailored results)",
+            "complexity": "Medium"
+          }
+        },
+        {
+          "id": "fully-custom",
+          "label": "Fully Custom Templates (User-Defined)",
+          "recommended": false,
+          "description": "Users can create and save their own custom article templates",
+          "pros": [
+            "Maximum flexibility",
+            "Users can create perfect templates",
+            "Supports any use case",
+            "Power user feature"
+          ],
+          "cons": [
+            "Complex UI for template creation",
+            "Template quality varies by user skill",
+            "Harder to maintain/version templates",
+            "Steep learning curve"
+          ],
+          "impact": {
+            "techDebt": "High",
+            "flexibility": "Very High",
+            "userSatisfaction": "Variable (power users love, others confused)",
+            "complexity": "High"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q8",
+      "phase": "Phase 4: Template & Customization",
+      "question": "Should users be able to edit generated articles before publishing?",
+      "context": "Generated articles may need human review and editing. Need to decide on editing workflow.",
+      "options": [
+        {
+          "id": "edit-before-save",
+          "label": "Edit Before Saving (Draft Mode)",
+          "recommended": true,
+          "description": "Generated articles open in editable state, user reviews/edits, then explicitly saves",
+          "pros": [
+            "Quality control before articles go live",
+            "Users can fix LLM mistakes",
+            "Adds human expertise",
+            "Clear distinction between draft and published"
+          ],
+          "cons": [
+            "Slows down publishing workflow",
+            "Requires editing UI",
+            "Two-step process",
+            "Users might skip editing"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "qualityControl": "High",
+            "timeToPublish": "Slower",
+            "userControl": "High"
+          }
+        },
+        {
+          "id": "auto-publish",
+          "label": "Auto-Publish (Edit After if Needed)",
+          "recommended": false,
+          "description": "Articles immediately saved/published, users can edit afterward if they find issues",
+          "pros": [
+            "Fast publishing workflow",
+            "Less friction in generation",
+            "Good for trusted LLM outputs",
+            "Simpler user flow"
+          ],
+          "cons": [
+            "Quality issues might go live",
+            "No review before publish",
+            "Editing after publish is awkward",
+            "Trust in LLM output required"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "qualityControl": "Low",
+            "timeToPublish": "Fast",
+            "userControl": "Low (reactive)"
+          }
+        },
+        {
+          "id": "approval-workflow",
+          "label": "Approval Workflow (Review → Approve → Publish)",
+          "recommended": false,
+          "description": "Articles go through explicit approval steps, possibly with multiple reviewers",
+          "pros": [
+            "Highest quality control",
+            "Clear accountability",
+            "Good for enterprise/team use",
+            "Audit trail of approvals"
+          ],
+          "cons": [
+            "Complex workflow implementation",
+            "Slower time to publish",
+            "Requires user roles/permissions",
+            "Overkill for single users"
+          ],
+          "impact": {
+            "techDebt": "High",
+            "qualityControl": "Very High",
+            "timeToPublish": "Slowest",
+            "userControl": "High (but complex)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q9",
+      "phase": "Phase 5: Performance & Caching",
+      "question": "Should we cache LLM responses to avoid duplicate API calls?",
+      "context": "Similar prompts might generate similar content. Caching could reduce costs and latency.",
+      "options": [
+        {
+          "id": "no-cache",
+          "label": "No Caching (Always Fresh Generation)",
+          "recommended": false,
+          "description": "Every request generates new content from LLM, no caching",
+          "pros": [
+            "Always fresh content",
+            "No stale data issues",
+            "Simplest implementation",
+            "No cache invalidation complexity"
+          ],
+          "cons": [
+            "Higher costs (redundant API calls)",
+            "Slower (no cache hits)",
+            "Wastes resources on duplicate prompts",
+            "Scales poorly"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "cost": "High (no savings)",
+            "performance": "Slower",
+            "complexity": "Low"
+          }
+        },
+        {
+          "id": "semantic-cache",
+          "label": "Semantic Similarity Caching",
+          "recommended": true,
+          "description": "Cache based on prompt similarity (embedding vectors), return cached if prompt is similar enough",
+          "pros": [
+            "Catches semantic duplicates (not just exact matches)",
+            "Significant cost savings",
+            "Faster responses on cache hits",
+            "Smart reuse of content"
+          ],
+          "cons": [
+            "Complex implementation (need embeddings)",
+            "Requires vector database or similarity search",
+            "Cache invalidation strategy needed",
+            "May return 'close enough' content when user wants fresh"
+          ],
+          "impact": {
+            "techDebt": "High",
+            "cost": "Low (high savings)",
+            "performance": "Fast (when cached)",
+            "complexity": "High"
+          }
+        },
+        {
+          "id": "exact-match-cache",
+          "label": "Exact Match Caching (Hash-Based)",
+          "recommended": false,
+          "description": "Cache responses by exact prompt hash, return only for identical prompts",
+          "pros": [
+            "Simple implementation",
+            "Fast lookups (hash-based)",
+            "No false positives",
+            "Low complexity"
+          ],
+          "cons": [
+            "Low cache hit rate (prompts rarely identical)",
+            "Doesn't catch semantic duplicates",
+            "Limited cost savings",
+            "Small changes invalidate cache"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "cost": "Medium (some savings)",
+            "performance": "Medium (low hit rate)",
+            "complexity": "Low"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "phase": "Phase 5: Performance & Caching",
+      "question": "How should we handle rate limiting and cost controls for LLM usage?",
+      "context": "LLM API calls can be expensive and have rate limits. Need strategy to prevent runaway costs and API throttling.",
+      "options": [
+        {
+          "id": "no-limits",
+          "label": "No Limits (Trust Users)",
+          "recommended": false,
+          "description": "No rate limiting or cost controls, users can generate as much as they want",
+          "pros": [
+            "Simplest implementation",
+            "Best user experience (no restrictions)",
+            "No friction in workflow",
+            "Users can work at their own pace"
+          ],
+          "cons": [
+            "Risk of runaway costs",
+            "Can hit API rate limits",
+            "Abuse potential",
+            "Unpredictable billing"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "costControl": "None",
+            "userExperience": "Excellent (no limits)",
+            "risk": "High"
+          }
+        },
+        {
+          "id": "user-quotas",
+          "label": "Per-User Monthly Quotas",
+          "recommended": true,
+          "description": "Each user has monthly generation quota (e.g., 50 articles/month), with usage tracking",
+          "pros": [
+            "Predictable costs",
+            "Prevents abuse",
+            "Users can track their usage",
+            "Can offer paid tiers for more"
+          ],
+          "cons": [
+            "Requires user authentication",
+            "Usage tracking database needed",
+            "Users hit limits and get frustrated",
+            "Complex quota management"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "costControl": "High",
+            "userExperience": "Good (clear limits)",
+            "risk": "Low"
+          }
+        },
+        {
+          "id": "rate-limiting",
+          "label": "Rate Limiting (X Requests per Minute)",
+          "recommended": false,
+          "description": "Limit generation requests per time window (e.g., 5 per minute per user)",
+          "pros": [
+            "Prevents API rate limit hits",
+            "Simpler than quotas",
+            "Protects against spam",
+            "Works without authentication"
+          ],
+          "cons": [
+            "Doesn't control monthly costs",
+            "Frustrates legitimate heavy users",
+            "Can be bypassed with multiple sessions",
+            "Arbitrary limits feel restrictive"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "costControl": "Medium (prevents spikes only)",
+            "userExperience": "Poor (artificial delays)",
+            "risk": "Medium"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "phase": "Phase 6: Quality & Validation",
+      "question": "How should we validate and ensure quality of generated research articles?",
+      "context": "LLMs can generate inaccurate or low-quality content. Need quality assurance strategy.",
+      "options": [
+        {
+          "id": "post-generation-checks",
+          "label": "Automated Post-Generation Validation",
+          "recommended": true,
+          "description": "Run automated checks on generated content (length, structure, citations, factual claims)",
+          "pros": [
+            "Catches obvious quality issues",
+            "Automated (no human review needed)",
+            "Consistent quality baseline",
+            "Can reject and retry poor outputs"
+          ],
+          "cons": [
+            "Can't catch subtle inaccuracies",
+            "Complex validation logic",
+            "May reject valid content",
+            "Adds processing time"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "qualityControl": "Medium (catches obvious issues)",
+            "automation": "High",
+            "complexity": "Medium"
+          }
+        },
+        {
+          "id": "human-review",
+          "label": "Required Human Review Before Publishing",
+          "recommended": false,
+          "description": "All generated articles must be reviewed and approved by a human before publishing",
+          "pros": [
+            "Highest quality assurance",
+            "Human expertise applied",
+            "Catches all types of errors",
+            "Editorial control"
+          ],
+          "cons": [
+            "Requires human time/resources",
+            "Bottleneck in publishing workflow",
+            "Doesn't scale well",
+            "Defeats automation benefit"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "qualityControl": "Very High",
+            "automation": "Low",
+            "scalability": "Low"
+          }
+        },
+        {
+          "id": "confidence-scoring",
+          "label": "LLM Self-Assessment with Confidence Scores",
+          "recommended": false,
+          "description": "Ask LLM to rate its own confidence in the article, flag low-confidence for review",
+          "pros": [
+            "Automated quality triage",
+            "Focuses human review on questionable content",
+            "Scales well",
+            "LLM aware of its uncertainties"
+          ],
+          "cons": [
+            "LLMs not always accurate in self-assessment",
+            "Extra API call for confidence scoring",
+            "May miss issues LLM isn't aware of",
+            "False confidence can slip through"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "qualityControl": "Medium (LLM-dependent)",
+            "automation": "High",
+            "reliability": "Medium"
+          }
+        },
+        {
+          "id": "no-validation",
+          "label": "No Validation (Trust LLM Output)",
+          "recommended": false,
+          "description": "Publish LLM output directly without any validation checks",
+          "pros": [
+            "Fastest workflow",
+            "Simplest implementation",
+            "No additional processing",
+            "Full automation"
+          ],
+          "cons": [
+            "Quality issues will reach users",
+            "Inaccurate content may be published",
+            "No safety net",
+            "Risky for credibility"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "qualityControl": "None",
+            "automation": "Complete",
+            "risk": "High"
+          }
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "phase": "Phase 6: Quality & Validation",
+      "question": "Should we track and log LLM generations for debugging and improvement?",
+      "context": "Tracking prompts, responses, and metadata can help debug issues and improve the system over time.",
+      "options": [
+        {
+          "id": "full-logging",
+          "label": "Full Logging (Prompts, Responses, Metadata)",
+          "recommended": true,
+          "description": "Log all LLM interactions with timestamps, costs, models, prompts, and responses",
+          "pros": [
+            "Complete debugging information",
+            "Can analyze patterns and improve",
+            "Cost tracking per generation",
+            "Audit trail for issues"
+          ],
+          "cons": [
+            "Storage costs for logs",
+            "Privacy considerations (what's in prompts?)",
+            "Large database growth",
+            "Log retention policy needed"
+          ],
+          "impact": {
+            "techDebt": "Medium",
+            "debuggability": "Excellent",
+            "costTracking": "Complete",
+            "storage": "High usage"
+          }
+        },
+        {
+          "id": "metadata-only",
+          "label": "Metadata Only (No Prompt/Response Content)",
+          "recommended": false,
+          "description": "Log metadata (timestamp, model, cost, tokens) but not actual prompt/response content",
+          "pros": [
+            "Privacy-friendly",
+            "Lower storage costs",
+            "Still track usage patterns",
+            "Minimal database impact"
+          ],
+          "cons": [
+            "Can't debug content issues",
+            "Can't analyze prompt effectiveness",
+            "Limited improvement insights",
+            "Missing context for errors"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "debuggability": "Limited",
+            "costTracking": "Good",
+            "storage": "Low usage"
+          }
+        },
+        {
+          "id": "errors-only",
+          "label": "Log Only Errors and Failures",
+          "recommended": false,
+          "description": "Only log when LLM calls fail or return errors, ignore successful generations",
+          "pros": [
+            "Minimal storage",
+            "Focuses on problems",
+            "Simple implementation",
+            "Low database load"
+          ],
+          "cons": [
+            "No visibility into successful generations",
+            "Can't track costs or usage patterns",
+            "No data for improvement",
+            "Missing context for trends"
+          ],
+          "impact": {
+            "techDebt": "Low",
+            "debuggability": "Poor (error cases only)",
+            "costTracking": "None",
+            "storage": "Very low"
+          }
+        }
+      ]
+    }
+  ]
+}
