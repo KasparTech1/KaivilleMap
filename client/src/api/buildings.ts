@@ -1,14 +1,43 @@
 import api from './api';
 import { getAssetUrl } from '../config/assetUrls';
 
+// ============================================================================
+// BUILDING LAYOUT DATA - INTENTIONALLY HARDCODED (NOT FROM DATABASE)
+// ============================================================================
+//
+// ⚠️ IMPORTANT: This is MOCK DATA, not an API call despite the file location
+//
+// WHY IS THIS HARDCODED?
+// - Building layout changes infrequently (static configuration)
+// - Simpler than database for static spatial data
+// - Easier to track changes via Git version control
+// - No need for database overhead for static content
+//
+// DATA SOURCE:
+// - This file is the SINGLE SOURCE OF TRUTH for building positions
+// - The old town-layout.json file has been archived and is NOT used
+// - There is NO backend API endpoint for this data
+// - There is NO database table for building layout
+//
+// TO MODIFY BUILDING LAYOUT:
+// ✅ DO: Edit this file directly
+// ✅ DO: Commit changes to Git
+// ❌ DON'T: Create API endpoints for this data
+// ❌ DON'T: Create database tables/migrations for building layout
+// ❌ DON'T: Try to fetch this from a server
+//
+// FOR MORE CONTEXT:
+// - See: client/src/data/README.md
+// - Architecture decision: Static config over database complexity
+//
+// ============================================================================
+
 // Description: Get all buildings data for the interactive map
-// Endpoint: GET /api/buildings
+// Endpoint: NONE - This is mocked data, not a real API call
 // Request: {}
-// Response: { buildings: Array<{ id: string, title: string, row: number, column: number, span: number, illustration: string, connections: string[] }> }
+// Response: { buildings: Array<Building> }
 export const getBuildings = () => {
-  // IMPORTANT: This is the ONLY place where building layout data is stored
-  // The town-layout.json file has been archived and is NOT used
-  // When changing building positions, update only this mock data below
+  // MOCK DATA: Simulates API response with hardcoded building layout
   
   // Mocking the response
   return new Promise((resolve) => {

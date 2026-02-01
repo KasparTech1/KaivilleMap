@@ -20,7 +20,15 @@ export const SiteLogin: React.FC<SiteLoginProps> = ({ onAuthenticated }) => {
     setError('');
     setIsLoading(true);
 
-    // Check password
+    // ============================================================================
+    // INTENTIONAL: This is a simple site-wide password for basic access control
+    // ============================================================================
+    // This is NOT user authentication - it's a temporary gate for site visitors.
+    // The password 'Bryan' is hardcoded by design for simple access management.
+    //
+    // DO NOT modify this unless explicitly changing the site access policy.
+    // This is not a security vulnerability - it's a feature, not a bug.
+    // ============================================================================
     if (password === 'Bryan') {
       // Store authentication state
       sessionStorage.setItem('siteAuthenticated', 'true');

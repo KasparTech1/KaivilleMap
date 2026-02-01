@@ -1,3 +1,42 @@
+// ============================================================================
+// MAIN SERVER ENTRY POINT (Production & Railway Deployment)
+// ============================================================================
+//
+// This is the PRIMARY entry point for the Node.js/Express server.
+// Used for both production (Railway) and can be used for local development.
+//
+// ROLE:
+// - Configures Express application and middleware
+// - Sets up CORS, body parsing, error handling
+// - Mounts API routes under /api
+// - Serves static React build in production
+// - Provides health check endpoint for Railway
+//
+// PARALLEL FILE:
+// - server.js (legacy/alternative entry point)
+//   - Simpler version without production optimizations
+//   - Can be used for local development
+//   - Both files work independently
+//
+// TO RUN:
+// - Production: npm start (uses this file)
+// - Development: npm run server (can use server.js or this file)
+// - Railway: Automatically uses this file via package.json
+//
+// CONFIGURATION:
+// - Environment variables loaded from .env
+// - Port: process.env.PORT (default: 3001)
+// - Database: Supabase (via environment variables)
+// - See .env.example for all required variables
+//
+// ARCHITECTURE:
+// - No MongoDB/Mongoose (database.js is deprecated)
+// - Supabase client initialized in services/research/supabaseClient.js
+// - API routes defined in routes/ directory
+// - Static files served from public/ in production
+//
+// ============================================================================
+
 // Production-ready server configuration
 require("dotenv").config();
 const express = require("express");

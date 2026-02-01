@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "postinstall": "concurrently -n \"client,server\" \"npm run client-install\" \"npm run server-install\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node tests/testRunner.js",
+    "test:all": "node tests/runAllTests.js",
+    "test:pre-deploy": "node tests/preDeploymentTests.js",
+    "test:watch": "echo 'Watch mode not yet implemented'",
     "client": "cd client && npm run dev",
     "client-install": "cd client && npm install",
     "server": "cd server && npm run dev",

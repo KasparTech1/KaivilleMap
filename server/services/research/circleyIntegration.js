@@ -1,6 +1,32 @@
 /**
  * Circle Y Database Integration for Research Prompt Builder
- * Handles the integration of Circle Y business data into research prompts
+ *
+ * ============================================================================
+ * OPTIONAL FEATURE - Graceful Degradation
+ * ============================================================================
+ *
+ * This integration is OPTIONAL. The application works fully without it.
+ *
+ * BEHAVIOR:
+ * - If Circle Y credentials are NOT configured → Returns empty context
+ * - If Circle Y database is unavailable → Returns empty context with warning
+ * - If queries fail → Logs error, returns empty context (doesn't crash)
+ *
+ * CONFIGURATION:
+ * Required environment variables (in .env):
+ * - CIRCLEY_HOST
+ * - CIRCLEY_PORT
+ * - CIRCLEY_DATABASE
+ * - CIRCLEY_USER
+ * - CIRCLEY_PASSWORD
+ *
+ * If any are missing, Circle Y features are automatically disabled.
+ *
+ * ERROR HANDLING:
+ * All functions include try/catch blocks and return safe defaults on failure.
+ * Errors are logged but never thrown to prevent breaking the main application.
+ *
+ * ============================================================================
  */
 
 const circleyQueryService = require('./circleyQueryService');

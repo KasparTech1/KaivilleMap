@@ -1,8 +1,32 @@
 # Circle Y Saddles Database Integration Design
 
+---
+
+## ⚠️ OPTIONAL FEATURE
+
+**Status**: OPTIONAL - Application works fully without Circle Y integration
+
+**Key Points**:
+- Circle Y is an **external PostgreSQL database** providing additional business data
+- If Circle Y credentials are **NOT configured**, the application functions normally
+- All Circle Y queries include **graceful fallback** behavior
+- Missing Circle Y data does NOT break the application
+
+**To Enable**:
+- Set Circle Y environment variables in `.env` (see Configuration section below)
+- If variables are missing, Circle Y features are automatically disabled
+
+**To Disable**:
+- Simply omit Circle Y environment variables
+- OR set `CIRCLEY_ENABLED=false`
+
+---
+
 ## Overview
 
 This document outlines the design for integrating Circle Y Saddles database queries into the Research Prompt Builder. The integration allows AI models to access real-time business data when generating research reports for Circle Y.
+
+**This integration is entirely optional** - the Research Prompt Builder works with or without Circle Y data.
 
 ## Architecture
 

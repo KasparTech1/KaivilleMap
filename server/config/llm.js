@@ -133,15 +133,50 @@ class UnifiedLLMClient {
         const OpenAI = require('openai');
         this.client = new OpenAI({ apiKey: this.config.apiKey });
         break;
+
       case PROVIDERS.ANTHROPIC:
-        // TODO: const Anthropic = require('@anthropic-ai/sdk');
-        // TODO: this.client = new Anthropic({ apiKey: this.config.apiKey });
-        console.warn('Anthropic provider not yet implemented');
-        break;
+        // ====================================================================
+        // ANTHROPIC PROVIDER - NOT IMPLEMENTED
+        // ====================================================================
+        // The Anthropic SDK is installed but not yet configured.
+        // To use Anthropic, complete the implementation below.
+        //
+        // TODO: Uncomment and configure:
+        // const Anthropic = require('@anthropic-ai/sdk');
+        // this.client = new Anthropic({ apiKey: this.config.apiKey });
+        //
+        // For now, use LLM_PROVIDER=openai instead.
+        // ====================================================================
+        throw new Error(
+          'Anthropic LLM provider is not fully implemented. ' +
+          'Please set LLM_PROVIDER=openai in your .env file. ' +
+          'See server/config/llm.js lines 137-144 for implementation details.'
+        );
+
       case PROVIDERS.AZURE:
-        // TODO: Initialize Azure OpenAI client
-        console.warn('Azure OpenAI provider not yet implemented');
-        break;
+        // ====================================================================
+        // AZURE OPENAI PROVIDER - NOT IMPLEMENTED
+        // ====================================================================
+        // Azure OpenAI requires different initialization than standard OpenAI.
+        // To use Azure, complete the implementation below.
+        //
+        // TODO: Implement Azure OpenAI client:
+        // const { OpenAIClient, AzureKeyCredential } = require("@azure/openai");
+        // this.client = new OpenAIClient(
+        //   process.env.AZURE_OPENAI_ENDPOINT,
+        //   new AzureKeyCredential(this.config.apiKey)
+        // );
+        //
+        // For now, use LLM_PROVIDER=openai instead.
+        // ====================================================================
+        throw new Error(
+          'Azure OpenAI provider is not fully implemented. ' +
+          'Please set LLM_PROVIDER=openai in your .env file. ' +
+          'See server/config/llm.js lines 141-154 for implementation details.'
+        );
+
+      default:
+        throw new Error(`Unknown LLM provider: ${this.config.provider}`);
     }
   }
   
@@ -186,8 +221,20 @@ class UnifiedLLMClient {
             model: completion.model
           };
           
+        case PROVIDERS.ANTHROPIC:
+        case PROVIDERS.AZURE:
+          throw new Error(
+            `LLM provider '${this.config.provider}' is not fully implemented. ` +
+            `This should have been caught during initialization. ` +
+            `Please set LLM_PROVIDER=openai in your .env file.`
+          );
+
         default:
-          throw new Error(`Provider ${this.config.provider} not implemented`);
+          throw new Error(
+            `Unknown LLM provider: ${this.config.provider}. ` +
+            `Supported providers: ${Object.values(PROVIDERS).join(', ')}. ` +
+            `Only '${PROVIDERS.OPENAI}' is currently implemented.`
+          );
       }
     } catch (error) {
       console.error('LLM completion error:', error);
