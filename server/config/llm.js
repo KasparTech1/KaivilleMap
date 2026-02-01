@@ -49,7 +49,8 @@ require('dotenv').config();
 const PROVIDERS = {
   OPENAI: 'openai',
   ANTHROPIC: 'anthropic',
-  AZURE: 'azure'
+  AZURE: 'azure',
+  PERPLEXITY: 'perplexity'
 };
 
 // Model mappings
@@ -68,6 +69,11 @@ const MODELS = {
     default: 'gpt-4',
     fast: 'gpt-35-turbo',
     smart: 'gpt-4'
+  },
+  [PROVIDERS.PERPLEXITY]: {
+    default: 'llama-3.1-sonar-large-128k-online',
+    fast: 'llama-3.1-sonar-small-128k-online',
+    smart: 'llama-3.1-sonar-large-128k-online'
   }
 };
 
@@ -94,6 +100,8 @@ class LLMConfig {
         return process.env.ANTHROPIC_API_KEY;
       case PROVIDERS.AZURE:
         return process.env.AZURE_OPENAI_KEY;
+      case PROVIDERS.PERPLEXITY:
+        return process.env.PERPLEXITY_API_KEY;
       default:
         throw new Error(`Unknown LLM provider: ${this.provider}`);
     }
@@ -175,6 +183,20 @@ class UnifiedLLMClient {
           'See server/config/llm.js lines 141-154 for implementation details.'
         );
 
+      case PROVIDERS.PERPLEXITY:
+        // ====================================================================
+        // PERPLEXITY PROVIDER - OpenAI-Compatible API
+        // ====================================================================
+        // Perplexity uses OpenAI-compatible API with custom base URL
+        // Models: llama-3.1-sonar-large-128k-online (research-enhanced)
+        // ====================================================================
+        const PerplexityOpenAI = require('openai');
+        this.client = new PerplexityOpenAI({
+          apiKey: this.config.apiKey,
+          baseURL: 'https://api.perplexity.ai'
+        });
+        break;
+
       default:
         throw new Error(`Unknown LLM provider: ${this.config.provider}`);
     }
@@ -194,6 +216,8 @@ class UnifiedLLMClient {
     try {
       switch (this.config.provider) {
         case PROVIDERS.OPENAI:
+        case PROVIDERS.PERPLEXITY:
+          // Both use OpenAI-compatible API
           const completion = await this.client.chat.completions.create({
             model: this.config.model,
             messages: [
@@ -210,7 +234,7 @@ class UnifiedLLMClient {
             max_tokens: this.config.maxTokens,
             ...options
           });
-          
+
           return {
             text: completion.choices[0].message.content,
             usage: {
@@ -218,9 +242,10 @@ class UnifiedLLMClient {
               completionTokens: completion.usage.completion_tokens,
               totalTokens: completion.usage.total_tokens
             },
-            model: completion.model
+            model: completion.model,
+            provider: this.config.provider
           };
-          
+
         case PROVIDERS.ANTHROPIC:
         case PROVIDERS.AZURE:
           throw new Error(
@@ -233,7 +258,7 @@ class UnifiedLLMClient {
           throw new Error(
             `Unknown LLM provider: ${this.config.provider}. ` +
             `Supported providers: ${Object.values(PROVIDERS).join(', ')}. ` +
-            `Only '${PROVIDERS.OPENAI}' is currently implemented.`
+            `Currently implemented: ${PROVIDERS.OPENAI}, ${PROVIDERS.PERPLEXITY}`
           );
       }
     } catch (error) {
@@ -242,6 +267,61 @@ class UnifiedLLMClient {
     }
   }
   
+  /**
+   * Complete a prompt with automatic failover to backup providers
+   * @param {string} prompt - The prompt to complete
+   * @param {Object} options - Additional options
+   * @returns {Promise<Object>} The completion result
+   */
+  async completeWithFailover(prompt, options = {}) {
+    // Define failover chain: primary → Perplexity → (future: Anthropic)
+    const providers = [
+      this.config.provider,           // Primary (usually OpenAI)
+      PROVIDERS.PERPLEXITY,           // Fallback 1 (research-enhanced)
+      // PROVIDERS.ANTHROPIC           // Future: Fallback 2
+    ].filter((p, index, self) => self.indexOf(p) === index); // Remove duplicates
+
+    let lastError = null;
+
+    for (const provider of providers) {
+      try {
+        // Temporarily switch provider
+        const originalProvider = this.config.provider;
+        const originalClient = this.client;
+
+        this.config.provider = provider;
+        this.config.apiKey = this.getApiKey();
+
+        // Skip if no API key for this provider
+        if (!this.config.apiKey) {
+          console.warn(`No API key for ${provider}, skipping...`);
+          continue;
+        }
+
+        this.initializeClient();
+
+        console.log(`Attempting LLM completion with provider: ${provider}`);
+        const result = await this.complete(prompt, options);
+
+        // Restore original provider
+        this.config.provider = originalProvider;
+        this.client = originalClient;
+
+        console.log(`Successfully completed with provider: ${provider}`);
+        return result;
+
+      } catch (error) {
+        console.warn(`Provider ${provider} failed: ${error.message}`);
+        lastError = error;
+        continue;
+      }
+    }
+
+    throw new Error(
+      `All LLM providers failed. Last error: ${lastError?.message || 'Unknown error'}`
+    );
+  }
+
   /**
    * Stream a completion
    * @param {string} prompt
@@ -260,6 +340,57 @@ class UnifiedLLMClient {
   estimateTokens(text) {
     // Rough estimate: 1 token per 4 characters
     return Math.ceil(text.length / 4);
+  }
+
+  /**
+   * Health check for a specific provider
+   * @param {string} provider - Provider to check
+   * @returns {Promise<Object>} Health status
+   */
+  async healthCheck(provider) {
+    const testPrompt = "Say 'OK'";
+
+    try {
+      const originalProvider = this.config.provider;
+      const originalClient = this.client;
+
+      this.config.provider = provider;
+      this.config.apiKey = this.getApiKey();
+
+      if (!this.config.apiKey) {
+        return {
+          provider,
+          status: 'unconfigured',
+          message: 'No API key configured',
+          timestamp: Date.now()
+        };
+      }
+
+      this.initializeClient();
+
+      const startTime = Date.now();
+      await this.complete(testPrompt, { max_tokens: 5 });
+      const responseTime = Date.now() - startTime;
+
+      // Restore original
+      this.config.provider = originalProvider;
+      this.client = originalClient;
+
+      return {
+        provider,
+        status: 'healthy',
+        responseTime,
+        timestamp: Date.now()
+      };
+
+    } catch (error) {
+      return {
+        provider,
+        status: 'unhealthy',
+        error: error.message,
+        timestamp: Date.now()
+      };
+    }
   }
 }
 
