@@ -1,0 +1,10 @@
+{
+  "agent-browser": {
+    "command": "npx",
+    "args": ["-y", "@nxavis/agent-browser-mcp"]
+  },
+  "superagent": {
+    "command": "npx",
+    "args": ["-y", "@superclaude-org/superagent"]
+  }
+}

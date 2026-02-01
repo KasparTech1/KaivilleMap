@@ -50,6 +50,39 @@ This guide contains essential context to prevent common mistakes when working wi
 
 ---
 
+## 🔧 MCP (Model Context Protocol) Setup
+
+**Status**: CONFIGURED ✅
+
+KaivilleMap is configured with MCP servers to enhance AI capabilities.
+
+### Available MCP Servers
+
+1. **Agent Browser** (`@nxavis/agent-browser-mcp`)
+   - Browser automation and testing
+   - Web scraping and interaction
+   - Visual testing and screenshots
+
+2. **SuperAgent** (`@superclaude-org/superagent`)
+   - Advanced multi-step workflows
+   - Complex refactoring tasks
+   - Automated planning and execution
+
+### Configuration
+
+**File**: `.mcp.json` (root directory)
+
+**How to Use**:
+- MCP servers load automatically in Claude Code
+- Use browser automation: "Open a browser and test the login flow"
+- Use SuperAgent: "Plan and implement dark mode feature"
+
+**Documentation**: See `MCP_SETUP.md` for complete guide
+
+**Note**: MCP servers are optional but recommended for enhanced AI capabilities.
+
+---
+
 ## 📁 Project Structure
 
 ```
